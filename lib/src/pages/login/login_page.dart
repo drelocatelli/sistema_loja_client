@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:racoon_tech_panel/src/layout/login_layout.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
-import 'package:routefly/routefly.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
                           if (_formKey.currentState!.validate()) {
-                            Routefly.navigate('/dashboard/home');
+                            Get.offNamed('/');
                           }
                         },
                         child: Row(

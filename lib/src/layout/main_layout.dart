@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
-import 'package:routefly/routefly.dart';
 
 class MainLayout extends StatefulWidget {
   MainLayout({super.key, required this.child});
@@ -104,7 +104,7 @@ Widget mainMenu({bool isLargeScreen = true}) {
       },
       () {
         debugPrint("botão $index clicado!");
-        Routefly.navigate('/login');
+        Get.offNamed('/login');
       },
     ];
   }

@@ -37,7 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_dotenv: ^5.2.1
   gap: ^3.0.1
-  routefly: ^2.0.4
+  get: ^4.6.6
+  url_strategy: ^0.3.0
 
 dev_dependencies:
   flutter_test:
