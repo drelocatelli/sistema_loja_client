@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
-import 'package:sistema_loja/src/Helpers.dart';
-import 'package:sistema_loja/src/shared/SharedTheme.dart';
+import 'package:racoon_tech_panel/src/Helpers.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class MainLayout extends StatefulWidget {
   MainLayout({super.key, required this.child});

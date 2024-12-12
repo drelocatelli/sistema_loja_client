@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_loja/src/shared/SharedAppBarTheme.dart';
-import 'package:sistema_loja/src/shared/SharedIconTheme.dart';
+import 'package:racoon_tech_panel/src/shared/SharedAppBarTheme.dart';
+import 'package:racoon_tech_panel/src/shared/SharedIconTheme.dart';
 
 class SharedTheme {
   static Color primaryColor = const Color.fromRGBO(67, 67, 67, 1);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_loja/src/shared/SharedTheme.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class SharedAppBarTheme {
   static AppBarTheme main() {

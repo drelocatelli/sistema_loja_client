@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:sistema_loja/src/pages/home.dart';
-import 'package:sistema_loja/src/shared/SharedTheme.dart';
+import 'package:racoon_tech_panel/src/pages/home.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 // void main() {
 //   runApp(const MyApp());

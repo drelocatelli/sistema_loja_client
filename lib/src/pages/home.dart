@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sistema_loja/src/layout/MainLayout.dart';
+import 'package:racoon_tech_panel/src/layout/MainLayout.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
