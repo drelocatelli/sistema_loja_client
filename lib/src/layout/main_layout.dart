@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:racoon_tech_panel/src/components/loading_screen.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
@@ -18,6 +19,7 @@ class _MainLayoutState extends State<MainLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   
   final _formKey = GlobalKey<FormState>();  
+  bool _isLoading = true;
 
   void _submitForm() {
      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -26,10 +28,22 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final bool isLargeScreen = SharedTheme.isLargeScreen(context);
 
-    return Scaffold(
+    return _isLoading 
+    ? LoadingScreen() 
+    : Scaffold(
         key: _scaffoldKey,
       appBar: AppBar(
           title: Row(
