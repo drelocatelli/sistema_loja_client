@@ -61,52 +61,22 @@ class _MainLayoutState extends State<MainLayout> {
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 50,
+            height: isLargeScreen ? 50 : null,
             color: Color.fromRGBO(197, 197, 197, 1),
-            child: Row(
-              children: [
-                TextButton(onPressed: () {}, child: Text("MAIS VENDIDOS")),
-                Gap(10),
-                Text("PESQUISAR:", style: TextStyle(color: SharedTheme.secondaryColor, fontWeight: FontWeight.bold)),
-                Gap(5),
-                Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Gap(4),
-                            Container(
-                              width: 200,
-                              height: 34,
-                              child: TextFormField(
-                                decoration: const InputDecoration(
-                                  hintText: "",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: Colors.grey,
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                    ),
-                                  ),
-                                ),
-                                onEditingComplete: _submitForm,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                )
-              ],
-            ),
+            child: isLargeScreen 
+              ? Row(
+                children: [
+                  TextButton(onPressed: () {}, child: Text("MAIS VENDIDOS")),
+                  busca(isLargeScreen, _formKey, _submitForm)
+                ],
+              ) 
+              : Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TextButton(onPressed: () { debugPrint('Mais vendidos'); }, child: Text("MAIS VENDIDOS")),
+                  busca(isLargeScreen, _formKey, _submitForm),
+                ],
+              ),
           ),
           widget.child,
         ],
@@ -155,5 +125,62 @@ Widget mainMenu({bool isLargeScreen = true}) {
   return Helpers.responsiveMenu(
     isLargeScreen: isLargeScreen,
     children: buttons()
+  );
+}
+
+Widget busca(isLargeScreen, formKey, submitForm) {
+  Widget containerForm() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: isLargeScreen ? 5 : 20, vertical: 8.0),
+      height: 34,
+      width: isLargeScreen ? 300 : null,
+      child: TextFormField(
+        decoration: InputDecoration(
+          hintText: !isLargeScreen ? "Pesquisar..." : "",
+          hintStyle: const TextStyle(color: Colors.grey),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 1.5,
+            ),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.grey,
+              width: 1.5,
+            ),
+          ),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(
+            ),
+          ),
+        ),
+        onEditingComplete: submitForm,
+      ),
+    );
+  }
+  
+ return Form(
+    key: formKey,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              !isLargeScreen ? Container() : Row(
+                children: [
+                  Text("PESQUISAR:", style: TextStyle(color: SharedTheme.secondaryColor, fontWeight: FontWeight.bold)),
+                  Gap(4),
+                ],
+              ),
+              isLargeScreen ? containerForm() : Expanded(
+                child: containerForm()
+              ),
+            ],
+          ),
+        ],
+      ),
+    )
   );
 }
