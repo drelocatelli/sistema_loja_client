@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
-import 'package:racoon_tech_panel/src/Helpers.dart';
+import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
+import 'package:routefly/routefly.dart';
 
 class MainLayout extends StatefulWidget {
   MainLayout({super.key, required this.child});
@@ -26,8 +27,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final bool isLargeScreen = width > 800;
+    final bool isLargeScreen = SharedTheme.isLargeScreen(context);
 
     return Scaffold(
         key: _scaffoldKey,
@@ -59,25 +59,25 @@ class _MainLayoutState extends State<MainLayout> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: isLargeScreen ? 50 : null,
-            color: Color.fromRGBO(197, 197, 197, 1),
-            child: isLargeScreen 
-              ? Row(
-                children: [
-                  TextButton(onPressed: () {}, child: Text("MAIS VENDIDOS")),
-                  busca(isLargeScreen, _formKey, _submitForm)
-                ],
-              ) 
-              : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  TextButton(onPressed: () { debugPrint('Mais vendidos'); }, child: Text("MAIS VENDIDOS")),
-                  busca(isLargeScreen, _formKey, _submitForm),
-                ],
-              ),
-          ),
+          // Container(
+          //   width: MediaQuery.of(context).size.width,
+          //   height: isLargeScreen ? 50 : null,
+          //   color: Color.fromRGBO(197, 197, 197, 1),
+          //   child: isLargeScreen 
+          //     ? Row(
+          //       children: [
+          //         TextButton(onPressed: () {}, child: Text("MAIS VENDIDOS")),
+          //         busca(isLargeScreen, _formKey, _submitForm)
+          //       ],
+          //     ) 
+          //     : Column(
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       children: [
+          //         TextButton(onPressed: () { debugPrint('Mais vendidos'); }, child: Text("MAIS VENDIDOS")),
+          //         busca(isLargeScreen, _formKey, _submitForm),
+          //       ],
+          //     ),
+          // ),
           widget.child,
         ],
       ),
@@ -87,7 +87,7 @@ class _MainLayoutState extends State<MainLayout> {
 
 
 Widget mainMenu({bool isLargeScreen = true}) {
-  final List<String> labels = ["Vendas", "Cadastro", "Clientes", "Produtos"];
+  final List<String> labels = ["Vendas", "Cadastro", "Clientes", "Produtos", "Logout"];
   List<VoidCallback> links(index) {
     return [
       () {
@@ -101,6 +101,10 @@ Widget mainMenu({bool isLargeScreen = true}) {
       },
       () {
         debugPrint("botão $index clicado!");
+      },
+      () {
+        debugPrint("botão $index clicado!");
+        Routefly.navigate('/login');
       },
     ];
   }

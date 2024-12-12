@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:racoon_tech_panel/src/pages/home.dart';
+import 'package:racoon_tech_panel/routes.g.dart';
+import 'package:racoon_tech_panel/app/dashboard/home_page.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
+import 'package:routefly/routefly.dart';
 
 // void main() {
 //   runApp(const MyApp());
@@ -17,11 +19,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: SharedTheme.main(),
       title: dotenv.env['TITLE'],
-      home: const Home(),
+      routerConfig: Routefly.routerConfig(
+        routes: routes,
+        initialPath: '/login',
+        routeBuilder: (context, settings, child) {
+          return PageRouteBuilder(
+            settings: settings,
+            pageBuilder: (context, animation, secondaryAnimation) => child,
+            transitionsBuilder: (context, animation, secondaryAnimation, child) => child,
+          );
+        }
+      ),
     );
   }
 }
