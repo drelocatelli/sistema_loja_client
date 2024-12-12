@@ -7,7 +7,7 @@ import 'app/login/login_page.dart' as a0;
 
 List<RouteEntity> get routes => [
       RouteEntity(
-        key: '/login',
+        key: '/',
         uri: Uri.parse('/login'),
         routeBuilder: (ctx, settings) => Routefly.defaultRouteBuilder(
           ctx,
@@ -16,8 +16,8 @@ List<RouteEntity> get routes => [
         ),
       ),
       RouteEntity(
-        key: '/dashboard',
-        uri: Uri.parse('/dashboard'),
+        key: '/dashboard/home',
+        uri: Uri.parse('/dashboard/home'),
         routeBuilder: (ctx, settings) => Routefly.defaultRouteBuilder(
           ctx,
           settings,
@@ -28,7 +28,6 @@ List<RouteEntity> get routes => [
 
 const routePaths = (
   path: '/',
-  login: '/login',
   dashboard: (
     path: '/dashboard',
     home: '/dashboard/home',

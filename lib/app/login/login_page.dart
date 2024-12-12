@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
                           if (_formKey.currentState!.validate()) {
-                            Routefly.navigate('/dashboard');
+                            Routefly.navigate('/dashboard/home');
                           }
                         },
                         child: Row(
