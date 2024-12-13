@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:racoon_tech_panel/src/components/loading_screen.dart';
+import 'package:racoon_tech_panel/src/dto/main_menu_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
@@ -101,41 +102,29 @@ class _MainLayoutState extends State<MainLayout> {
 
 
 Widget mainMenu({bool isLargeScreen = true}) {
-  final List<String> labels = ["Vendas", "Cadastro", "Clientes", "Produtos", "Logout"];
-  List<VoidCallback> links(index) {
-    return [
-      () {
-        debugPrint("botão $index clicado!");
-      },
-      () {
-        debugPrint("botão $index clicado!");
-      },
-      () {
-        debugPrint("botão $index clicado!");
-      },
-      () {
-        debugPrint("botão $index clicado!");
-      },
-      () {
-        debugPrint("botão $index clicado!");
-        Get.offNamed('/login');
-      },
-    ];
-  }
+  final menus = [
+    new MainMenuDTO(label: "Geral", fn: () => debugPrint("Geral")),
+    new MainMenuDTO(label: "Vendas", fn: () => debugPrint("Vendas")),
+    new MainMenuDTO(label: "Estoque", fn: () => debugPrint("Estoque")),
+    new MainMenuDTO(label: "Clientes", fn: () => debugPrint("Clientes")),
+    new MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
+    new MainMenuDTO(label: "Sair", fn: () => Get.offNamed('/login'))
+  ];
+  
   List<Widget> buttons() {
-    return labels.asMap().entries.map((entry) {
+    return menus.asMap().entries.map((entry) {
       int index = entry.key;
-      String label = entry.value;
+      String label = entry.value.label;
 
       // Utilize o index e o label para criar seus widgets
       return isLargeScreen 
         ? TextButton(
-          onPressed: links(index)[index],
+          onPressed: entry.value.fn,
           child: Text(label),
         )
         : ListTile(
           title: Text(label),
-          onTap: links(index)[index],
+          onTap: entry.value.fn,
         );
     }).toList();
   }
