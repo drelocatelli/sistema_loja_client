@@ -85,7 +85,13 @@ Widget resume() {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Previsão de fluxo de caixa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(child: Text("Previsão de fluxo de caixa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
+              OutlinedButton(onPressed: () {}, child: Text("Visualizar relatórios"))
+            ],
+          ),
           const Gap(20),
           LayoutBuilder(
             builder: (context, constraints) {
