@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
                           if (_formKey.currentState!.validate()) {
-                            Get.offNamed('/');
+                            Get.offNamed('/dashboard');
                           }
                         },
                         child: Row(

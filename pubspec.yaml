@@ -39,6 +39,7 @@ dependencies:
   gap: ^3.0.1
   get: ^4.6.6
   url_strategy: ^0.3.0
+  syncfusion_flutter_charts: ^28.1.33
 
 dev_dependencies:
   flutter_test:

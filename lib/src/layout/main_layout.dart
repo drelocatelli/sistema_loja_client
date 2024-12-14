@@ -31,7 +31,7 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       setState(() {
         _isLoading = false;
       });
@@ -71,30 +71,16 @@ class _MainLayoutState extends State<MainLayout> {
       drawer: isLargeScreen ? null : Drawer(
         child: mainMenu(isLargeScreen: isLargeScreen),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Container(
-          //   width: MediaQuery.of(context).size.width,
-          //   height: isLargeScreen ? 50 : null,
-          //   color: Color.fromRGBO(197, 197, 197, 1),
-          //   child: isLargeScreen 
-          //     ? Row(
-          //       children: [
-          //         TextButton(onPressed: () {}, child: Text("MAIS VENDIDOS")),
-          //         busca(isLargeScreen, _formKey, _submitForm)
-          //       ],
-          //     ) 
-          //     : Column(
-          //       crossAxisAlignment: CrossAxisAlignment.center,
-          //       children: [
-          //         TextButton(onPressed: () { debugPrint('Mais vendidos'); }, child: Text("MAIS VENDIDOS")),
-          //         busca(isLargeScreen, _formKey, _submitForm),
-          //       ],
-          //     ),
-          // ),
-          widget.child,
-        ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              widget.child,
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -103,10 +89,10 @@ class _MainLayoutState extends State<MainLayout> {
 
 Widget mainMenu({bool isLargeScreen = true}) {
   final menus = [
-    new MainMenuDTO(label: "Geral", fn: () => debugPrint("Geral")),
+    new MainMenuDTO(label: "Geral", fn: () => Get.toNamed('/dashboard')),
     new MainMenuDTO(label: "Vendas", fn: () => debugPrint("Vendas")),
     new MainMenuDTO(label: "Estoque", fn: () => debugPrint("Estoque")),
-    new MainMenuDTO(label: "Clientes", fn: () => debugPrint("Clientes")),
+    new MainMenuDTO(label: "Clientes", fn: () => Get.toNamed('/dashboard/clientes')),
     new MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
     new MainMenuDTO(label: "Sair", fn: () => Get.offNamed('/login'))
   ];

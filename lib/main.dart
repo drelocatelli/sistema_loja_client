@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
       title: dotenv.env['TITLE'] ?? 'Painel da loja',
       defaultTransition: Transition.native,
       transitionDuration: Duration.zero,
+      initialRoute: '/dashboard',
       getPages: routes,
     );
   }

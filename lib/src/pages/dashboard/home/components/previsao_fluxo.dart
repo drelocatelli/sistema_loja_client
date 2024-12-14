@@ -1,23 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MainLayout(
-      child: Column(
-        children: [
-          resume()
-        ],
-      ),
-    );
-  }
-}
-
-Widget resume() {
+Widget previsaoFluxo(VoidCallback fnRelatorios, bool relatoriosShowing) {
  
    Widget box(maxWidth, Color color, IconData icon, {required String value, required String title}) {
     return Container(
@@ -79,36 +63,33 @@ Widget resume() {
     ];
   }
 
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
-    child: SelectionArea(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(child: Text("Previsão de fluxo de caixa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
-              OutlinedButton(onPressed: () {}, child: Text("Visualizar relatórios"))
-            ],
-          ),
-          const Gap(20),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              debugPrint(constraints.maxWidth.toString());
-              return constraints.maxWidth >= 800 
-              ? Row(
-                spacing: 10,
-                children: columns(constraints.maxWidth).map((element) => Expanded(child: element)).toList()
-              )
-              : Column(
-                spacing: 10,
-                children: columns(constraints.maxWidth)
-              );
-            }
-          ),
-        ],
-      ),
+  return SelectionArea(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: Text("Previsão de fluxo de caixa", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
+            OutlinedButton(onPressed: fnRelatorios, child: Text(relatoriosShowing ? 'Ocultar relatórios' : "Mostrar relatórios"))
+          ],
+        ),
+        const Gap(20),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            debugPrint(constraints.maxWidth.toString());
+            return constraints.maxWidth >= 800 
+            ? Row(
+              spacing: 10,
+              children: columns(constraints.maxWidth).map((element) => Expanded(child: element)).toList()
+            )
+            : Column(
+              spacing: 10,
+              children: columns(constraints.maxWidth)
+            );
+          }
+        ),
+      ],
     ),
   );
 }
