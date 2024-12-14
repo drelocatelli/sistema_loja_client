@@ -8,9 +8,10 @@ import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class MainLayout extends StatefulWidget {
-  MainLayout({super.key, required this.child});
+  MainLayout({super.key, required this.child, this.padding});
 
   final Widget child;
+  final EdgeInsets? padding;
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
@@ -73,7 +74,7 @@ class _MainLayoutState extends State<MainLayout> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
+          padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
