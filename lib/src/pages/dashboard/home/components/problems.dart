@@ -10,7 +10,7 @@ class Problems extends StatelessWidget {
        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
          children: [
-           Text("Problems", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+           Text("Recebimentos - Pagamentos", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
            table(),
           Gap(50),
 

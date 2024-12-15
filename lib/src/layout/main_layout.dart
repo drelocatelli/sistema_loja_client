@@ -91,7 +91,14 @@ class _MainLayoutState extends State<MainLayout> {
 Widget mainMenu({bool isLargeScreen = true}) {
   final menus = [
     new MainMenuDTO(label: "Geral", fn: () => Get.toNamed('/dashboard')),
-    new MainMenuDTO(label: "Vendas", fn: () => debugPrint("Vendas")),
+    new MainMenuDTO(
+      label: "Vendas", 
+      fn: () => debugPrint("Vendas"),
+      submenu: [
+        SubmenuDTO(label: "Notas fiscais", fn: () {debugPrint('nfe');}),
+      ]
+    ),
+    // new MainMenuDTO(label: "Notas Fiscais", fn: () => Get.offNamed('/dashboard/nfe')),
     new MainMenuDTO(label: "Estoque", fn: () => debugPrint("Estoque")),
     new MainMenuDTO(label: "Clientes", fn: () => Get.toNamed('/dashboard/clientes')),
     new MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
@@ -107,7 +114,24 @@ Widget mainMenu({bool isLargeScreen = true}) {
       return isLargeScreen 
         ? TextButton(
           onPressed: entry.value.fn,
-          child: Text(label),
+          child: entry.value.submenu != null 
+            ? PopupMenuButton(
+              child: Text(label),
+              itemBuilder: (BuildContext context) => entry.value.submenu!.map((e) => PopupMenuItem(
+                child: Text(e.label),
+                onTap: e.fn,
+              )).toList(),
+              offset: Offset(0, 28),
+            )
+            : Text(label)
+        )
+        : entry.value.submenu != null 
+        ? ExpansionTile(
+          title: Text(label),
+          children: entry.value.submenu?.map((e) => ListTile(
+            title: Text(e.label),
+            onTap: e.fn,
+          )).toList() ?? [],
         )
         : ListTile(
           title: Text(label),

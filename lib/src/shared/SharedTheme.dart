@@ -33,7 +33,12 @@ class SharedTheme {
               elevation: WidgetStatePropertyAll(0),
               padding: WidgetStatePropertyAll(EdgeInsets.all(12)),
               backgroundColor: WidgetStatePropertyAll(secondaryColor),
-            )
+            ),
+          ),
+          iconButtonTheme: IconButtonThemeData(
+            style: ButtonStyle(
+              padding: WidgetStatePropertyAll(EdgeInsets.all(4)),
+            ),
           )
         );
   }

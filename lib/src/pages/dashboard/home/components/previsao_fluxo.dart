@@ -42,7 +42,7 @@ Widget previsaoFluxo(VoidCallback fnRelatorios, VoidCallback fnRecebimentos, Voi
                 child: InkWell(onTap: fn , child: Row(
                   children: [
                     Text(isShowing ? "Ocultar detalhes" :  "Ver detalhes", style: TextStyle(color: Colors.white)),
-                    Icon(isShowing ? Icons.arrow_drop_up : Icons.arrow_right, color: Colors.white),
+                    Icon(isShowing ? Icons.arrow_drop_up : Icons.arrow_drop_down, color: Colors.white),
                   ],
                 )),
               )
