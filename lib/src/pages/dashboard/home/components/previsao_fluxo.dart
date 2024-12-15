@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:racoon_tech_panel/src/pages/dashboard/home/components/pagamentos.dart';
+import 'package:racoon_tech_panel/src/pages/dashboard/home/components/problems.dart';
+import 'package:racoon_tech_panel/src/pages/dashboard/home/components/recebimentos.dart';
 
-Widget previsaoFluxo(VoidCallback fnRelatorios, bool relatoriosShowing) {
+Widget previsaoFluxo(VoidCallback fnRelatorios, VoidCallback fnRecebimentos, VoidCallback fnPagamentos, VoidCallback fnProblems, bool relatoriosShowing, bool recebimentosShowing, bool pagamentosShowing, bool problemsShowing) {
  
-   Widget box(maxWidth, Color color, IconData icon, {required String value, required String title}) {
+   Widget box(maxWidth, Color color, IconData icon, bool isShowing, {required String value, required String title, required VoidCallback fn}) {
     return Container(
       width: maxWidth,
       height: 110,
@@ -36,10 +39,10 @@ Widget previsaoFluxo(VoidCallback fnRelatorios, bool relatoriosShowing) {
               color: color,
               child:Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                child: InkWell(onTap: () {} , child: Row(
+                child: InkWell(onTap: fn , child: Row(
                   children: [
-                    Text("Ver detalhes", style: TextStyle(color: Colors.white)),
-                    Icon(Icons.arrow_right, color: Colors.white)
+                    Text(isShowing ? "Ocultar detalhes" :  "Ver detalhes", style: TextStyle(color: Colors.white)),
+                    Icon(isShowing ? Icons.arrow_drop_up : Icons.arrow_right, color: Colors.white),
                   ],
                 )),
               )
@@ -57,9 +60,9 @@ Widget previsaoFluxo(VoidCallback fnRelatorios, bool relatoriosShowing) {
 
   List<Widget> columns(double maxWidth) {
     return [
-      box(title: "Recebimentos Previstos (R\$)", value: "R\$ 1.000,00", maxWidth, Colors.green, Icons.arrow_upward_sharp),
-      box(title: "Pagamentos Previstos (R\$)", value: "R\$ 4.089,00", maxWidth, Colors.orange, Icons.arrow_downward_sharp),
-      box(title: "Recebimentos - Pagamentos (R\$)", value: "- R\$ 324,00",maxWidth, Colors.red, Icons.warning),
+      box(title: "Recebimentos Previstos (R\$)", value: "R\$ 1.000,00", maxWidth, Colors.green, Icons.arrow_upward_sharp, fn: fnRecebimentos, recebimentosShowing),
+      box(title: "Pagamentos Previstos (R\$)", value: "R\$ 4.089,00", maxWidth, Colors.orange, Icons.arrow_downward_sharp, fn: fnPagamentos, pagamentosShowing),
+      box(title: "Recebimentos - Pagamentos (R\$)", value: "- R\$ 324,00",maxWidth, Colors.red, Icons.warning, fn: fnProblems, problemsShowing),
     ];
   }
 
@@ -80,15 +83,61 @@ Widget previsaoFluxo(VoidCallback fnRelatorios, bool relatoriosShowing) {
             debugPrint(constraints.maxWidth.toString());
             return constraints.maxWidth >= 800 
             ? Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               spacing: 10,
               children: columns(constraints.maxWidth).map((element) => Expanded(child: element)).toList()
             )
             : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 10,
               children: columns(constraints.maxWidth)
             );
           }
         ),
+        Gap(20),
+        AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            switchInCurve: Curves.easeIn,
+            switchOutCurve: Curves.easeOut,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            child:  recebimentosShowing 
+              ? Recebimentos()
+              : SizedBox()
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            switchInCurve: Curves.easeIn,
+            switchOutCurve: Curves.easeOut,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            child:  pagamentosShowing 
+              ? Pagamentos()
+              : SizedBox()
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            switchInCurve: Curves.easeIn,
+            switchOutCurve: Curves.easeOut,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            child:  problemsShowing 
+              ? Problems()
+              : SizedBox()
+          ),
+
       ],
     ),
   );

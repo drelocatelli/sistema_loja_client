@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/home/components/previsao_fluxo.dart';
+import 'package:racoon_tech_panel/src/pages/dashboard/home/components/recebimentos.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/home/components/relatorios.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,9 +14,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Map<String, bool> _isShowing = {
-    "previsao": true,
-    "relatorios": true,
+    "recebimentos": false,
+    "pagamentos": false,
+    "problemas": false,
   };
+  
+  bool previsaoShowing = true;
+  bool relatoriosShowing = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +30,53 @@ class _HomePageState extends State<HomePage> {
         spacing: 20,
         children: [
           Visibility(
-            visible: _isShowing['previsao']!,
-            child: previsaoFluxo(() {
-              _isShowing['relatorios'] = !_isShowing['relatorios']!;
-              setState(() {});
-            }, _isShowing['relatorios']!),
+            visible: previsaoShowing,
+            child: previsaoFluxo(
+              () {
+                _isShowing = _isShowing.map((key, value) {
+                  if (key == 'relatorios') {
+                    return MapEntry(key, value);
+                  }
+                  // Update other keys to false
+                  return MapEntry(key, false);
+                });
+                relatoriosShowing = !relatoriosShowing;
+                setState(() {});
+              }, 
+              () {
+                _isShowing = _isShowing.map((key, value) {
+                  if (key == 'recebimentos') {
+                    return MapEntry(key, value);
+                  }
+                  // Update other keys to false
+                  return MapEntry(key, false);
+                });
+                _isShowing['recebimentos'] = !_isShowing['recebimentos']!;
+                setState(() {});
+              },
+              () {
+                _isShowing = _isShowing.map((key, value) {
+                  if (key == 'pagamentos') {
+                    return MapEntry(key, value);
+                  }
+                  // Update other keys to false
+                  return MapEntry(key, false);
+                });
+                _isShowing['pagamentos'] = !_isShowing['pagamentos']!;
+                setState(() {});
+              },
+              () {
+                 _isShowing = _isShowing.map((key, value) {
+                  if (key == 'problemas') {
+                    return MapEntry(key, value);
+                  }
+                  // Update other keys to false
+                  return MapEntry(key, false);
+                });
+                _isShowing['problemas'] = !_isShowing['problemas']!;
+                setState(() {});
+              }
+            , relatoriosShowing, _isShowing['recebimentos']!, _isShowing['pagamentos']!, _isShowing['problemas']!),
           ),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
@@ -40,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                 child: child,
               );
             },
-            child: _isShowing['relatorios']!
+            child: relatoriosShowing
                 ? Container(
                     key: ValueKey(
                         'relatorios'), // Chave única para diferenciar os estados
