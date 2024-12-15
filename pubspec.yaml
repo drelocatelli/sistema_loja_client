@@ -40,6 +40,7 @@ dependencies:
   get: ^4.6.6
   url_strategy: ^0.3.0
   syncfusion_flutter_charts: ^28.1.33
+  printing: ^5.13.4
 
 dev_dependencies:
   flutter_test:

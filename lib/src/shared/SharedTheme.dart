@@ -11,6 +11,9 @@ class SharedTheme {
     return ThemeData(
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: false,
+        textTheme: TextTheme(
+          headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+        ),
         appBarTheme: SharedAppBarTheme.main(),
         iconTheme: SharedIconTheme.main(),
         textButtonTheme: TextButtonThemeData(
