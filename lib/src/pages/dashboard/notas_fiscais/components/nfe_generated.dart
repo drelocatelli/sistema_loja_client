@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
@@ -5,7 +7,8 @@ import 'package:get/get.dart';
 import 'package:racoon_tech_panel/src/components/dotted_line.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 
-Widget nfeForm(BuildContext context, {required NFeDTO nfeDetails}) {
+Widget nfeGenerated(BuildContext context, {required NFeDTO nfeDetails}) {
+  debugPrint(jsonEncode(nfeDetails));
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -35,24 +38,42 @@ Widget _nfeBody(BuildContext context, {required NFeDTO nfeDetails}) {
           )
         ),
       ),
-      box(
-        child: Column(
-          children: [
-            Text("DANFE", style: Theme.of(context).textTheme.headlineMedium),
-            smallText("DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA"),
-            Row(
-              children: [
-                Column(
+      SizedBox(
+        width: Get.width >= 800 ? 200 : null,
+        child: box(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("DANFE", style: Theme.of(context).textTheme.headlineMedium),
+              smallText("DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA"),
+              Row(
+                spacing: 10,
+                mainAxisAlignment: Get.width >= 800 ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      smallText("0 - ENTRADA"),
+                      smallText("1 - SAÍDA"),
+                    ],
+                  ),
+                  box(child: Text(nfeDetails.entradaOuSaida.value.toString()))
+                ],
+              ),
+              Gap(5),
+              SelectableText.rich(
+                TextSpan(
                   children: [
-                    smallText("0 - ENTRADA"),
-                    smallText("1 - SAÍDA"),
+                    TextSpan(text: "N° ${nfeDetails.number}\n"),
+                    TextSpan(text: "Série ${nfeDetails.serie}\n"),
+                    TextSpan(text: "Folha ${nfeDetails.folha}"),
                   ],
-                ),
-                box(child: Text(nfeDetails.entradaOuSaida.value.toString()))
-              ],
-            )
-          ],
-        )
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ),
+            ],
+          )
+        ),
       )
     ],
   );
@@ -129,8 +150,6 @@ return Column(
 }
 
 Widget rowOrWrap({required List<Widget> children}) {
-  debugPrint('Layout: ${Get.width}');
-  
   return Get.width >= 800
       ? IntrinsicHeight(
         child: Row(
