@@ -16,7 +16,7 @@ class NotasFiscaisPage extends StatelessWidget {
           children: [
             Text("Notas Fiscais",
                 style: Theme.of(context).textTheme.headlineMedium),
-            nfeForm(context, nfeDetails: NFeDTO(number: "693983", serie: "25"))
+            nfeForm(context, nfeDetails: NFeDTO(number: "693983", serie: "25", entradaOuSaida: NFeEntradaSaidaEnum.ENTRADA))
           ],
         ),
       ),

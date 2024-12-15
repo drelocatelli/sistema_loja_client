@@ -1,10 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:racoon_tech_panel/src/components/dotted_line.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 
 Widget nfeForm(BuildContext context, {required NFeDTO nfeDetails}) {
   return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _nfeHeader(context, nfeDetails: nfeDetails),
+      Gap(18),
+      DottedLine(width: Get.width),
+      Gap(10),
+      _nfeBody(context, nfeDetails: nfeDetails),
+    ],
+  );
+}
+
+Widget _nfeBody(BuildContext context, {required NFeDTO nfeDetails}) {
+  return rowOrWrap(
+    children: [
+      Container(
+        width: Get.width >= 800 ? Get.width / 2 : Get.width,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: Get.width <= 800 ? 10 : 0),
+        child: SelectableText.rich(
+          TextSpan(
+            text: dotenv.env['TITLE'] ?? 'Sistema da loja',
+            children: [
+              TextSpan(text:  "\n${dotenv.env['ENDERECO']}".toUpperCase(),  style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+            ],
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)
+          )
+        ),
+      ),
+      box(
+        child: Column(
+          children: [
+            Text("DANFE", style: Theme.of(context).textTheme.headlineMedium),
+            smallText("DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA"),
+            Row(
+              children: [
+                Column(
+                  children: [
+                    smallText("0 - ENTRADA"),
+                    smallText("1 - SAÍDA"),
+                  ],
+                ),
+                box(child: Text(nfeDetails.entradaOuSaida.value.toString()))
+              ],
+            )
+          ],
+        )
+      )
+    ],
+  );
+}
+
+Widget _nfeHeader(BuildContext context, {required NFeDTO nfeDetails}) {
+return Column(
     children: [
       rowOrWrap(
         children: [
