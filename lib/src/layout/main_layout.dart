@@ -95,7 +95,7 @@ Widget mainMenu({bool isLargeScreen = true}) {
       label: "Vendas", 
       fn: () => debugPrint("Vendas"),
       submenu: [
-        SubmenuDTO(label: "Notas fiscais", fn: () {debugPrint('nfe');}),
+        SubmenuDTO(label: "Notas fiscais", fn: () => Get.toNamed('/dashboard/nfe')),
       ]
     ),
     // new MainMenuDTO(label: "Notas Fiscais", fn: () => Get.offNamed('/dashboard/nfe')),
@@ -116,14 +116,24 @@ Widget mainMenu({bool isLargeScreen = true}) {
           onPressed: entry.value.fn,
           child: entry.value.submenu != null 
             ? PopupMenuButton(
-              child: Text(label),
+              tooltip: '',
+              child: Row(
+                children: [
+                  Text(label),
+                  entry.value.submenu != null ? Icon(Icons.arrow_drop_down) : Container(),
+                ],
+              ),
               itemBuilder: (BuildContext context) => entry.value.submenu!.map((e) => PopupMenuItem(
                 child: Text(e.label),
                 onTap: e.fn,
               )).toList(),
               offset: Offset(0, 28),
             )
-            : Text(label)
+            : Row(
+              children: [
+                Text(label),
+              ],
+            )
         )
         : entry.value.submenu != null 
         ? ExpansionTile(
