@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
@@ -96,7 +97,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
           mainAxisSize: MainAxisSize.max,
           children: [
             SizedBox(
-              width: 80,
+              width: 50,
               child: TextFormField(
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
@@ -109,7 +110,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
               ),
             ),
             SizedBox(
-              width: 80,
+              width: 50,
               child: TextFormField(
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
@@ -137,7 +138,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
           spacing: 10,
           children: [
             Flexible(
-              flex: 3,
+              flex: Get.width >= 800 ? 3 : 1,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 10,
@@ -170,6 +171,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
               ),
             ),
             Flexible(
+              flex: 1,
               child: StatefulBuilder(
                 builder: (context, setState) {
                   return SizedBox(
