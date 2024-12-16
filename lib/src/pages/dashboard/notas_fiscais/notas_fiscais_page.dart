@@ -12,6 +12,8 @@ class NotasFiscaisPage extends StatelessWidget {
   NotasFiscaisPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
+  bool isMinified = true;
+  bool _isPrinting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,6 @@ class NotasFiscaisPage extends StatelessWidget {
                               }, child: Text("Gerar nova NF-e")),
                               StatefulBuilder(
                                 builder: (context, setState) {
-                                  bool isMinified = true;
 
                                   return Column(
                                     children: [
@@ -80,7 +81,13 @@ class NotasFiscaisPage extends StatelessWidget {
                                       //     }),
                                       //   ],
                                       // ),
-                                      ElevatedButton(onPressed: () async { await printDoc(context, nfeGenerated(context, nfeDetails: _nfeFormValues, minified: isMinified), minified: isMinified); }, child: Row(
+                                      ElevatedButton(onPressed: () async { 
+                                          _isPrinting = true;
+                                        setState(() {});
+                                        await printDoc(context, nfeGenerated(context, nfeDetails: _nfeFormValues, minified: isMinified), minified: isMinified); 
+                                        _isPrinting = false;
+                                        setState(() {});
+                                      }, child: _isPrinting ? Text("Gerando impressão...") :  Row(
                                         spacing: 5,
                                         children: [
                                           Icon(Icons.local_printshop),
