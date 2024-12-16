@@ -159,8 +159,14 @@ Widget rowOrWrap({required List<Widget> children, required bool wrap}) {
     }
     return widget; // Return the widget as-is if it's not `Expanded`
   }).toList();
+
+  debugPrint("wrap: ${wrap.toString()}");
+
+  if(wrap) {
+    return Wrap(children: wrapChildren);
+  }
   
-  return Get.width >= 800 || !wrap
+  return Get.width >= 800
       ? IntrinsicHeight(
         child: Row(
             mainAxisSize: MainAxisSize.max,

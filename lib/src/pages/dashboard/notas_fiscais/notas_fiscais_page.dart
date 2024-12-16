@@ -54,12 +54,46 @@ class NotasFiscaisPage extends StatelessWidget {
                             child: nfeGenerated(context, nfeDetails: _nfeFormValues),
                             replacement: SizedBox(),
                           ),
-                          ElevatedButton(onPressed: () {
-                            setState(() {
-                              _isNfeGenerated = false;
-                            });
-                          }, child: Text("Gerar nova NF-e")),
-                          ElevatedButton(onPressed: () async { await printDoc(nfeGenerated(context, nfeDetails: _nfeFormValues)); }, child: Text("Baixar PDF"))
+                          Row(
+                            spacing: 10,
+                            children: [
+                              ElevatedButton(onPressed: () {
+                                setState(() {
+                                  _isNfeGenerated = false;
+                                });
+                              }, child: Text("Gerar nova NF-e")),
+                              StatefulBuilder(
+                                builder: (context, setState) {
+                                  bool isMinified = true;
+
+                                  return Column(
+                                    children: [
+                                      // Row(
+                                      //   children: [
+                                      //     Text("Pdf minificado:"),
+                                      //     Checkbox(
+                                      //       value: isMinified, 
+                                      //       onChanged: (bool? value) {
+                                      //         setState(() {
+                                      //           isMinified = value!;
+                                      //         });
+                                      //     }),
+                                      //   ],
+                                      // ),
+                                      ElevatedButton(onPressed: () async { await printDoc(context, nfeGenerated(context, nfeDetails: _nfeFormValues, minified: isMinified), minified: isMinified); }, child: Row(
+                                        spacing: 5,
+                                        children: [
+                                          Icon(Icons.local_printshop),
+                                          Text("Imprimir ou baixar PDF"),
+                                          
+                                        ],
+                                      )),
+                                    ],
+                                  );
+                                }
+                              )
+                            ],
+                          ),
                         ],
                       )
                     )
