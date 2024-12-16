@@ -43,6 +43,9 @@ dependencies:
   printing: ^5.13.4
   syncfusion_flutter_datepicker: ^28.1.33
   intl: ^0.19.0
+  google_fonts: ^6.2.1
+  pdf: ^3.11.1
+  screenshot: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +73,7 @@ flutter:
   assets:
   - assets/
   - assets/img/
+  - assets/fonts/
   - .env
   - .env.dev
   #   - images/a_dot_burr.jpeg

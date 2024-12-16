@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/notas_fiscais/components/nfe_generated.dart';
+import 'package:racoon_tech_panel/src/utils/print_doc.dart';
 
 class NotasFiscaisPage extends StatelessWidget {
   NotasFiscaisPage({super.key});
@@ -58,6 +59,7 @@ class NotasFiscaisPage extends StatelessWidget {
                               _isNfeGenerated = false;
                             });
                           }, child: Text("Gerar nova NF-e")),
+                          ElevatedButton(onPressed: () async { await printDoc(nfeGenerated(context, nfeDetails: _nfeFormValues)); }, child: Text("Baixar PDF"))
                         ],
                       )
                     )
@@ -231,3 +233,5 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
     )
   );
 }
+
+

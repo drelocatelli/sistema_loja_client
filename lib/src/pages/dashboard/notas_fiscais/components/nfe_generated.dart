@@ -1,28 +1,28 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:racoon_tech_panel/src/components/dotted_line.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 
-Widget nfeGenerated(BuildContext context, {required NFeDTO nfeDetails}) {
-  debugPrint(jsonEncode(nfeDetails));
+
+Widget nfeGenerated(BuildContext context, {required NFeDTO nfeDetails, bool minified = false}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      _nfeHeader(context, nfeDetails: nfeDetails),
+      _nfeHeader(context, nfeDetails: nfeDetails, minified),
       Gap(18),
       DottedLine(width: Get.width),
       Gap(10),
-      _nfeBody(context, nfeDetails: nfeDetails),
+      _nfeBody(context, nfeDetails: nfeDetails, minified),
     ],
   );
 }
 
-Widget _nfeBody(BuildContext context, {required NFeDTO nfeDetails}) {
+Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
   return rowOrWrap(
+    wrap: minified,
     children: [
       Container(
         width: Get.width >= 800 ? Get.width / 2 : Get.width,
@@ -71,18 +71,20 @@ Widget _nfeBody(BuildContext context, {required NFeDTO nfeDetails}) {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 )
               ),
+
             ],
           )
         ),
-      )
+      ),
     ],
   );
 }
 
-Widget _nfeHeader(BuildContext context, {required NFeDTO nfeDetails}) {
+Widget _nfeHeader(BuildContext context, bool minified, {required NFeDTO nfeDetails}) {
 return Column(
     children: [
       rowOrWrap(
+        wrap: minified,
         children: [
           Expanded(
             flex: Get.width >= 800 ? 6 : 1,
@@ -141,7 +143,8 @@ return Column(
                   smallText(nfeDetails.idEAssinaturaDoRecebedor)
                 ],
               )),
-            )
+            ),
+            
           ],
         ),
       ),
@@ -149,7 +152,7 @@ return Column(
   );
 }
 
-Widget rowOrWrap({required List<Widget> children}) {
+Widget rowOrWrap({required List<Widget> children, required bool wrap}) {
   final wrapChildren = children.map((widget) {
     if (widget is Expanded) {
       return widget.child; // Return the child of the `Expanded` widget
@@ -157,7 +160,7 @@ Widget rowOrWrap({required List<Widget> children}) {
     return widget; // Return the widget as-is if it's not `Expanded`
   }).toList();
   
-  return Get.width >= 800
+  return Get.width >= 800 || !wrap
       ? IntrinsicHeight(
         child: Row(
             mainAxisSize: MainAxisSize.max,
