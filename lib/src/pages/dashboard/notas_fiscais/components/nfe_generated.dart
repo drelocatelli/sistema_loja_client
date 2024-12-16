@@ -150,6 +150,13 @@ return Column(
 }
 
 Widget rowOrWrap({required List<Widget> children}) {
+  final wrapChildren = children.map((widget) {
+    if (widget is Expanded) {
+      return widget.child; // Return the child of the `Expanded` widget
+    }
+    return widget; // Return the widget as-is if it's not `Expanded`
+  }).toList();
+  
   return Get.width >= 800
       ? IntrinsicHeight(
         child: Row(
@@ -157,7 +164,7 @@ Widget rowOrWrap({required List<Widget> children}) {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: children),
       )
-      : Wrap(children: children);
+      : Wrap(children: wrapChildren);
 }
 
 Widget smallText(String text) {

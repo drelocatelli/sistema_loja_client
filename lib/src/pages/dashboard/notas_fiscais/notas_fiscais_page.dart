@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:ffi';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -10,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/notas_fiscais/components/nfe_generated.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class NotasFiscaisPage extends StatelessWidget {
   NotasFiscaisPage({super.key});
@@ -20,7 +15,7 @@ class NotasFiscaisPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool _isNfeGenerated = false;
-    NFeDTO? _nfeFormValues;
+    NFeDTO _nfeFormValues = NFeDTO(entradaOuSaida: NFeEntradaSaidaEnum.ENTRADA);
 
     return MainLayout(
       child: SelectionArea(
@@ -39,6 +34,9 @@ class NotasFiscaisPage extends StatelessWidget {
                     Visibility(
                       visible: !_isNfeGenerated,
                       child: _form(context, _formKey, (NFeDTO? formValues) {
+                        if(formValues == null) {
+                            return;
+                        }
                         setState(() {
                           _nfeFormValues = formValues;
                           _isNfeGenerated = true;
@@ -50,7 +48,11 @@ class NotasFiscaisPage extends StatelessWidget {
                       child: Column(
                         spacing: 20,
                         children: [
-                          _nfeFormValues != null ? nfeGenerated(context, nfeDetails: _nfeFormValues!) : SizedBox(),
+                          Visibility(
+                            visible: _nfeFormValues != null,
+                            child: nfeGenerated(context, nfeDetails: _nfeFormValues),
+                            replacement: SizedBox(),
+                          ),
                           ElevatedButton(onPressed: () {
                             setState(() {
                               _isNfeGenerated = false;
