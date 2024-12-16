@@ -10,6 +10,8 @@ INDEX_FILE="build/web/index.html"
 sed -i '/<base href="\/">/d' "$INDEX_FILE"
 
 # Set a custom <title>
-sed -i 's|<title>.*</title>|<title>My Custom Title</title>|' "$INDEX_FILE"
+sed -i 's|<title>.*</title>|<title>Raccoon Tech</title>|' "$INDEX_FILE"
 
 echo "Modifications complete: Removed <base href> and updated <title> in index.html"
+
+make deploy
