@@ -87,11 +87,11 @@ class NotasFiscaisPage extends StatelessWidget {
                                         await printDoc(context, nfeGenerated(context, nfeDetails: _nfeFormValues, minified: isMinified), minified: isMinified); 
                                         _isPrinting = false;
                                         setState(() {});
-                                      }, child: _isPrinting ? Text("Gerando impressão...") :  Row(
+                                      }, child: Row(
                                         spacing: 5,
                                         children: [
                                           Icon(Icons.local_printshop),
-                                          Text("Imprimir ou baixar PDF"),
+                                          Text(_isPrinting ? "Aguarde..." : "Imprimir ou baixar PDF"),
                                           
                                         ],
                                       )),
