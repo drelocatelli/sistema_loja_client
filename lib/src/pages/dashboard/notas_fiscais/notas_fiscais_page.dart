@@ -30,7 +30,6 @@ class NotasFiscaisPage extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineMedium),
             StatefulBuilder(
               builder: (context, setState) {
-                
                 return Column(
                   children: [
                     Gap(20),
@@ -64,40 +63,20 @@ class NotasFiscaisPage extends StatelessWidget {
                                   _isNfeGenerated = false;
                                 });
                               }, child: Text("Gerar nova NF-e")),
-                              StatefulBuilder(
-                                builder: (context, setState) {
-
-                                  return Column(
+                             ElevatedButton(onPressed: () async { 
+                                      _isPrinting = true;
+                                    setState(() {});
+                                    await printDoc(context, nfeGenerated(context, nfeDetails: _nfeFormValues, minified: isMinified), minified: isMinified); 
+                                    _isPrinting = false;
+                                    setState(() {});
+                                  }, child: Row(
+                                    spacing: 5,
                                     children: [
-                                      // Row(
-                                      //   children: [
-                                      //     Text("Pdf minificado:"),
-                                      //     Checkbox(
-                                      //       value: isMinified, 
-                                      //       onChanged: (bool? value) {
-                                      //         setState(() {
-                                      //           isMinified = value!;
-                                      //         });
-                                      //     }),
-                                      //   ],
-                                      // ),
-                                      ElevatedButton(onPressed: () async { 
-                                          _isPrinting = true;
-                                        setState(() {});
-                                        await printDoc(context, nfeGenerated(context, nfeDetails: _nfeFormValues, minified: isMinified), minified: isMinified); 
-                                        _isPrinting = false;
-                                        setState(() {});
-                                      }, child: Row(
-                                        spacing: 5,
-                                        children: [
-                                          Icon(Icons.local_printshop),
-                                          Text(_isPrinting ? "Aguarde..." : "Imprimir ou baixar PDF"),
-                                          
-                                        ],
-                                      )),
+                                      Icon(Icons.local_printshop),
+                                      Text(_isPrinting ? "Aguarde..." : "Imprimir ou baixar PDF"),
+                                      
                                     ],
-                                  );
-                                }
+                                  )
                               )
                             ],
                           ),
@@ -115,6 +94,7 @@ class NotasFiscaisPage extends StatelessWidget {
   }
 }
 
+
 Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNfe) {
 
   NFeDTO formValues = NFeDTO(entradaOuSaida: NFeEntradaSaidaEnum.ENTRADA);
@@ -129,6 +109,19 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
   };
 
   String _saidaOrEntrada = "0";
+
+  _selectDateRecebimento() async {
+    final DateTime? picked = await showDatePicker(
+      context: context, 
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+
+    if(picked! != null) {
+      _controllers["recebimentoDate"]!.text = DateFormat('dd/MM/yyyy').format(picked);
+    }
+  }
   
   return Form(
     key: formKey,
@@ -188,30 +181,32 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 10,
                 children: [
-                  SizedBox(
-                    child:InputDatePickerFormField(
-                      fieldHintText: 'Data do recebimento',
-                      fieldLabelText: 'Data do recebimento',
-                      firstDate: DateTime(2000),
-                      initialDate: DateTime.now(),
-                      lastDate: DateTime(9999),
-                      onDateSaved: (value) {
-                        String formatedDate = DateFormat('MM/dd/yyyy').format(value);                
-                        _controllers['recebimentoDate']?.text = formatedDate;
-                      },
-                    )
-                    // child: SfDateRangePicker(
-                    //   confirmText: '',
-                    //   cancelText: '',
-                    //   initialSelectedDate: DateTime.now(),
-                    //   onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-                    //     String formatedDate = DateFormat('dd/MM/yyyy').format(args.value);                
-                    //     _controllers['recebimentoDate']?.text = formatedDate;
-                    //   },
-                    //   selectionMode: DateRangePickerSelectionMode.single,
-                    //   showActionButtons: true,
-                    // ),
-                  ),
+                  // SizedBox(
+                  //   child:InputDatePickerFormField(
+                  //     fieldHintText: 'Data do recebimento',
+                  //     fieldLabelText: 'Data do recebimento',
+                  //     keyboardType: TextInputType.number,
+                  //     firstDate: DateTime(2000),
+                  //     initialDate: DateTime.now(),
+                  //     lastDate: DateTime(9999),
+                  //     onDateSaved: (value) {
+                  //       String formatedDate = DateFormat('dd/MM/yyyy').format(value);                
+                  //       _controllers['recebimentoDate']?.text = formatedDate;
+                  //     },
+                  //   )
+                  // ),
+                  TextFormField(
+                    controller: _controllers['recebimentoDate'],
+                    onTap: () => _selectDateRecebimento(),
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: "Data do recebimento",
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.calendar_today),
+                        onPressed: () => _selectDateRecebimento(),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -261,6 +256,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
 
           formValues.number = _controllers['number']?.text ?? '';
           formValues.recebimentoDate = _controllers['recebimentoDate']?.text ?? DateTime.now().toString();
+
           formValues.serie = _controllers['serie']?.text ?? '';
           formValues.idEAssinaturaDoRecebedor = _controllers['idEAssinaturaDoRecebedor']?.text ?? '';
           String entradaOrSaida = _controllers['entradaOuSaida']?.text ?? '';

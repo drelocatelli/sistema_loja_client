@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:racoon_tech_panel/routes.dart';
@@ -27,6 +29,15 @@ class MyApp extends StatelessWidget {
       transitionDuration: Duration.zero,
       initialRoute: '/dashboard',
       getPages: routes,
+      locale: Locale('pt', 'BR'),
+      supportedLocales: [
+        Locale('pt', 'BR'),
+        Locale('en', 'US'),
+      ],
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
     );
   }
 }
