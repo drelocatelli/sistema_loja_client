@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/dto/main_menu_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 
-Widget mainMenu({bool isLargeScreen = true}) {
+Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
   final menus = [
-    new MainMenuDTO(label: "Geral", fn: () => Get.toNamed('/dashboard')),
-    new MainMenuDTO(
+    MainMenuDTO(label: "Geral", fn: () => context.go('/dashboard')),
+    MainMenuDTO(
       label: "Vendas", 
       fn: () => debugPrint("Vendas"),
       submenu: [
-        SubmenuDTO(label: "Notas fiscais", fn: () => Get.toNamed('/dashboard/nfe')),
+        SubmenuDTO(label: "Notas fiscais", fn: () => context.go('/dashboard/nfe')),
         SubmenuDTO(label: "Gerenciar vendas", fn: () => debugPrint('vendas')),
       ]
     ),
     // new MainMenuDTO(label: "Notas Fiscais", fn: () => Get.offNamed('/dashboard/nfe')),
-    new MainMenuDTO(label: "Estoque", fn: () => debugPrint("Estoque")),
-    new MainMenuDTO(label: "Clientes", fn: () => Get.toNamed('/dashboard/clientes')),
-    new MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
-    new MainMenuDTO(label: "Sair", fn: () => Get.offNamed('/login'))
+    MainMenuDTO(label: "Estoque", fn: () => debugPrint("Estoque")),
+    MainMenuDTO(label: "Clientes", fn: () => context.go('/dashboard/clientes')),
+    MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
+    MainMenuDTO(label: "Sair", fn: () => context.go('/login'))
   ];
   
   List<Widget> buttons() {

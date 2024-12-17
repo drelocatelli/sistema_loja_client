@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/layout/login_layout.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
                           if (_formKey.currentState!.validate()) {
-                            Get.offNamed('/dashboard');
+                            context.pushReplacement('/dashboard');
                           }
                         },
                         child: Row(

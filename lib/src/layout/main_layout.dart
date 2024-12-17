@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
 import 'package:racoon_tech_panel/src/components/loading_screen.dart';
 import 'package:racoon_tech_panel/src/components/main_menu.dart';
 import 'package:racoon_tech_panel/src/dto/main_menu_dto.dart';
@@ -62,7 +61,7 @@ class _MainLayoutState extends State<MainLayout> {
                   SelectableText(dotenv.env['TITLE'] ?? 'Sistema da loja'),
                 ],
               ),
-              isLargeScreen ? mainMenu() : Container(),
+              isLargeScreen ? mainMenu(context) : Container(),
             ],
           ),
           leading: isLargeScreen ? null : IconButton(
@@ -71,7 +70,7 @@ class _MainLayoutState extends State<MainLayout> {
           ),
       ),
       drawer: isLargeScreen ? null : Drawer(
-        child: mainMenu(isLargeScreen: isLargeScreen),
+        child: mainMenu(context, isLargeScreen: isLargeScreen),
       ),
       body: SingleChildScrollView(
         child: Padding(

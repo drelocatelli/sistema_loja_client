@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
@@ -96,6 +95,7 @@ class NotasFiscaisPage extends StatelessWidget {
 
 
 Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNfe) {
+    final double width = MediaQuery.of(context).size.width;
 
   NFeDTO formValues = NFeDTO(entradaOuSaida: NFeEntradaSaidaEnum.ENTRADA);
 
@@ -110,7 +110,8 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
 
   String _saidaOrEntrada = "0";
 
-  _selectDateRecebimento() async {
+  _selectDateRecebimento(BuildContext context) async {
+    
     final DateTime? picked = await showDatePicker(
       context: context, 
       initialDate: DateTime.now(),
@@ -176,7 +177,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
           spacing: 10,
           children: [
             Flexible(
-              flex: Get.width >= 800 ? 3 : 1,
+              flex: width >= 800 ? 3 : 1,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 10,
@@ -197,13 +198,13 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
                   // ),
                   TextFormField(
                     controller: _controllers['recebimentoDate'],
-                    onTap: () => _selectDateRecebimento(),
+                    onTap: () => _selectDateRecebimento(context),
                     readOnly: true,
                     decoration: InputDecoration(
                       labelText: "Data do recebimento",
                       suffixIcon: IconButton(
                         icon: Icon(Icons.calendar_today),
-                        onPressed: () => _selectDateRecebimento(),
+                        onPressed: () => _selectDateRecebimento(context),
                       ),
                     ),
                   )

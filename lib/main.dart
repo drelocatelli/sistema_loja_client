@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:racoon_tech_panel/routes.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -21,14 +19,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: SharedTheme.main(),
       title: dotenv.env['TITLE'] ?? 'Painel da loja',
-      defaultTransition: Transition.native,
-      transitionDuration: Duration.zero,
-      initialRoute: '/dashboard',
-      getPages: routes,
+      routerDelegate: routes.routerDelegate,
+      routeInformationParser: routes.routeInformationParser,
+      routeInformationProvider: routes.routeInformationProvider,
+      // getPages: routes,
       locale: Locale('pt', 'BR'),
       supportedLocales: [
         Locale('pt', 'BR'),

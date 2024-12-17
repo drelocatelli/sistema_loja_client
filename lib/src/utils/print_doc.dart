@@ -1,6 +1,4 @@
- import 'dart:convert';
 import 'dart:typed_data';
-import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -10,6 +8,7 @@ import 'package:flutter/material.dart';
 
 Future<void> printDoc(BuildContext context, Widget widget, {bool minified = false}) async {
   ScreenshotController screenshotController = ScreenshotController();
+  final double height = MediaQuery.of(context).size.height;
   
   Widget wrappedWidget = MediaQuery(
     data: new MediaQueryData(),
@@ -21,7 +20,7 @@ Future<void> printDoc(BuildContext context, Widget widget, {bool minified = fals
   );
 
   
-  Uint8List? screenShot = await screenshotController.captureFromWidget(wrappedWidget, targetSize: minified ? null : Size(1280, Get.height));
+  Uint8List? screenShot = await screenshotController.captureFromWidget(wrappedWidget, targetSize: minified ? null : Size(1280, height));
 
   
   final pdf = pw.Document();

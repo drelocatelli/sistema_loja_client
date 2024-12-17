@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
 import 'package:racoon_tech_panel/src/components/dotted_line.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 
 
 Widget nfeGenerated(BuildContext context, {required NFeDTO nfeDetails, bool minified = false}) {
+  final double widget = MediaQuery.of(context).size.width;
+  
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       _nfeHeader(context, nfeDetails: nfeDetails, minified),
       Gap(18),
-      DottedLine(width: Get.width),
+      DottedLine(width: widget),
       Gap(10),
       _nfeBody(context, nfeDetails: nfeDetails, minified),
     ],
@@ -21,13 +22,16 @@ Widget nfeGenerated(BuildContext context, {required NFeDTO nfeDetails, bool mini
 }
 
 Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
+  final double widget = MediaQuery.of(context).size.width;
+
   return rowOrWrap(
+    context,
     wrap: minified,
     children: [
       Container(
-        width: Get.width >= 800 ? Get.width / 2 : Get.width,
+        width: widget >= 800 ? widget / 2 : widget,
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(vertical: 15, horizontal: Get.width <= 800 ? 10 : 0),
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: widget <= 800 ? 10 : 0),
         child: SelectableText.rich(
           TextSpan(
             text: dotenv.env['TITLE'] ?? 'Sistema da loja',
@@ -39,7 +43,7 @@ Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
         ),
       ),
       SizedBox(
-        width: Get.width >= 800 ? 200 : null,
+        width: widget >= 800 ? 200 : null,
         child: box(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +52,7 @@ Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
               smallText("DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA"),
               Row(
                 spacing: 10,
-                mainAxisAlignment: Get.width >= 800 ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: widget >= 800 ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,26 +85,29 @@ Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
 }
 
 Widget _nfeHeader(BuildContext context, bool minified, {required NFeDTO nfeDetails}) {
-return Column(
+  final double widget = MediaQuery.of(context).size.width;
+  
+  return Column(
     children: [
       rowOrWrap(
+        context,
         wrap: minified,
         children: [
           Expanded(
-            flex: Get.width >= 800 ? 6 : 1,
+            flex: widget >= 800 ? 6 : 1,
             child: box(
               child: smallText(
                   "RECEBEMOS DE ${dotenv.env["TITLE"]?.toUpperCase() ?? 'Sistema da loja'} OS PRODUTOS CONSTANTES DA NOTA FISCAL INDICADA ABAIXO"),
             ),
           ),
           Expanded(
-            flex: Get.width >= 800 ? 1 : 1,
+            flex: widget >= 800 ? 1 : 1,
             child: box(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Align(
-                    alignment: Get.width >= 800 ? Alignment.center : Alignment.centerLeft,
+                    alignment: widget >= 800 ? Alignment.center : Alignment.centerLeft,
                       child: Text('NF-e',
                           style: Theme.of(context).textTheme.headlineMedium)),
                   SelectableText.rich(
@@ -152,7 +159,9 @@ return Column(
   );
 }
 
-Widget rowOrWrap({required List<Widget> children, required bool wrap}) {
+Widget rowOrWrap(BuildContext context, {required List<Widget> children, required bool wrap}) {
+  final double widget = MediaQuery.of(context).size.width;
+
   final wrapChildren = children.map((widget) {
     if (widget is Expanded) {
       return widget.child; // Return the child of the `Expanded` widget
@@ -166,7 +175,7 @@ Widget rowOrWrap({required List<Widget> children, required bool wrap}) {
     return Wrap(children: wrapChildren);
   }
   
-  return Get.width >= 800
+  return widget >= 800
       ? IntrinsicHeight(
         child: Row(
             mainAxisSize: MainAxisSize.max,
