@@ -8,6 +8,7 @@ import 'package:racoon_tech_panel/src/components/main_menu.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
+import 'package:racoon_tech_panel/src/pages/dashboard/notas_fiscais/nfe_generated.dart';
 
 class VendasPage extends StatefulWidget {
   const VendasPage({super.key});
@@ -342,7 +343,9 @@ _novaVendaDialog(BuildContext context) {
                   mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Row(
+                    rowOrWrap(
+                      context,
+                      wrap: maxWidth < 800,
                       children: [
                         Expanded(
                           child: TextFormField(
@@ -352,6 +355,7 @@ _novaVendaDialog(BuildContext context) {
                         ),
                         DropdownMenu(
                           controller: _controllers["categoria"]!,
+                          width: maxWidth < 800 ? double.infinity : null,
                           enableFilter: true,
                           label: Text("Categoria"),
                           dropdownMenuEntries: [
