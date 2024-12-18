@@ -1,18 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:racoon_tech_panel/src/dto/estoque_dto.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 
-class VendasPage extends StatefulWidget {
-  const VendasPage({super.key});
+class EstoquePage extends StatefulWidget {
+  const EstoquePage({super.key});
 
   @override
-  State<VendasPage> createState() => _VenddasState();
+  State<EstoquePage> createState() => _VenddasState();
 }
 
-class _VenddasState extends State<VendasPage> {
+class _VenddasState extends State<EstoquePage> {
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;
@@ -25,7 +26,7 @@ class _VenddasState extends State<VendasPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Gerenciar vendas', style: Theme.of(context).textTheme.headlineMedium),
-            _vendasTable(maxWidth),
+            _estoquesTable(maxWidth),
           ],
         )
       ),
@@ -33,28 +34,59 @@ class _VenddasState extends State<VendasPage> {
   }
 }
 
-Widget _vendasTable(double maxWidth) {
+Widget _estoquesTable(double maxWidth) {
 
-  List<Venda> vendas = [
-    Venda(id: 1, nome: 'João', produto: 'Produto A', categoria: 'Categoria 1', responsavel: 'Fulano', valor: 450.75, data: '12/05/2024'),
-    Venda(id: 2, nome: 'Maria', produto: 'Produto B', categoria: 'Categoria 2', responsavel: 'Ciclano', valor: 1200.50, data: '08/15/2024'),
-    Venda(id: 3, nome: 'Carlos', produto: 'Produto C', categoria: 'Categoria 3', responsavel: 'Beltrano', valor: 789.99, data: '03/22/2024'),
-    Venda(id: 4, nome: 'Ana', produto: 'Produto D', categoria: 'Categoria 1', responsavel: 'Fulano', valor: 334.60, data: '07/10/2024'),
-    Venda(id: 5, nome: 'Lucas', produto: 'Produto A', categoria: 'Categoria 2', responsavel: 'Ciclano', valor: 999.99, data: '10/05/2024'),
-    Venda(id: 6, nome: 'Fernanda', produto: 'Produto B', categoria: 'Categoria 3', responsavel: 'Beltrano', valor: 543.40, data: '11/12/2024'),
-    Venda(id: 7, nome: 'João', produto: 'Produto C', categoria: 'Categoria 1', responsavel: 'Fulano', valor: 670.80, data: '02/25/2024'),
-    Venda(id: 8, nome: 'Maria', produto: 'Produto D', categoria: 'Categoria 2', responsavel: 'Ciclano', valor: 1100.50, data: '06/17/2024'),
-    Venda(id: 9, nome: 'Carlos', produto: 'Produto A', categoria: 'Categoria 3', responsavel: 'Beltrano', valor: 850.60, data: '04/30/2024'),
-    Venda(id: 10, nome: 'Ana', produto: 'Produto B', categoria: 'Categoria 1', responsavel: 'Fulano', valor: 450.30, data: '09/20/2024'),
+  List<Estoque> estoques = [
+    Estoque(
+      id: 1,
+      foto_url: 'https://exemplo.com/imagem1.jpg',
+      nome: 'Produto A',
+      descricao: 'Descrição do Produto A',
+      quantidade: 10,
+      valor: 100.0,
+    ),
+    Estoque(
+      id: 2,
+      foto_url: 'https://exemplo.com/imagem2.jpg',
+      nome: 'Produto B',
+      descricao: 'Descrição do Produto B',
+      quantidade: 20,
+      valor: 200.0,
+    ),
+    Estoque(
+      id: 3,
+      foto_url: 'https://exemplo.com/imagem3.jpg',
+      nome: 'Produto C',
+      descricao: 'Descrição do Produto C',
+      quantidade: 5,
+      valor: 150.0,
+    ),
+    Estoque(
+      id: 4,
+      foto_url: 'https://exemplo.com/imagem4.jpg',
+      nome: 'Produto D',
+      descricao: 'Descrição do Produto D',
+      quantidade: 30,
+      valor: 250.0,
+    ),
+    Estoque(
+      id: 5,
+      foto_url: 'https://exemplo.com/imagem5.jpg',
+      nome: 'Produto E',
+      descricao: 'Descrição do Produto E',
+      quantidade: 8,
+      valor: 120.0,
+    ),
   ];
 
-  vendas.asMap().entries.toList()
+
+  estoques.asMap().entries.toList()
     ..sort((a, b) => a.key.compareTo(b.key))
     ..forEach((entry) => entry.value.numero = entry.key + 1);
 
   int _sortColumnIdx = 0; // coluna de data
   bool _isAscending = true;
-  List<bool> selection = List<bool>.generate(vendas.length, (int index) => false);
+  List<bool> selection = List<bool>.generate(estoques.length, (int index) => false);
   
   return StatefulBuilder(
     builder: (context, setState) {
@@ -73,10 +105,10 @@ Widget _vendasTable(double maxWidth) {
                     .toList();
               
                   // get selected vendas
-                  List selectedVendas = List.generate(vendas.length, (index) => 
-                    selectionsIdxs.contains(index) ? vendas[index] : null).where((item) => item != null).toList();
+                  List<Estoque?> selectedEstoques = List.generate(estoques.length, (index) => 
+                    selectionsIdxs.contains(index) ? estoques[index] : null).where((item) => item != null).toList();
                   
-                  List filteredProdutosTitle = selectedVendas.map((item) => item.produto).toList();
+                  List filteredProdutosTitle = selectedEstoques.map((item) => item?.nome).toList();
 
                   showDialog(
                     context: context, 
@@ -100,11 +132,11 @@ Widget _vendasTable(double maxWidth) {
                           TextButton(
                             onPressed: () {
                               setState(() {
-                                vendas.removeWhere((item) {
-                                  int index = vendas.indexOf(item);
+                                estoques.removeWhere((item) {
+                                  int index = estoques.indexOf(item);
                                   return selectionsIdxs.contains(index);
                                 });
-                                selection = List<bool>.generate(vendas.length, (int index) => false);
+                                selection = List<bool>.generate(estoques.length, (int index) => false);
                               });
                               Navigator.of(context).pop();
                             }, 
@@ -124,9 +156,9 @@ Widget _vendasTable(double maxWidth) {
             child: SizedBox(
               width: maxWidth >= 800 ? maxWidth : null,
               child: Visibility(
-                visible: vendas.isNotEmpty,
+                visible: estoques.isNotEmpty,
                 replacement: Center(
-                  child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
+                  child: Text("Nenhuma estoque encontrado.", style: Theme.of(context).textTheme.bodyMedium),
                 ),
                 child: DataTable(
                   sortColumnIndex: _sortColumnIdx,
@@ -139,8 +171,11 @@ Widget _vendasTable(double maxWidth) {
                         setState(() {
                           _sortColumnIdx = columnIndex;
                           _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
+                          estoques.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
                         }),
+                    ),
+                    DataColumn(
+                      label: Text('Foto'),
                     ),
                     DataColumn(
                       label: Text('Nome'),
@@ -148,34 +183,26 @@ Widget _vendasTable(double maxWidth) {
                         setState(() {
                           _sortColumnIdx = columnIndex;
                           _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                          estoques.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
                         }),
                     ),
+                    
                     DataColumn(
-                      label: Text('Produto'),
+                      label: Text('Descrição'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
                           _sortColumnIdx = columnIndex;
                           _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
+                          estoques.sort((a, b) => _isAscending ? a.descricao.compareTo(b.descricao) : b.descricao.compareTo(a.descricao));
                         }),
                     ),
                     DataColumn(
-                      label: Text('Categoria'),
+                      label: Text('Quantidade'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
                           _sortColumnIdx = columnIndex;
                           _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Responsável'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
+                          estoques.sort((a, b) => _isAscending ? a.quantidade.compareTo(b.quantidade) : b.quantidade.compareTo(a.quantidade));
                         }),
                     ),
                     DataColumn(
@@ -184,23 +211,14 @@ Widget _vendasTable(double maxWidth) {
                         setState(() {
                           _sortColumnIdx = columnIndex;
                           _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Data'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
+                          estoques.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
                         }),
                     ),
                     DataColumn(
                       label: Text('Ações'),
                     ),
                   ],
-                  rows: vendas.asMap().entries.map((entry) {
+                  rows: estoques.asMap().entries.map((entry) {
                     final key = entry.key;
                     final venda = entry.value;
                     return DataRow(
@@ -212,12 +230,11 @@ Widget _vendasTable(double maxWidth) {
                       },
                       cells: [
                         DataCell(Text(venda.numero.toString())),
+                        DataCell(Text(venda.foto_url)),
                         DataCell(Text(venda.nome)),
-                        DataCell(Text(venda.produto)),
-                        DataCell(Text(venda.categoria)),
-                        DataCell(Text(venda.responsavel)),
+                        DataCell(Text(venda.descricao)),
+                        DataCell(Text(venda.quantidade.toString())),
                         DataCell(Text("R\$ ${venda.valor.toString()}")),
-                        DataCell(Text(venda.data)),
                         DataCell(
                           Visibility(
                             visible: maxWidth > 800,
