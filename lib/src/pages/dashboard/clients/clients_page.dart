@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 
 class ClientsPage extends StatelessWidget {
@@ -33,13 +34,7 @@ class ClientsPage extends StatelessWidget {
   }
 }
 
-class Cliente {
-  final String nome;
-  final String email;
-  final String performance;
 
-  Cliente({required this.nome, required this.email, required this.performance});
-}
 
 clientsTable(maxWidth) {
 
@@ -138,12 +133,8 @@ clientsTable(maxWidth) {
                   visible: maxWidth >= 800,
                   child: Row(
                     children: _editAndDeleteIco(cliente, maxWidth),
-                  )
-                ),
-                Visibility(
-                  visible: maxWidth <= 800,
-                  child: PopupMenuButton(
-                    padding: EdgeInsets.all(0),
+                  ),
+                  replacement: PopupMenuButton(
                     icon: Icon(Icons.more_vert, size: maxWidth <= 800 ? 28 : null),
                     itemBuilder: (BuildContext context) {
                         final popupItems = _editAndDeleteIco(cliente, maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
