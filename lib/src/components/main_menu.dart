@@ -11,7 +11,7 @@ Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
       fn: () => debugPrint("Vendas"),
       submenu: [
         SubmenuDTO(label: "Notas fiscais", fn: () => context.go('/dashboard/nfe')),
-        SubmenuDTO(label: "Gerenciar vendas", fn: () => debugPrint('vendas')),
+        SubmenuDTO(label: "Gerenciar vendas", fn: () => context.go('/dashboard/vendas')),
       ]
     ),
     // new MainMenuDTO(label: "Notas Fiscais", fn: () => Get.offNamed('/dashboard/nfe')),

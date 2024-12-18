@@ -14,15 +14,17 @@ class ClientsPage extends StatelessWidget {
       padding: EdgeInsets.all(0),
       child: SelectionArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: 20,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(15),
               child: Text("Clientes",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
-            clientsTable(maxWidth)
+            SizedBox(
+              width: maxWidth,
+              child: clientsTable(maxWidth),
+            )
             // clientsTable(maxWidth),
           ],
         ),
@@ -41,7 +43,7 @@ class Cliente {
 
 clientsTable(maxWidth) {
 
-  final List<Cliente> clientes = [
+  List<Cliente> clientes = [
     Cliente(nome: 'Carlos Pereira', email: 'carlos@example.com', performance: 'Regular'),
     Cliente(nome: 'Ana Souza', email: 'ana@example.com', performance: 'Excelente'),
     Cliente(nome: 'João Silva', email: 'joao@example.com', performance: 'Bom'),
@@ -94,50 +96,70 @@ clientsTable(maxWidth) {
     Cliente(nome: 'André Souza', email: 'andre.souza@example.com', performance: 'Regular'),
     Cliente(nome: 'Sandra Pereira', email: 'sandra@example.com', performance: 'Bom'),
     Cliente(nome: 'Ricardo Lima', email: 'ricardolima@example.com', performance: 'Excelente')
-
   ];
 
-  return DataTable(
-    showCheckboxColumn: false,
-    headingRowHeight: 32.0,
-    dataRowHeight: 60.0,
-    columns: [
-      DataColumn(label: Text('Nome')),
-      DataColumn(label: Text('Email')),
-      DataColumn(label: Text('Ações')),
-    ],
-    rows: clientes.map((cliente) {
-      return DataRow(cells: [
-        DataCell(Text(cliente.nome)),
-        DataCell(
-          Tooltip(message:cliente.email, child: SizedBox(width: maxWidth <= 800 ? 80 : null, child: Text(cliente.email, softWrap: true, overflow: TextOverflow.ellipsis)))
-        ),
-        DataCell(Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                // Ação para editar o cliente
-                print('Editando: ${cliente.nome}');
-              },
+  // sort by name
+  clientes.sort((a, b) => a.nome.compareTo(b.nome));
+
+  List<bool> selected = List<bool>.generate(clientes.length, (int index) => false);
+
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return DataTable(
+        horizontalMargin: maxWidth <= 800 ? 10 : 8,
+        columnSpacing: maxWidth <= 800 ? 10 : 0,
+        showCheckboxColumn: true,
+        headingRowHeight: 32.0,
+        dataRowHeight: 60.0,
+        dividerThickness: 2,
+        dataTextStyle: TextStyle(fontSize: maxWidth <= 800 ? 12 : null),
+        columns: [
+          DataColumn(label: Text('Nome')),
+          DataColumn(label: Text('Email')),
+          DataColumn(label: Text('Ações')),
+        ],
+        rows: clientes.asMap().entries.map((entry) {
+          final cliente = entry.value;
+          final index = entry.key;
+          return DataRow(
+            selected: selected[index],
+            onSelectChanged: (bool? value) {
+              selected[index] = value!;
+              setState(() {});
+            },
+            cells: [
+            DataCell(Text(cliente.nome)),
+            DataCell(
+              Tooltip(message:cliente.email, child: SizedBox(width: maxWidth <= 800 ? 80 : null, child: Text(cliente.email, softWrap: true, overflow: TextOverflow.ellipsis)))
             ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                // Ação para excluir o cliente
-                print('Excluindo: ${cliente.nome}');
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.more_horiz),
-              onPressed: () {
-                // Ação para ver mais detalhes
-                print('Mais detalhes de: ${cliente.nome}');
-              },
-            ),
-          ],
-        )),
-      ]);
-    }).toList(),
+            DataCell(Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    // Ação para editar o cliente
+                    print('Editando: ${cliente.nome}');
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    // Ação para excluir o cliente
+                    print('Excluindo: ${cliente.nome}');
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.more_horiz),
+                  onPressed: () {
+                    // Ação para ver mais detalhes
+                    print('Mais detalhes de: ${cliente.nome}');
+                  },
+                ),
+              ],
+            )),
+          ]);
+        }).toList(),
+      );
+    }
   );
 }

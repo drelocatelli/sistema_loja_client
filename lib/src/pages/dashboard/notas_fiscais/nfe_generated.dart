@@ -4,9 +4,27 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
 import 'package:racoon_tech_panel/src/components/dotted_line.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
+import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 
+class NFeGenerated extends StatelessWidget {
+  NFeGenerated(BuildContext context, {
+    super.key, 
+    NFeDTO? nfeDetails, 
+    this.minified = false
+  }) : nfeDetails = nfeDetails ?? NFeDTO(entradaOuSaida: NFeEntradaSaidaEnum.ENTRADA);
 
-Widget nfeGenerated(BuildContext context, {required NFeDTO nfeDetails, bool minified = false}) {
+  NFeDTO nfeDetails;
+  bool minified;
+
+  @override
+  Widget build(BuildContext context) {
+    return MainLayout(
+      child: SelectionArea(child: _nfeGenerated(context, nfeDetails: nfeDetails)),
+    );
+  }
+}
+
+Widget _nfeGenerated(BuildContext context, {required NFeDTO nfeDetails, bool minified = false}) {
   final double widget = MediaQuery.of(context).size.width;
   
   return Column(
@@ -80,6 +98,9 @@ Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
           )
         ),
       ),
+      box(
+        child: Text("teste")
+      )
     ],
   );
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/notas_fiscais/components/nfe_generated.dart';
+import 'package:racoon_tech_panel/src/pages/dashboard/notas_fiscais/nfe_generated.dart';
 import 'package:racoon_tech_panel/src/utils/print_doc.dart';
 
 class NotasFiscaisPage extends StatelessWidget {
@@ -32,56 +33,15 @@ class NotasFiscaisPage extends StatelessWidget {
                 return Column(
                   children: [
                     Gap(20),
-                    Visibility(
-                      visible: !_isNfeGenerated,
-                      child: _form(context, _formKey, (NFeDTO? formValues) {
-                        if(formValues == null) {
-                            return;
-                        }
-                        setState(() {
-                          _nfeFormValues = formValues;
-                          _isNfeGenerated = true;
-                        });
-                      }),
-                    ),
-                    Visibility(
-                      visible: _isNfeGenerated,
-                      child: Column(
-                        spacing: 20,
-                        children: [
-                          Visibility(
-                            visible: _nfeFormValues != null,
-                            child: nfeGenerated(context, nfeDetails: _nfeFormValues),
-                            replacement: SizedBox(),
-                          ),
-                          Row(
-                            spacing: 10,
-                            children: [
-                              ElevatedButton(onPressed: () {
-                                setState(() {
-                                  _isNfeGenerated = false;
-                                });
-                              }, child: Text("Gerar nova NF-e")),
-                             ElevatedButton(onPressed: () async { 
-                                      _isPrinting = true;
-                                    setState(() {});
-                                    await printDoc(context, nfeGenerated(context, nfeDetails: _nfeFormValues, minified: isMinified), minified: isMinified); 
-                                    _isPrinting = false;
-                                    setState(() {});
-                                  }, child: Row(
-                                    spacing: 5,
-                                    children: [
-                                      Icon(Icons.local_printshop),
-                                      Text(_isPrinting ? "Aguarde..." : "Imprimir ou baixar PDF"),
-                                      
-                                    ],
-                                  )
-                              )
-                            ],
-                          ),
-                        ],
-                      )
-                    )
+                    _form(context, _formKey, (NFeDTO? formValues) {
+                      if(formValues == null) {
+                          return;
+                      }
+                      setState(() {
+                        _nfeFormValues = formValues;
+                        _isNfeGenerated = true;
+                      });
+                    }),
                   ],
                 );
               }
@@ -265,6 +225,8 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
           formValues.folha = _controllers['folha']?.text ?? '';
           
           fnShowNfe(formValues);
+
+          context.go('/dashboard/nfe/gerada', extra: formValues);
         }, child: Text("Gerar NF-e")),
         Gap(20),
       ],
