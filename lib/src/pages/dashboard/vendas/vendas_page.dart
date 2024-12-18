@@ -1,6 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:racoon_tech_panel/src/components/main_menu.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
@@ -60,64 +64,78 @@ Widget _vendasTable(double maxWidth) {
     builder: (context, setState) {
       return Column(
         children: [
-          Align(
-            alignment: Alignment.bottomRight, 
-            child: Visibility(
-              visible: selection.contains(true),
-              child: TextButton(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            spacing: 5,
+            children: [
+              OutlinedButton(
                 onPressed: () {
-                  // get all selections ids
-                   List<int> selectionsIdxs = selection.asMap().entries
-                    .where((entry) => entry.value == true)
-                    .map((entry) => entry.key)
-                    .toList();
-              
-                  // get selected vendas
-                  List selectedVendas = List.generate(vendas.length, (index) => 
-                    selectionsIdxs.contains(index) ? vendas[index] : null).where((item) => item != null).toList();
-                  
-                  List filteredProdutosTitle = selectedVendas.map((item) => item.produto).toList();
-
-                  showDialog(
-                    context: context, 
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Excluir selecionados"),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
-                            Text("${filteredProdutosTitle.join(', ')} serão deletados permanentemente."),
-                          ],
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            }, 
-                            child: Text("Cancelar")
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                vendas.removeWhere((item) {
-                                  int index = vendas.indexOf(item);
-                                  return selectionsIdxs.contains(index);
-                                });
-                                selection = List<bool>.generate(vendas.length, (int index) => false);
-                              });
-                              Navigator.of(context).pop();
-                            }, 
-                            child: Text("Confirmar")
-                          ),
-                        ],
-                      );
-                    }
-                  );
+                  _novaVendaDialog(context);
                 }, 
-                child: Text("Excluir selecionados")
+                child: Text('Nova venda')
               ),
-            )
+              Visibility(
+                visible: selection.contains(true),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color.fromRGBO(220, 64, 38, 1)),
+                    backgroundColor: (const Color.fromRGBO(250, 242, 241, 1)),
+                    foregroundColor: (const Color.fromRGBO(220, 64, 38, 1))
+                  ),
+                  onPressed: () {
+                    // get all selections ids
+                     List<int> selectionsIdxs = selection.asMap().entries
+                      .where((entry) => entry.value == true)
+                      .map((entry) => entry.key)
+                      .toList();
+                
+                    // get selected vendas
+                    List selectedVendas = List.generate(vendas.length, (index) => 
+                      selectionsIdxs.contains(index) ? vendas[index] : null).where((item) => item != null).toList();
+                    
+                    List filteredProdutosTitle = selectedVendas.map((item) => item.produto).toList();
+              
+                    showDialog(
+                      context: context, 
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Excluir selecionados"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
+                              Text("${filteredProdutosTitle.join(', ')} serão deletados permanentemente."),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }, 
+                              child: Text("Cancelar")
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  vendas.removeWhere((item) {
+                                    int index = vendas.indexOf(item);
+                                    return selectionsIdxs.contains(index);
+                                  });
+                                  selection = List<bool>.generate(vendas.length, (int index) => false);
+                                });
+                                Navigator.of(context).pop();
+                              }, 
+                              child: Text("Confirmar")
+                            ),
+                          ],
+                        );
+                      }
+                    );
+                  }, 
+                  child: Text("Excluir selecionados")
+                ),
+              ),
+            ],
           ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -280,3 +298,115 @@ List<IconButton> _editAndDeleteIco(item, maxWidth) {
 
   return items;
 }
+
+_novaVendaDialog(BuildContext context) {
+  final maxWidth = MediaQuery.of(context).size.width;
+
+  Venda venda;
+
+  Map<String, TextEditingController> _controllers = {
+    "data": TextEditingController(text: DateFormat('dd/MM/yyyy').format(DateTime.now())),
+    "produto": TextEditingController(),
+    "responsavel": TextEditingController(),
+    "valor": TextEditingController(),
+    "categoria": TextEditingController(),
+  };
+
+  _selectDate(BuildContext context) async {
+    
+    final DateTime? picked = await showDatePicker(
+      context: context, 
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+
+    if(picked! != null) {
+      _controllers["data"]!.text = DateFormat('dd/MM/yyyy').format(picked);
+    }
+  }
+  
+  showDialog(
+    context: context, 
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Nova venda'),
+        content: SizedBox(
+          width: maxWidth / 3,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 20,
+            children: [
+              Form(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: _controllers["produto"],
+                            decoration: InputDecoration(labelText: 'Produto'),
+                          ),
+                        ),
+                        DropdownMenu(
+                          controller: _controllers["categoria"]!,
+                          enableFilter: true,
+                          label: Text("Categoria"),
+                          dropdownMenuEntries: [
+                            DropdownMenuEntry(value: 1, label: "Categoria 1"),
+                            DropdownMenuEntry(value: 2, label: "Categoria 2"),
+                            DropdownMenuEntry(value: 3, label: "Categoria 3"),
+                          ],
+                        ),
+                      ],
+                    ),
+                    
+                    TextFormField(
+                      controller: _controllers["valor"]!,
+                      keyboardType: TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(labelText: 'Valor', prefixText: 'R\$ '),
+                    ),
+                    TextFormField(
+                      controller: _controllers["data"]!,
+                      onTap: () => _selectDate(context),
+                       decoration: InputDecoration(
+                          labelText: "Data",
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.calendar_today),
+                            onPressed: () => _selectDate(context),
+                          ),
+                        ),
+                    ),
+                    Gap(20),
+                    DropdownMenu(
+                      width: double.infinity,
+                      enableFilter: true,
+                      controller: _controllers["responsavel"]!,
+                      label: Text("Responsável"),
+                      dropdownMenuEntries: [
+                        DropdownMenuEntry(value: 1, label: "Colaborador 1"),
+                        DropdownMenuEntry(value: 2, label: "Colaborador 2"),
+                        DropdownMenuEntry(value: 3, label: "Colaborador 3"),
+                      ],
+                    ),
+                    Gap(30),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.pop();
+                      }, 
+                      child: 
+                      Text("Salvar venda")
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+  );
+}
+

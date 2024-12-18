@@ -48,6 +48,7 @@ dependencies:
   pdf: ^3.11.1
   screenshot: ^3.0.0
   go_router: ^14.6.2
+  flutter_masked_text2: ^0.9.1
 
 dev_dependencies:
   flutter_test:

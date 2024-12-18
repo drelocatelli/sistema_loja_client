@@ -42,6 +42,17 @@ class SharedTheme {
             style: ButtonStyle(
               padding: WidgetStatePropertyAll(EdgeInsets.all(4)),
             ),
+          ),
+
+          outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+               side: BorderSide(
+                  width: 1.2, // Set the thickness of the border
+                  color: secondaryColor
+                ),
+              foregroundColor: (secondaryColor),
+              backgroundColor: (Color.fromRGBO(252, 247, 240, 1 ))
+            ),
           )
         );
   }

@@ -96,7 +96,12 @@ Widget _estoquesTable(double maxWidth) {
             alignment: Alignment.bottomRight, 
             child: Visibility(
               visible: selection.contains(true),
-              child: TextButton(
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color.fromRGBO(220, 64, 38, 1)),
+                    backgroundColor: (const Color.fromRGBO(250, 242, 241, 1)),
+                    foregroundColor: (const Color.fromRGBO(220, 64, 38, 1))
+                  ),
                 onPressed: () {
                   // get all selections ids
                    List<int> selectionsIdxs = selection.asMap().entries
