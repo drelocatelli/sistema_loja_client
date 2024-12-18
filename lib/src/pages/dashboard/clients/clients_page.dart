@@ -134,26 +134,23 @@ clientsTable(maxWidth) {
             ),
             DataCell(Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    // Ação para editar o cliente
-                    print('Editando: ${cliente.nome}');
-                  },
+                Visibility(
+                  visible: maxWidth >= 800,
+                  child: Row(
+                    children: _editAndDeleteIco(cliente, maxWidth),
+                  )
                 ),
-                IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    // Ação para excluir o cliente
-                    print('Excluindo: ${cliente.nome}');
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.more_horiz),
-                  onPressed: () {
-                    // Ação para ver mais detalhes
-                    print('Mais detalhes de: ${cliente.nome}');
-                  },
+                Visibility(
+                  visible: maxWidth <= 800,
+                  child: PopupMenuButton(
+                    padding: EdgeInsets.all(0),
+                    icon: Icon(Icons.more_vert, size: maxWidth <= 800 ? 28 : null),
+                    itemBuilder: (BuildContext context) {
+                        final popupItems = _editAndDeleteIco(cliente, maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
+
+                        return popupItems;
+                    } 
+                  ),
                 ),
               ],
             )),
@@ -162,4 +159,27 @@ clientsTable(maxWidth) {
       );
     }
   );
+}
+
+
+List<IconButton> _editAndDeleteIco(cliente, maxWidth) {
+  List<IconButton> items = [
+    IconButton(
+      icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
+      onPressed: () {
+        // Ação para editar o cliente
+        print('Editando: ${cliente.nome}');
+      },
+    ),
+    IconButton(
+      icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
+      onPressed: () {
+        // Ação para excluir o cliente
+        print('Excluindo: ${cliente.nome}');
+      },
+    ),
+  ];
+
+
+  return items;
 }
