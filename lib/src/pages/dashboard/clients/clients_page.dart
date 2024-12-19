@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
+import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 
 class ClientsPage extends StatelessWidget {
@@ -13,17 +14,9 @@ class ClientsPage extends StatelessWidget {
 
     return MainLayout(
       child: SelectionArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Clientes",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            SizedBox(
-              width: maxWidth,
-              child: clientsTable(maxWidth),
-            )
-            // clientsTable(maxWidth),
-          ],
+        child: SizedBox(
+          width: maxWidth,
+          child: clientsTable(maxWidth),
         ),
       ),
     );
@@ -99,7 +92,14 @@ clientsTable(maxWidth) {
         spacing: 20,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Align(alignment: Alignment.topRight, child: _pesquisa(maxWidth)),
+          Helpers.rowOrWrap(
+            wrap: maxWidth <= 800,
+            children: [
+              Text("Clientes",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Align(alignment: Alignment.topRight, child: _pesquisa(maxWidth)),
+            ],
+          ),
           Align(
             alignment: Alignment.bottomRight,
             child: Visibility(

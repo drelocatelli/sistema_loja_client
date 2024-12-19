@@ -29,4 +29,15 @@ class Helpers {
     );
   }
 
+  static Widget rowOrWrap({required bool wrap, required List<Widget> children}) {
+    return wrap ? Wrap(
+      spacing: 10,
+      children: children,
+    ) : Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: children,
+    );
+    
+  }
+
 }

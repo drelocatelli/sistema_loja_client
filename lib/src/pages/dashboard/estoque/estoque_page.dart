@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/dto/estoque_dto.dart';
-import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 import 'package:widget_zoom/widget_zoom.dart';
@@ -22,14 +19,7 @@ class _VenddasState extends State<EstoquePage> {
 
     return MainLayout(
       child: SelectionArea(
-        child: Column(
-          spacing: 20,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Gerenciar estoque', style: Theme.of(context).textTheme.headlineMedium),
-            _estoquesTable(maxWidth),
-          ],
-        )
+        child: _estoquesTable(maxWidth)
       ),
     );
   }
@@ -95,7 +85,13 @@ Widget _estoquesTable(double maxWidth) {
     builder: (context, setState) {
       return Column(
         children: [
-          Align(alignment: Alignment.topRight, child: _pesquisa(maxWidth)),
+          Helpers.rowOrWrap(
+            wrap: maxWidth <= 800,
+            children: [
+              Text('Gerenciar estoque', style: Theme.of(context).textTheme.headlineMedium),
+              Align(alignment: Alignment.topRight, child: _pesquisa(maxWidth)),
+            ],
+          ),
           Align(
             alignment: Alignment.bottomRight, 
             child: Visibility(

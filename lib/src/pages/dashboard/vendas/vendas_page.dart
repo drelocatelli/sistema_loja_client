@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:racoon_tech_panel/src/components/main_menu.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
@@ -25,14 +22,7 @@ class _VenddasState extends State<VendasPage> {
 
     return MainLayout(
       child: SelectionArea(
-        child: Column(
-          spacing: 20,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Gerenciar vendas', style: Theme.of(context).textTheme.headlineMedium),
-            _vendasTable(maxWidth),
-          ],
-        )
+        child: _vendasTable(maxWidth)
       ),
     );
   }
@@ -65,7 +55,13 @@ Widget _vendasTable(double maxWidth) {
     builder: (context, setState) {
       return Column(
         children: [
-          Align(alignment: Alignment.bottomRight, child: _pesquisa(maxWidth)),
+          Helpers.rowOrWrap(
+            wrap: maxWidth <= 800,
+            children: [
+              Text('Gerenciar vendas', style: Theme.of(context).textTheme.headlineMedium),
+              Align(alignment: Alignment.bottomRight, child: _pesquisa(maxWidth)),
+            ],
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             spacing: 5,
@@ -452,8 +448,7 @@ _novaVendaDialog(BuildContext context) {
                   mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    rowOrWrap(
-                      context,
+                    Helpers.rowOrWrap(
                       wrap: maxWidth < 800,
                       children: [
                         Expanded(
