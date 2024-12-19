@@ -10,7 +10,7 @@ class Problems extends StatelessWidget {
        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
          children: [
-           Text("Recebimentos - Pagamentos", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+           Text("Despesas", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
            table(),
           Gap(50),
 
@@ -31,12 +31,25 @@ return SingleChildScrollView(
         columns: const [
           DataColumn(label: Text('Título')),
           DataColumn(label: Text('Total')),
+          DataColumn(label: Text('Ações')),
         ],
         rows: payments.map((payment) {
           return DataRow(
             cells: [
               DataCell(Text(payment['titulo'])),
               DataCell(Text("R\$ ${payment['valor'].toStringAsFixed(2)}")),
+              DataCell(
+                PopupMenuButton(
+                  icon: Icon(Icons.more_vert),
+                  itemBuilder: (context)  {
+                   return [
+                    PopupMenuItem(
+                      child: Text("Mais detalhes")
+                    ),
+                   ];
+                },
+              )
+              ),
             ],
           );
         }).toList(),

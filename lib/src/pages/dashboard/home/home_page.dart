@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
           Visibility(
             visible: previsaoShowing,
             child: previsaoFluxo(
+              context,
               () {
                 _isShowing = _isShowing.map((key, value) {
                   if (key == 'relatorios') {

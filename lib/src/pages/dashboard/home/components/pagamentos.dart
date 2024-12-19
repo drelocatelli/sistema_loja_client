@@ -16,19 +16,7 @@ class Pagamentos extends StatelessWidget {
            Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
              children: [
-               Text("Pagamentos previstos", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-              Tooltip(
-                message: "Adicionar pagamentos previstos",
-                child: ElevatedButton(
-                  onPressed: () {
-                    _showAddDialog(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(), // Forma circular
-                  ),
-                  child: Icon(Icons.add),
-                ),
-              ),
+               Text("Saída", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
              ],
            ),
            table(maxWidth),
@@ -59,19 +47,16 @@ return SingleChildScrollView(
               DataCell(Text(payment['titulo'])),
               DataCell(SizedBox(width: 80, child: Text("R\$ ${payment['valor'].toStringAsFixed(2)}"))),
               DataCell(
-                Visibility(
-                  visible: maxWidth >= 800,
-                  child: Row(
-                    children: _editAndDeleteIco(maxWidth),
-                  ),
-                  replacement: PopupMenuButton(
+                PopupMenuButton(
                     icon: Icon(Icons.more_vert),
                     itemBuilder: (context)  {
-                     final popupItems = _editAndDeleteIco(maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
-                      return popupItems;
+                     return [
+                      PopupMenuItem(
+                        child: Text("Mais detalhes")
+                      ),
+                     ];
                   },
-                  ),
-                )
+                ),
               ),
             ],
           );
@@ -79,61 +64,4 @@ return SingleChildScrollView(
       ),
     );
 
-}
-
-List<IconButton> _editAndDeleteIco( maxWidth) {
-  List<IconButton> items = [
-    IconButton(
-      icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
-      onPressed: () {
-      },
-    ),
-    IconButton(
-      icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
-      onPressed: () {
-      },
-    ),
-  ];
-
-  return items;
-}
-
-
-_showAddDialog(BuildContext context) {
-  showDialog(
-    context: context, 
-    builder: (context) => AlertDialog(
-      title: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Adicionar pagamentos previstos'),
-          Form(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Título',
-                  ),
-                ),
-                TextFormField(
-                  controller: TextEditingController(text: '0.00'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    prefixText: 'R\$ ',
-                    labelText: 'Valor',
-                  ),
-                ),
-                Gap(10),
-                ElevatedButton(
-                  onPressed: () {}, 
-                  child: Text('Adicionar pagamentos previstos')
-                )
-              ],
-            ),
-          )
-        ],
-      )
-    )
-  );
 }

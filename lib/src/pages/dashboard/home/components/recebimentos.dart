@@ -14,24 +14,7 @@ class Recebimentos extends StatelessWidget {
        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
          children: [
-           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-             children: [
-               Text("Recebimentos", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-              Tooltip(
-                message: "Adicionar Recebimento",
-                child: ElevatedButton(
-                  child: Icon(Icons.add),
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(), // Forma circular
-                  ),
-                  onPressed: () {
-                    _showAddDialog(context);
-                  }
-                ),
-              )
-             ],
-           ),
+           Text("Receitas", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
            table(maxWidth),
             Gap(50),
          ],
@@ -59,79 +42,20 @@ return SingleChildScrollView(
               DataCell(Text(payment['titulo'])),
               DataCell(SizedBox(width: 80, child: Text("R\$ ${payment['valor'].toStringAsFixed(2)}"))),
               DataCell(
-                Visibility(
-                  visible: maxWidth >= 800,
-                  child: Row(
-                  children: _editAndDeleteIco(maxWidth),
-                ),
-                replacement: PopupMenuButton(
+                PopupMenuButton(
                   icon: Icon(Icons.more_vert),
-                  itemBuilder: (context) {
-                     final popupItems = _editAndDeleteIco(maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
-                      return popupItems;
-                  },
-                ),
-              )
+                  itemBuilder: (context)  {
+                   return [
+                    PopupMenuItem(
+                      child: Text("Mais detalhes")
+                    ),
+                   ];
+                },
+                                )
               ),
             ],
           );
         }).toList(),
       ),
     );
-}
-
-List<IconButton> _editAndDeleteIco( maxWidth) {
-  List<IconButton> items = [
-    IconButton(
-      icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
-      onPressed: () {
-      },
-    ),
-    IconButton(
-      icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
-      onPressed: () {
-      },
-    ),
-  ];
-
-  return items;
-}
-
-_showAddDialog(BuildContext context) {
-  showDialog(
-    context: context, 
-    builder: (context) => AlertDialog(
-      title: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Adicionar recebimento'),
-          Form(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Título',
-                  ),
-                ),
-                TextFormField(
-                  controller: TextEditingController(text: '0.00'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
-                    prefixText: 'R\$ ',
-                    labelText: 'Valor',
-                  ),
-                ),
-                Gap(10),
-                ElevatedButton(
-                  onPressed: () {}, 
-                  child: Text('Adicionar recebimento')
-                )
-              ],
-            ),
-          )
-        ],
-      )
-    )
-  );
 }
