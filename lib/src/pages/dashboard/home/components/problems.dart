@@ -30,30 +30,13 @@ return SingleChildScrollView(
       child: DataTable(
         columns: const [
           DataColumn(label: Text('Título')),
-          DataColumn(label: Text('Valor')),
-          DataColumn(label: Text('Ações')),
+          DataColumn(label: Text('Total')),
         ],
         rows: payments.map((payment) {
           return DataRow(
             cells: [
               DataCell(Text(payment['titulo'])),
               DataCell(Text("R\$ ${payment['valor'].toStringAsFixed(2)}")),
-              DataCell(Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      // Lógica para editar
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      // Lógica para excluir
-                    },
-                  ),
-                ],
-              )),
             ],
           );
         }).toList(),

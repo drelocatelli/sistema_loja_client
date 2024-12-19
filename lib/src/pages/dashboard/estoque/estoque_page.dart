@@ -25,7 +25,7 @@ class _VenddasState extends State<EstoquePage> {
           spacing: 20,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Gerenciar vendas', style: Theme.of(context).textTheme.headlineMedium),
+            Text('Gerenciar estoque', style: Theme.of(context).textTheme.headlineMedium),
             _estoquesTable(maxWidth),
           ],
         )
@@ -39,7 +39,7 @@ Widget _estoquesTable(double maxWidth) {
   List<Estoque> estoques = [
     Estoque(
       id: 1,
-      foto_url: 'https://exemplo.com/imagem1.jpg',
+      foto_url: 'https://dummyimage.com/600x400/000/fff&text=no+image',
       nome: 'Produto A',
       descricao: 'Descrição do Produto A',
       quantidade: 10,
@@ -47,7 +47,7 @@ Widget _estoquesTable(double maxWidth) {
     ),
     Estoque(
       id: 2,
-      foto_url: 'https://exemplo.com/imagem2.jpg',
+      foto_url: 'https://dummyimage.com/600x400/000/fff&text=no+image',
       nome: 'Produto B',
       descricao: 'Descrição do Produto B',
       quantidade: 20,
@@ -55,7 +55,7 @@ Widget _estoquesTable(double maxWidth) {
     ),
     Estoque(
       id: 3,
-      foto_url: 'https://exemplo.com/imagem3.jpg',
+      foto_url: 'https://dummyimage.com/600x400/000/fff&text=no+image',
       nome: 'Produto C',
       descricao: 'Descrição do Produto C',
       quantidade: 5,
@@ -63,7 +63,7 @@ Widget _estoquesTable(double maxWidth) {
     ),
     Estoque(
       id: 4,
-      foto_url: 'https://exemplo.com/imagem4.jpg',
+      foto_url: 'https://dummyimage.com/600x400/000/fff&text=no+image',
       nome: 'Produto D',
       descricao: 'Descrição do Produto D',
       quantidade: 30,
@@ -71,7 +71,7 @@ Widget _estoquesTable(double maxWidth) {
     ),
     Estoque(
       id: 5,
-      foto_url: 'https://exemplo.com/imagem5.jpg',
+      foto_url: 'https://dummyimage.com/600x400/000/fff&text=no+image',
       nome: 'Produto E',
       descricao: 'Descrição do Produto E',
       quantidade: 8,
@@ -163,11 +163,12 @@ Widget _estoquesTable(double maxWidth) {
               child: Visibility(
                 visible: estoques.isNotEmpty,
                 replacement: Center(
-                  child: Text("Nenhuma estoque encontrado.", style: Theme.of(context).textTheme.bodyMedium),
+                  child: Text("Nenhum estoque encontrado.", style: Theme.of(context).textTheme.bodyMedium),
                 ),
                 child: DataTable(
                   sortColumnIndex: _sortColumnIdx,
                   sortAscending: _isAscending,
+                  dataRowHeight: 55,
                   showCheckboxColumn: true,
                   columns: [
                     DataColumn(
@@ -235,7 +236,7 @@ Widget _estoquesTable(double maxWidth) {
                       },
                       cells: [
                         DataCell(Text(venda.numero.toString())),
-                        DataCell(Text(venda.foto_url)),
+                        DataCell(Image.network(venda.foto_url, width: 80, height: 80, fit: BoxFit.contain)),
                         DataCell(Text(venda.nome)),
                         DataCell(Text(venda.descricao)),
                         DataCell(Text(venda.quantidade.toString())),

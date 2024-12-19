@@ -12,16 +12,12 @@ class ClientsPage extends StatelessWidget {
   final maxWidth = MediaQuery.of(context).size.width;  
 
     return MainLayout(
-      padding: EdgeInsets.all(0),
       child: SelectionArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Text("Clientes",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            ),
+            Text("Clientes",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(
               width: maxWidth,
               child: clientsTable(maxWidth),
@@ -34,10 +30,7 @@ class ClientsPage extends StatelessWidget {
   }
 }
 
-
-
 clientsTable(maxWidth) {
-
   List<Cliente> clientes = [
     Cliente(nome: 'Carlos Pereira', email: 'carlos@example.com', performance: 'Regular'),
     Cliente(nome: 'Ana Souza', email: 'ana@example.com', performance: 'Excelente'),
@@ -96,57 +89,157 @@ clientsTable(maxWidth) {
   // sort by name
   clientes.sort((a, b) => a.nome.compareTo(b.nome));
 
+  int _sortColumnIdx = 0;
+  bool _isAscending = true;
   List<bool> selected = List<bool>.generate(clientes.length, (int index) => false);
 
   return StatefulBuilder(
     builder: (context, setState) {
-      return DataTable(
-        horizontalMargin: maxWidth <= 800 ? 10 : 8,
-        columnSpacing: maxWidth <= 800 ? 10 : 0,
-        showCheckboxColumn: true,
-        headingRowHeight: 32.0,
-        dataRowHeight: 60.0,
-        dividerThickness: 2,
-        dataTextStyle: TextStyle(fontSize: maxWidth <= 800 ? 12 : null),
-        columns: [
-          DataColumn(label: Text('Nome')),
-          DataColumn(label: Text('Email')),
-          DataColumn(label: Text('Ações')),
-        ],
-        rows: clientes.asMap().entries.map((entry) {
-          final cliente = entry.value;
-          final index = entry.key;
-          return DataRow(
-            selected: selected[index],
-            onSelectChanged: (bool? value) {
-              selected[index] = value!;
-              setState(() {});
-            },
-            cells: [
-            DataCell(Text(cliente.nome)),
-            DataCell(
-              Tooltip(message:cliente.email, child: SizedBox(width: maxWidth <= 800 ? 80 : null, child: Text(cliente.email, softWrap: true, overflow: TextOverflow.ellipsis)))
-            ),
-            DataCell(Row(
-              children: [
-                Visibility(
-                  visible: maxWidth >= 800,
-                  child: Row(
-                    children: _editAndDeleteIco(cliente, maxWidth),
-                  ),
-                  replacement: PopupMenuButton(
-                    icon: Icon(Icons.more_vert, size: maxWidth <= 800 ? 28 : null),
-                    itemBuilder: (BuildContext context) {
-                        final popupItems = _editAndDeleteIco(cliente, maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
+      return Column(
+        spacing: 20,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Visibility(
+              visible: selected.contains(true),
+              child: OutlinedButton(
+                onPressed: () {
+                  // get all selection ids
+                  List<int> selectedIds = selected.asMap().entries
+                    .where((entry) => entry.value == true)
+                    .map((entry) => entry.key)
+                    .toList();
+                  
+                  // get selected clients
+                  List<Cliente?> selectedClients = List.generate(clientes.length, (index) => 
+                      selectedIds.contains(index) ? clientes[index] : null).where((item) => item != null)
+                    .toList();
 
-                        return popupItems;
-                    } 
-                  ),
+                  List filteredClientesTitle = selectedClients.map((cliente) => cliente?.nome).toList();
+
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Deseja excluir os clientes ${filteredClientesTitle.join(', ')}?'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Esta ação não poderá ser desfeita.'),
+                            Text('Tem certeza que deseja excluir?'),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text('Cancelar'),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                          TextButton(
+                            child: Text('Excluir'),
+                            onPressed: () {
+                              setState(() {
+                                clientes.removeWhere((cliente) => selectedIds.contains(clientes.indexOf(cliente)));
+                                selected = List<bool>.generate(clientes.length, (int index) => false);
+                              });
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  
+                }, 
+                child: Text('Excluir selecionados'),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color.fromRGBO(220, 64, 38, 1)),
+                  backgroundColor: (const Color.fromRGBO(250, 242, 241, 1)),
+                  foregroundColor: (const Color.fromRGBO(220, 64, 38, 1))
+                ),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: clientes.isNotEmpty,
+            replacement: Center(child: Text('Nenhum cliente cadastrado')),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                DataTable(
+                  sortColumnIndex: _sortColumnIdx,
+                  sortAscending: _isAscending,
+                  horizontalMargin: maxWidth <= 800 ? 10 : 8,
+                  columnSpacing: maxWidth <= 800 ? 10 : 0,
+                  showCheckboxColumn: true,
+                  headingRowHeight: 32.0,
+                  dataRowHeight: 60.0,
+                  dividerThickness: 2,
+                  dataTextStyle: TextStyle(fontSize: maxWidth <= 800 ? 12 : null),
+                  columns: [
+                    DataColumn(
+                      label: Text('Nome'),
+                      onSort: (columnIndex, ascending) {
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          clientes.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                        });
+                      }
+                    ),
+                    DataColumn(
+                      label: Text('Email'),
+                      onSort: (columnIndex, ascending) {
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          clientes.sort((a, b) => _isAscending ? a.email.compareTo(b.email) : b.email.compareTo(a.email));
+                        });
+                      }
+                    ),
+                    DataColumn(
+                      label: Text('Ações'),
+                    ),
+                  ],
+                  rows: clientes.asMap().entries.map((entry) {
+                    final cliente = entry.value;
+                    final index = entry.key;
+                    return DataRow(
+                      selected: selected[index],
+                      onSelectChanged: (bool? value) {
+                        selected[index] = value!;
+                        setState(() {});
+                      },
+                      cells: [
+                      DataCell(Text(cliente.nome)),
+                      DataCell(
+                        Tooltip(message:cliente.email, child: SizedBox(width: maxWidth <= 800 ? 80 : null, child: Text(cliente.email, softWrap: true, overflow: TextOverflow.ellipsis)))
+                      ),
+                      DataCell(Row(
+                        children: [
+                          Visibility(
+                            visible: maxWidth >= 800,
+                            child: Row(
+                              children: _editAndDeleteIco(cliente, maxWidth),
+                            ),
+                            replacement: PopupMenuButton(
+                              icon: Icon(Icons.more_vert, size: maxWidth <= 800 ? 28 : null),
+                              itemBuilder: (BuildContext context) {
+                                  final popupItems = _editAndDeleteIco(cliente, maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
+                
+                                  return popupItems;
+                              } 
+                            ),
+                          ),
+                        ],
+                      )),
+                    ]);
+                  }).toList(),
                 ),
               ],
-            )),
-          ]);
-        }).toList(),
+            ),
+          ),
+        ],
       );
     }
   );
