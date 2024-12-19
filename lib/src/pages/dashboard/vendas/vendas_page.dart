@@ -250,6 +250,9 @@ Widget _vendasTable(double maxWidth) {
                                 IconButton(
                                   icon: Icon(Icons.delete),
                                   onPressed: () {
+                                    setState((){
+                                      selection = selection.map((item) => false).toList();
+                                    });
                                     _deletePopup(context, () {
                                       vendas = _deleteFn(context, vendas, key);
                                       setState(() {});
@@ -276,6 +279,9 @@ Widget _vendasTable(double maxWidth) {
                                     child: Center(child: Icon(Icons.delete)),
                                     value: 'delete',
                                     onTap: () {
+                                      setState((){
+                                        selection = selection.map((item) => false).toList();
+                                      });
                                       _deletePopup(context, () {
                                         vendas = _deleteFn(context, vendas, key);
                                         setState(() {});

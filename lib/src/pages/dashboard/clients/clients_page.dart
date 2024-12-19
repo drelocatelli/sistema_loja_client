@@ -235,6 +235,9 @@ clientsTable(maxWidth) {
                                 IconButton(
                                   icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
                                   onPressed: () {
+                                    setState(() {
+                                        selected = selected.map((item) => false).toList();
+                                      });
                                     _deletePopup(context, () {
                                       clientes = _deleteCliente(context, clientes, index);
                                       setState(() {});
@@ -261,6 +264,9 @@ clientsTable(maxWidth) {
                                   PopupMenuItem(
                                     child: Center(child: Icon(Icons.delete)),
                                     onTap: () {
+                                      setState(() {
+                                        selected = selected.map((item) => false).toList();
+                                      });
                                       _deletePopup(context, () {
                                       clientes = _deleteCliente(context, clientes, index);
                                       setState(() {});

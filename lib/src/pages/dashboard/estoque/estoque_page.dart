@@ -291,6 +291,9 @@ Widget _estoquesTable(double maxWidth) {
                                 IconButton(
                                   icon: Icon(Icons.delete),
                                   onPressed: () {
+                                    setState(() {
+                                      selection = selection.map((item) => false).toList();
+                                    });
                                     _deletePopup(context, () {
                                       estoques = _deleteFn(context, estoques, key);
                                       setState(() {});
@@ -317,6 +320,9 @@ Widget _estoquesTable(double maxWidth) {
                                     child: Center(child: Icon(Icons.delete)),
                                     value: 'delete',
                                     onTap: () {
+                                      setState(() {
+                                        selection = selection.map((item) => false).toList();
+                                      });
                                       _deletePopup(context, () {
                                         estoques = _deleteFn(context, estoques, key);
                                         setState(() {});
