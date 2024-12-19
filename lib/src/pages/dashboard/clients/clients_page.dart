@@ -220,14 +220,54 @@ clientsTable(maxWidth) {
                           Visibility(
                             visible: maxWidth >= 800,
                             child: Row(
-                              children: _editAndDeleteIco(cliente, maxWidth),
-                            ),
-                            replacement: PopupMenuButton(
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
+                                  onPressed: () {
+                                    Cliente newCliente = _editCliente(context, cliente);
+                                    setState(() {
+                                      clientes[index] = newCliente;
+                                    });
+                                    print('edit cliente ${cliente.nome}');
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
+                                  onPressed: () {
+                                    _deletePopup(context, () {
+                                      clientes = _deleteCliente(context, clientes, index);
+                                      setState(() {});
+                                    }, cliente.nome);
+                                    print('delete cliente ${cliente.nome}');
+                                  },
+                                ),
+                              ]
+                              ),
+                              replacement: PopupMenuButton(
                               icon: Icon(Icons.more_vert, size: maxWidth <= 800 ? 28 : null),
                               itemBuilder: (BuildContext context) {
-                                  final popupItems = _editAndDeleteIco(cliente, maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
-                
-                                  return popupItems;
+                                return [
+                                 PopupMenuItem(
+                                  child: Center(child: Icon(Icons.edit)),
+                                  onTap: () {
+                                    Cliente newCliente = _editCliente(context, cliente);
+                                    setState(() {
+                                      clientes[index] = newCliente;
+                                    });
+                                    print('edit cliente ${newCliente.nome}');
+                                  }
+                                 ),
+                                  PopupMenuItem(
+                                    child: Center(child: Icon(Icons.delete)),
+                                    onTap: () {
+                                      _deletePopup(context, () {
+                                      clientes = _deleteCliente(context, clientes, index);
+                                      setState(() {});
+                                    }, cliente.nome);
+                                      print('delete cliente ${cliente.nome}');
+                                    }
+                                  ),
+                                ]; 
                               } 
                             ),
                           ),
@@ -245,25 +285,42 @@ clientsTable(maxWidth) {
   );
 }
 
+_deletePopup(BuildContext context, deleteCb, clienteNome) {
+  showDialog(
+    context: context, 
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Deseja realmente excluir o cliente ${clienteNome}?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            }, 
+            child: Text('Cancelar')
+          ),
+          TextButton(
+            onPressed: () {
+                deleteCb();
+                Navigator.of(context).pop();
+            }, 
+            child: Text('Excluir')
+          ),
+        ]
+      );
+    }
+  );
+}
 
-List<IconButton> _editAndDeleteIco(cliente, maxWidth) {
-  List<IconButton> items = [
-    IconButton(
-      icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
-      onPressed: () {
-        // Ação para editar o cliente
-        print('Editando: ${cliente.nome}');
-      },
-    ),
-    IconButton(
-      icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
-      onPressed: () {
-        // Ação para excluir o cliente
-        print('Excluindo: ${cliente.nome}');
-      },
-    ),
-  ];
+List<Cliente> _deleteCliente(BuildContext context, List<Cliente> clientes, int indexToRemove) {
+  Cliente cliente = clientes[indexToRemove];
+  clientes.removeAt(indexToRemove);
+  
+  
+  return clientes;
+}
 
+Cliente _editCliente(BuildContext context, Cliente cliente) {
+  print('edit cliente');
 
-  return items;
+  return cliente;
 }
