@@ -65,6 +65,7 @@ Widget _vendasTable(double maxWidth) {
     builder: (context, setState) {
       return Column(
         children: [
+          Align(alignment: Alignment.bottomRight, child: _pesquisa(maxWidth)),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             spacing: 5,
@@ -156,15 +157,6 @@ Widget _vendasTable(double maxWidth) {
                         }),
                     ),
                     DataColumn(
-                      label: Text('Nome'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
-                        }),
-                    ),
-                    DataColumn(
                       label: Text('Produto'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
@@ -174,12 +166,12 @@ Widget _vendasTable(double maxWidth) {
                         }),
                     ),
                     DataColumn(
-                      label: Text('Categoria'),
+                      label: Text('Cliente'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
                           _sortColumnIdx = columnIndex;
                           _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                          vendas.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
                         }),
                     ),
                     DataColumn(
@@ -191,6 +183,16 @@ Widget _vendasTable(double maxWidth) {
                           vendas.sort((a, b) => _isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
                         }),
                     ),
+                    DataColumn(
+                      label: Text('Categoria'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          vendas.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                        }),
+                    ),
+                    
                     DataColumn(
                       label: Text('Valor'),
                       onSort: (columnIndex, ascending) => 
@@ -225,10 +227,10 @@ Widget _vendasTable(double maxWidth) {
                       },
                       cells: [
                         DataCell(Text(venda.numero.toString())),
-                        DataCell(Text(venda.nome)),
                         DataCell(Text(venda.produto)),
-                        DataCell(Text(venda.categoria)),
+                        DataCell(Text(venda.nome)),
                         DataCell(Text(venda.responsavel)),
+                        DataCell(Text(venda.categoria)),
                         DataCell(Text("R\$ ${venda.valor.toString()}")),
                         DataCell(Text(venda.data)),
                         DataCell(
@@ -239,13 +241,19 @@ Widget _vendasTable(double maxWidth) {
                                 IconButton(
                                   icon: Icon(Icons.edit),
                                   onPressed: () {
-                                    // Lógica para editar a venda
+                                   Venda newVenda = _editFn(context, venda);
+                                    setState(() {
+                                      vendas[key] = newVenda;
+                                    });
                                   },
                                 ),
                                 IconButton(
                                   icon: Icon(Icons.delete),
                                   onPressed: () {
-                                    // Lógica para excluir a venda
+                                    _deletePopup(context, () {
+                                      vendas = _deleteFn(context, vendas, key);
+                                      setState(() {});
+                                    }, venda.produto);
                                   },
                                 ),
                               ],
@@ -253,8 +261,28 @@ Widget _vendasTable(double maxWidth) {
                             replacement: PopupMenuButton(
                               icon: Icon(Icons.more_vert),
                               itemBuilder: (context) {
-                                final popupItems = _editAndDeleteIco(venda, maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
-                                  return popupItems;
+                                return [
+                                  PopupMenuItem(
+                                    child: Center(child: Icon(Icons.edit)),
+                                    value: 'edit',
+                                    onTap: () {
+                                      Venda newVenda = _editFn(context, venda);
+                                      setState(() {
+                                        vendas[key] = newVenda;
+                                      });
+                                    }
+                                  ),
+                                  PopupMenuItem(
+                                    child: Center(child: Icon(Icons.delete)),
+                                    value: 'delete',
+                                    onTap: () {
+                                      _deletePopup(context, () {
+                                        vendas = _deleteFn(context, vendas, key);
+                                        setState(() {});
+                                      }, venda.produto);
+                                    },
+                                  )
+                                ];
                               },
                             ),
                           ),
@@ -271,6 +299,52 @@ Widget _vendasTable(double maxWidth) {
     }
   );
   
+}
+
+Widget _pesquisa(double maxWidth) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8.0),
+    child: SizedBox(
+      width: maxWidth >= 800 ? 400 : null,
+      child: Row(
+        spacing: 10,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: DropdownButtonFormField(
+              value: 'produto',
+              onChanged: (String? value) {
+              },
+              decoration: InputDecoration(
+                  labelText: 'Buscar por:',
+                  border: OutlineInputBorder(), 
+                  contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+                  isDense: true
+                ),
+                items: [
+                  DropdownMenuItem(value: 'cliente', child: Text('Cliente')),
+                  DropdownMenuItem(value: 'produto', child: Text('Produto')),
+                  DropdownMenuItem(value: 'categoria', child: Text('Categoria')),
+                  DropdownMenuItem(value: 'responsavel', child: Text('Responsável')),
+                ]
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: TextFormField(
+             decoration: InputDecoration(
+                hintText: 'Digite sua busca',
+                border: OutlineInputBorder(), 
+                suffixIcon: Icon(Icons.search),
+                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                isDense: true
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 List<IconButton> _editAndDeleteIco(item, maxWidth) {
@@ -292,6 +366,41 @@ List<IconButton> _editAndDeleteIco(item, maxWidth) {
   ];
 
   return items;
+}
+
+_deletePopup(BuildContext context, deleteCb, titulo) {
+  showDialog(
+    context: context, 
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Deseja realmente excluir o ${titulo}?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            }, 
+            child: Text('Cancelar')
+          ),
+          TextButton(
+            onPressed: () {
+                deleteCb();
+                Navigator.of(context).pop();
+            }, 
+            child: Text('Excluir')
+          ),
+        ]
+      );
+    }
+  );
+}
+
+List<Venda> _deleteFn(BuildContext context, List<Venda> vendas, int indexToRemove) {
+  vendas.removeAt(indexToRemove);
+  return vendas;
+}
+
+Venda _editFn(BuildContext context, Venda item) {
+  return item;
 }
 
 _novaVendaDialog(BuildContext context) {

@@ -99,6 +99,7 @@ clientsTable(maxWidth) {
         spacing: 20,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Align(alignment: Alignment.topRight, child: _pesquisa(maxWidth)),
           Align(
             alignment: Alignment.bottomRight,
             child: Visibility(
@@ -282,6 +283,24 @@ clientsTable(maxWidth) {
         ],
       );
     }
+  );
+}
+
+Widget _pesquisa(double maxWidth) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8.0),
+    child: SizedBox(
+      width: maxWidth >= 800 ? 400 : null,
+      child: TextFormField(
+       decoration: InputDecoration(
+          hintText: 'Digite sua busca',
+          border: OutlineInputBorder(), 
+          suffixIcon: Icon(Icons.search),
+          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+          isDense: true
+        ),
+      ),
+    ),
   );
 }
 

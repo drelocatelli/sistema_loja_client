@@ -95,6 +95,7 @@ Widget _estoquesTable(double maxWidth) {
     builder: (context, setState) {
       return Column(
         children: [
+          Align(alignment: Alignment.topRight, child: _pesquisa(maxWidth)),
           Align(
             alignment: Alignment.bottomRight, 
             child: Visibility(
@@ -364,6 +365,51 @@ _deletePopup(BuildContext context, deleteCb, titulo) {
         ]
       );
     }
+  );
+}
+
+Widget _pesquisa(double maxWidth) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8.0, top: 8),
+    child: SizedBox(
+      width: maxWidth >= 800 ? 400 : null,
+      child: Row(
+        spacing: 10,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: DropdownButtonFormField(
+              value: 'nome',
+              onChanged: (String? value) {
+              },
+              decoration: InputDecoration(
+                  labelText: 'Buscar por:',
+                  border: OutlineInputBorder(), 
+                  contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+                  isDense: true
+                ),
+                items: [
+                  DropdownMenuItem(value: 'nome', child: Text('Nome')),
+                  DropdownMenuItem(value: 'descrição', child: Text('Descrição')),
+                  DropdownMenuItem(value: 'categoria', child: Text('Categoria')),
+                ]
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: TextFormField(
+             decoration: InputDecoration(
+                hintText: 'Digite sua busca',
+                border: OutlineInputBorder(), 
+                suffixIcon: Icon(Icons.search),
+                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+                isDense: true
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
   );
 }
 
