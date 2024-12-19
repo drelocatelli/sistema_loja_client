@@ -5,7 +5,9 @@ class Estoque {
   final String descricao;
   final int quantidade;
   final double valor;
+  String categoria;
   bool publicado;
+  late double total;
   int numero;
 
   Estoque({
@@ -15,12 +17,16 @@ class Estoque {
     required this.descricao,
     required this.quantidade,
     required this.valor,
+    this.categoria = 'Sem categoria',
     this.numero = 0,
-    this.publicado = false
-  });
+    this.publicado = false,
+  }) {
+    this.total = this.valor * this.quantidade;
+  }
 
   factory Estoque.fromJson(Map<String, dynamic> json) {
     return Estoque(
+      categoria: json['categoria'],
       publicado: json['publicado'],
       foto_url: json['foto_url'],
       numero: json['numero'],

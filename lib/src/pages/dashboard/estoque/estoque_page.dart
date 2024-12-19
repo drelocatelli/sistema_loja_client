@@ -200,6 +200,15 @@ Widget _estoquesTable(double maxWidth) {
                         }),
                     ),
                     DataColumn(
+                      label: Text('Categoria'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          estoques.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                        }),
+                    ),
+                    DataColumn(
                       label: Text('Quantidade'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
@@ -215,6 +224,15 @@ Widget _estoquesTable(double maxWidth) {
                           _sortColumnIdx = columnIndex;
                           _isAscending = ascending;
                           estoques.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
+                        }),
+                    ),
+                    DataColumn(
+                      label: Text('Valor total'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          estoques.sort((a, b) => _isAscending ? a.total.compareTo(b.total) : b.total.compareTo(a.total));
                         }),
                     ),
                     DataColumn(
@@ -253,8 +271,10 @@ Widget _estoquesTable(double maxWidth) {
                         DataCell(Tooltip(message: 'Clique para expandir', child: WidgetZoom(heroAnimationTag: 'tag', zoomWidget: Image.network(estoque.foto_url, width: 80, height: 80, fit: BoxFit.contain)))),
                         DataCell(Text(estoque.nome)),
                         DataCell(Text(estoque.descricao.substring(0, 8) + '...')),
+                        DataCell(Text(estoque.categoria)),
                         DataCell(Text(estoque.quantidade.toString())),
                         DataCell(Text("R\$ ${estoque.valor.toString()}")),
+                        DataCell(Text("R\$ ${estoque.total.toString()}")),
                         DataCell(Text("${estoque.publicado ? "Público" : "Anotação"}")),
                         DataCell(
                           Visibility(
