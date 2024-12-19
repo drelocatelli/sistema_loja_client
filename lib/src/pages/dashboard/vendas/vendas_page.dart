@@ -101,13 +101,7 @@ Widget _vendasTable(double maxWidth) {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text("Excluir selecionados"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
-                              Text("${filteredProdutosTitle.join(', ')} serão deletados permanentemente."),
-                            ],
-                          ),
+                          content: Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
                           actions: [
                             TextButton(
                               onPressed: () {

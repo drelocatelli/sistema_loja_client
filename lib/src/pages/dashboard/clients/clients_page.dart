@@ -122,7 +122,7 @@ clientsTable(maxWidth) {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Deseja excluir os clientes ${filteredClientesTitle.join(', ')}?'),
+                        title: Text('Deseja excluir os clientes?'),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
