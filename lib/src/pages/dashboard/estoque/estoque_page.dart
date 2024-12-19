@@ -5,6 +5,7 @@ import 'package:racoon_tech_panel/src/dto/estoque_dto.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
+import 'package:widget_zoom/widget_zoom.dart';
 
 class EstoquePage extends StatefulWidget {
   const EstoquePage({super.key});
@@ -44,6 +45,7 @@ Widget _estoquesTable(double maxWidth) {
       descricao: 'Descrição do Produto A',
       quantidade: 10,
       valor: 100.0,
+      publicado: true
     ),
     Estoque(
       id: 2,
@@ -52,6 +54,7 @@ Widget _estoquesTable(double maxWidth) {
       descricao: 'Descrição do Produto B',
       quantidade: 20,
       valor: 200.0,
+      publicado: true
     ),
     Estoque(
       id: 3,
@@ -215,12 +218,29 @@ Widget _estoquesTable(double maxWidth) {
                         }),
                     ),
                     DataColumn(
+                      label: Text('Publicado'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          estoques.sort((a, b) {
+                            if (a.publicado && !b.publicado) {
+                              return _isAscending ? -1 : 1;
+                            } else if (!a.publicado && b.publicado) {
+                              return _isAscending ? 1 : -1;
+                            } else {
+                              return 0;
+                            }
+                          });
+                        }),
+                    ),
+                    DataColumn(
                       label: Text('Ações'),
                     ),
                   ],
                   rows: estoques.asMap().entries.map((entry) {
                     final key = entry.key;
-                    final venda = entry.value;
+                    final estoque = entry.value;
                     return DataRow(
                       selected: selection[entry.key],
                       onSelectChanged: (value) {
@@ -229,12 +249,13 @@ Widget _estoquesTable(double maxWidth) {
                         });
                       },
                       cells: [
-                        DataCell(Text(venda.numero.toString())),
-                        DataCell(Image.network(venda.foto_url, width: 80, height: 80, fit: BoxFit.contain)),
-                        DataCell(Text(venda.nome)),
-                        DataCell(Text(venda.descricao)),
-                        DataCell(Text(venda.quantidade.toString())),
-                        DataCell(Text("R\$ ${venda.valor.toString()}")),
+                        DataCell(Text(estoque.numero.toString())),
+                        DataCell(Tooltip(message: 'Clique para expandir', child: WidgetZoom(heroAnimationTag: 'tag', zoomWidget: Image.network(estoque.foto_url, width: 80, height: 80, fit: BoxFit.contain)))),
+                        DataCell(Text(estoque.nome)),
+                        DataCell(Text(estoque.descricao.substring(0, 8) + '...')),
+                        DataCell(Text(estoque.quantidade.toString())),
+                        DataCell(Text("R\$ ${estoque.valor.toString()}")),
+                        DataCell(Text("${estoque.publicado ? "Público" : "Anotação"}")),
                         DataCell(
                           Visibility(
                             visible: maxWidth > 800,
@@ -249,7 +270,10 @@ Widget _estoquesTable(double maxWidth) {
                                 IconButton(
                                   icon: Icon(Icons.delete),
                                   onPressed: () {
-                                    // Lógica para excluir a venda
+                                    _deletePopup(context, () {
+                                      estoques = _deleteFn(context, estoques, key);
+                                      setState(() {});
+                                    }, estoque.nome);
                                   },
                                 ),
                               ],
@@ -257,8 +281,28 @@ Widget _estoquesTable(double maxWidth) {
                             replacement: PopupMenuButton(
                               icon: Icon(Icons.more_vert),
                               itemBuilder: (context) {
-                                final popupItems = _editAndDeleteIco(venda, maxWidth).map((item) => PopupMenuItem(child: Center(child: item,), onTap: () { item.onPressed!(); })).toList();
-                                  return popupItems;
+                                return [
+                                  PopupMenuItem(
+                                    child: Center(child: Icon(Icons.edit)),
+                                    value: 'edit',
+                                    onTap: () {
+                                      Estoque newEstoque = _editFn(context, estoque);
+                                      setState(() {
+                                        estoques[key] = newEstoque;
+                                      });
+                                    }
+                                  ),
+                                  PopupMenuItem(
+                                    child: Center(child: Icon(Icons.delete)),
+                                    value: 'delete',
+                                    onTap: () {
+                                      _deletePopup(context, () {
+                                        estoques = _deleteFn(context, estoques, key);
+                                        setState(() {});
+                                      }, estoque.nome);
+                                    },
+                                  )
+                                ];
                               },
                             ),
                           ),
@@ -275,6 +319,41 @@ Widget _estoquesTable(double maxWidth) {
     }
   );
   
+}
+
+_deletePopup(BuildContext context, deleteCb, titulo) {
+  showDialog(
+    context: context, 
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Deseja realmente excluir o produto ${titulo}?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            }, 
+            child: Text('Cancelar')
+          ),
+          TextButton(
+            onPressed: () {
+                deleteCb();
+                Navigator.of(context).pop();
+            }, 
+            child: Text('Excluir')
+          ),
+        ]
+      );
+    }
+  );
+}
+
+List<Estoque> _deleteFn(BuildContext context, List<Estoque> estoques, int indexToRemove) {
+  estoques.removeAt(indexToRemove);
+  return estoques;
+}
+
+Estoque _editFn(BuildContext context, Estoque item) {
+  return item;
 }
 
 List<IconButton> _editAndDeleteIco(item, maxWidth) {

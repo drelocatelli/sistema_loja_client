@@ -312,7 +312,6 @@ _deletePopup(BuildContext context, deleteCb, clienteNome) {
 }
 
 List<Cliente> _deleteCliente(BuildContext context, List<Cliente> clientes, int indexToRemove) {
-  Cliente cliente = clientes[indexToRemove];
   clientes.removeAt(indexToRemove);
   
   
