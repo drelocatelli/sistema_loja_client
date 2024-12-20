@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/home/components/pagamentos.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/home/components/problems.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/home/components/recebimentos.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 Widget previsaoFluxo(
     BuildContext context,
@@ -99,7 +100,7 @@ Widget previsaoFluxo(
               Icons.arrow_upward_sharp,
               fn: fnRecebimentos,
               recebimentosShowing),
-          Visibility(visible: maxWidth <= 800, child: _recebimentosCard(recebimentosShowing, padding: EdgeInsets.only(top: 20))),
+          Visibility(visible: !SharedTheme.isLargeScreen(context), child: _recebimentosCard(recebimentosShowing, padding: EdgeInsets.only(top: 20))),
         ],
       ),
       Column(
@@ -112,7 +113,7 @@ Widget previsaoFluxo(
               Icons.warning,
               fn: fnProblems,
               problemsShowing),
-            Visibility(visible: maxWidth <= 800, child: _problemsCard(problemsShowing, padding: EdgeInsets.only(top: 20))),
+            Visibility(visible: !SharedTheme.isLargeScreen(context), child: _problemsCard(problemsShowing, padding: EdgeInsets.only(top: 20))),
         ],
       ),
       Column(
@@ -125,7 +126,7 @@ Widget previsaoFluxo(
               Icons.attach_money,
               fn: fnPagamentos,
               pagamentosShowing),
-          Visibility(visible: maxWidth <= 800, child: _pagamentosCard(pagamentosShowing, padding: EdgeInsets.only(top: 20))),
+          Visibility(visible: !SharedTheme.isLargeScreen(context), child: _pagamentosCard(pagamentosShowing, padding: EdgeInsets.only(top: 20))),
         ],
       ),
     ];
@@ -169,7 +170,7 @@ Widget previsaoFluxo(
         }),
         Gap(20),
         Visibility(
-          visible: maxWidth >= 800,
+          visible: SharedTheme.isLargeScreen(context),
           child: Column(
             children: _cardContents(recebimentosShowing: recebimentosShowing, pagamentosShowing: pagamentosShowing, problemsShowing: problemsShowing),
           ),
