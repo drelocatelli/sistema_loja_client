@@ -6,6 +6,7 @@ import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/notas_fiscais/nfe_generated.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class VendasPage extends StatefulWidget {
   const VendasPage({super.key});
@@ -56,7 +57,7 @@ Widget _vendasTable(double maxWidth) {
       return Column(
         children: [
           Helpers.rowOrWrap(
-            wrap: maxWidth <= 800,
+            wrap: !SharedTheme.isLargeScreen(context),
             children: [
               Text('Gerenciar vendas', style: Theme.of(context).textTheme.headlineMedium),
               Align(alignment: Alignment.bottomRight, child: _pesquisa(maxWidth)),
@@ -132,166 +133,140 @@ Widget _vendasTable(double maxWidth) {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: SizedBox(
-              width: maxWidth >= 800 ? maxWidth : null,
+              width: SharedTheme.isLargeScreen(context) ? maxWidth : null,
               child: Visibility(
                 visible: vendas.isNotEmpty,
                 replacement: Center(
                   child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
                 ),
-                child: DataTable(
-                  sortColumnIndex: _sortColumnIdx,
-                  sortAscending: _isAscending,
-                  showCheckboxColumn: true,
-                  columns: [
-                    DataColumn(
-                      label: Text('N°'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Produto'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Cliente'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Responsável'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Categoria'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
-                        }),
-                    ),
-                    
-                    DataColumn(
-                      label: Text('Valor'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Data'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Ações'),
-                    ),
-                  ],
-                  rows: vendas.asMap().entries.map((entry) {
-                    final key = entry.key;
-                    final venda = entry.value;
-                    return DataRow(
-                      selected: selection[entry.key],
-                      onSelectChanged: (value) {
-                        setState(() {
-                          selection[key] = value!;
-                        });
-                      },
-                      cells: [
-                        DataCell(Text(venda.numero.toString())),
-                        DataCell(Text(venda.produto)),
-                        DataCell(Text(venda.nome)),
-                        DataCell(Text(venda.responsavel)),
-                        DataCell(Text(venda.categoria)),
-                        DataCell(Text("R\$ ${venda.valor.toString()}")),
-                        DataCell(Text(venda.data)),
-                        DataCell(
-                          Visibility(
-                            visible: maxWidth > 800,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () {
-                                   Venda newVenda = _editFn(context, venda);
-                                    setState(() {
-                                      vendas[key] = newVenda;
-                                    });
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () {
-                                    setState((){
-                                      selection = selection.map((item) => false).toList();
-                                    });
-                                    _deletePopup(context, () {
-                                      vendas = _deleteFn(context, vendas, key);
-                                      setState(() {});
-                                    }, venda.produto);
-                                  },
-                                ),
-                              ],
-                            ),
-                            replacement: PopupMenuButton(
-                              icon: Icon(Icons.more_vert),
-                              itemBuilder: (context) {
-                                return [
-                                  PopupMenuItem(
-                                    child: Center(child: Icon(Icons.edit)),
-                                    value: 'edit',
-                                    onTap: () {
-                                      Venda newVenda = _editFn(context, venda);
-                                      setState(() {
-                                        vendas[key] = newVenda;
-                                      });
-                                    }
-                                  ),
-                                  PopupMenuItem(
-                                    child: Center(child: Icon(Icons.delete)),
-                                    value: 'delete',
-                                    onTap: () {
-                                      setState((){
-                                        selection = selection.map((item) => false).toList();
-                                      });
-                                      _deletePopup(context, () {
-                                        vendas = _deleteFn(context, vendas, key);
-                                        setState(() {});
-                                      }, venda.produto);
-                                    },
-                                  )
-                                ];
-                              },
-                            ),
+                child: FittedBox(
+                  child: DataTable(
+                    sortColumnIndex: _sortColumnIdx,
+                    sortAscending: _isAscending,
+                    showCheckboxColumn: true,
+                    columns: [
+                      DataColumn(
+                        label: Text('N°'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            vendas.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Produto'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            vendas.sort((a, b) => _isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Cliente'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            vendas.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Responsável'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            vendas.sort((a, b) => _isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Categoria'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            vendas.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                          }),
+                      ),
+                      
+                      DataColumn(
+                        label: Text('Valor'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            vendas.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Data'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            vendas.sort((a, b) => _isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Ações'),
+                      ),
+                    ],
+                    rows: vendas.asMap().entries.map((entry) {
+                      final key = entry.key;
+                      final venda = entry.value;
+                      return DataRow(
+                        selected: selection[entry.key],
+                        onSelectChanged: (value) {
+                          setState(() {
+                            selection[key] = value!;
+                          });
+                        },
+                        cells: [
+                          DataCell(Text(venda.numero.toString())),
+                          DataCell(Text(venda.produto)),
+                          DataCell(Text(venda.nome)),
+                          DataCell(Text(venda.responsavel)),
+                          DataCell(Text(venda.categoria)),
+                          DataCell(Text("R\$ ${venda.valor.toString()}")),
+                          DataCell(Text(venda.data)),
+                          DataCell(
+                            PopupMenuButton(
+                                icon: Icon(Icons.more_vert),
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
+                                      child: Center(child: Icon(Icons.edit)),
+                                      value: 'edit',
+                                      onTap: () {
+                                        Venda newVenda = _editFn(context, venda);
+                                        setState(() {
+                                          vendas[key] = newVenda;
+                                        });
+                                      }
+                                    ),
+                                    PopupMenuItem(
+                                      child: Center(child: Icon(Icons.delete)),
+                                      value: 'delete',
+                                      onTap: () {
+                                        setState((){
+                                          selection = selection.map((item) => false).toList();
+                                        });
+                                        _deletePopup(context, () {
+                                          vendas = _deleteFn(context, vendas, key);
+                                          setState(() {});
+                                        }, venda.produto);
+                                      },
+                                    )
+                                  ];
+                                },
+                              ),
                           ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
+                        ],
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
             ),
@@ -347,27 +322,6 @@ Widget _pesquisa(double maxWidth) {
       ),
     ),
   );
-}
-
-List<IconButton> _editAndDeleteIco(item, maxWidth) {
-  List<IconButton> items = [
-    IconButton(
-      icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
-      onPressed: () {
-        // Ação para editar o item
-        print('Editando: ${item.nome}');
-      },
-    ),
-    IconButton(
-      icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
-      onPressed: () {
-        // Ação para excluir o item
-        print('Excluindo: ${item.nome}');
-      },
-    ),
-  ];
-
-  return items;
 }
 
 _deletePopup(BuildContext context, deleteCb, titulo) {

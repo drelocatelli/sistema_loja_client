@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/dto/estoque_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
 class EstoquePage extends StatefulWidget {
@@ -159,163 +160,136 @@ Widget _estoquesTable(double maxWidth) {
                 replacement: Center(
                   child: Text("Nenhum estoque encontrado.", style: Theme.of(context).textTheme.bodyMedium),
                 ),
-                child: DataTable(
-                  sortColumnIndex: _sortColumnIdx,
-                  sortAscending: _isAscending,
-                  dataRowHeight: 55,
-                  showCheckboxColumn: true,
-                  columns: [
-                    DataColumn(
-                      label: Text('N°'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          estoques.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Foto'),
-                    ),
-                    DataColumn(
-                      label: Text('Nome'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          estoques.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
-                        }),
-                    ),
-                    
-                    DataColumn(
-                      label: Text('Descrição'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          estoques.sort((a, b) => _isAscending ? a.descricao.compareTo(b.descricao) : b.descricao.compareTo(a.descricao));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Categoria'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          estoques.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Quantidade'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          estoques.sort((a, b) => _isAscending ? a.quantidade.compareTo(b.quantidade) : b.quantidade.compareTo(a.quantidade));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Valor'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          estoques.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Valor total'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          estoques.sort((a, b) => _isAscending ? a.total.compareTo(b.total) : b.total.compareTo(a.total));
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Publicado'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          estoques.sort((a, b) {
-                            if (a.publicado && !b.publicado) {
-                              return _isAscending ? -1 : 1;
-                            } else if (!a.publicado && b.publicado) {
-                              return _isAscending ? 1 : -1;
-                            } else {
-                              return 0;
-                            }
+                child: FittedBox(
+                  fit: SharedTheme.isLargeScreen(context) ? BoxFit.scaleDown : BoxFit.fitWidth,
+                  child: DataTable(
+                    sortColumnIndex: _sortColumnIdx,
+                    sortAscending: _isAscending,
+                    dataRowHeight: 55,
+                    showCheckboxColumn: true,
+                    columns: [
+                      DataColumn(
+                        label: Text('N°'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            estoques.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Foto'),
+                      ),
+                      DataColumn(
+                        label: Text('Nome'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            estoques.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                          }),
+                      ),
+                      
+                      DataColumn(
+                        label: Text('Descrição'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            estoques.sort((a, b) => _isAscending ? a.descricao.compareTo(b.descricao) : b.descricao.compareTo(a.descricao));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Categoria'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            estoques.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Quantidade'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            estoques.sort((a, b) => _isAscending ? a.quantidade.compareTo(b.quantidade) : b.quantidade.compareTo(a.quantidade));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Valor'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            estoques.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Valor total'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            estoques.sort((a, b) => _isAscending ? a.total.compareTo(b.total) : b.total.compareTo(a.total));
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Publicado'),
+                        onSort: (columnIndex, ascending) => 
+                          setState(() {
+                            _sortColumnIdx = columnIndex;
+                            _isAscending = ascending;
+                            estoques.sort((a, b) {
+                              if (a.publicado && !b.publicado) {
+                                return _isAscending ? -1 : 1;
+                              } else if (!a.publicado && b.publicado) {
+                                return _isAscending ? 1 : -1;
+                              } else {
+                                return 0;
+                              }
+                            });
+                          }),
+                      ),
+                      DataColumn(
+                        label: Text('Ações'),
+                      ),
+                    ],
+                    rows: estoques.asMap().entries.map((entry) {
+                      final key = entry.key;
+                      final estoque = entry.value;
+                      return DataRow(
+                        selected: selection[entry.key],
+                        onSelectChanged: (value) {
+                          setState(() {
+                            selection[key] = value!;
                           });
-                        }),
-                    ),
-                    DataColumn(
-                      label: Text('Ações'),
-                    ),
-                  ],
-                  rows: estoques.asMap().entries.map((entry) {
-                    final key = entry.key;
-                    final estoque = entry.value;
-                    return DataRow(
-                      selected: selection[entry.key],
-                      onSelectChanged: (value) {
-                        setState(() {
-                          selection[key] = value!;
-                        });
-                      },
-                      cells: [
-                        DataCell(Text(estoque.numero.toString())),
-                        DataCell(Tooltip(message: 'Clique para expandir', child: WidgetZoom(heroAnimationTag: 'tag', zoomWidget: Image.network(estoque.foto_url, width: 80, height: 80, fit: BoxFit.contain)))),
-                        DataCell(Text(estoque.nome)),
-                        DataCell(Text(estoque.descricao.substring(0, 8) + '...')),
-                        DataCell(Text(estoque.categoria)),
-                        DataCell(Text(estoque.quantidade.toString())),
-                        DataCell(Text("R\$ ${estoque.valor.toString()}")),
-                        DataCell(Text("R\$ ${estoque.total.toString()}")),
-                        DataCell(Text("${estoque.publicado ? "Público" : "Anotação"}")),
-                        DataCell(
-                          Visibility(
-                            visible: maxWidth > 800,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () {
-                                    // Lógica para editar a venda
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () {
-                                    setState(() {
-                                      selection = selection.map((item) => false).toList();
-                                    });
-                                    _deletePopup(context, () {
-                                      estoques = _deleteFn(context, estoques, key);
-                                      setState(() {});
-                                    }, estoque.nome);
-                                  },
-                                ),
-                              ],
-                            ),
-                            replacement: PopupMenuButton(
-                              icon: Icon(Icons.more_vert),
-                              itemBuilder: (context) {
-                                return [
-                                  PopupMenuItem(
-                                    child: Center(child: Icon(Icons.edit)),
-                                    value: 'edit',
-                                    onTap: () {
-                                      Estoque newEstoque = _editFn(context, estoque);
-                                      setState(() {
-                                        estoques[key] = newEstoque;
-                                      });
-                                    }
+                        },
+                        cells: [
+                          DataCell(Text(estoque.numero.toString())),
+                          DataCell(Tooltip(message: 'Clique para expandir', child: WidgetZoom(heroAnimationTag: 'tag', zoomWidget: Image.network(estoque.foto_url, width: 80, height: 80, fit: BoxFit.contain)))),
+                          DataCell(Text(estoque.nome)),
+                          DataCell(Text(estoque.descricao.substring(0, 8) + '...')),
+                          DataCell(Text(estoque.categoria)),
+                          DataCell(Text(estoque.quantidade.toString())),
+                          DataCell(Text("R\$ ${estoque.valor.toString()}")),
+                          DataCell(Text("R\$ ${estoque.total.toString()}")),
+                          DataCell(Text("${estoque.publicado ? "Público" : "Anotação"}")),
+                          DataCell(
+                            Visibility(
+                              visible: maxWidth > 800,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      // Lógica para editar a venda
+                                    },
                                   ),
-                                  PopupMenuItem(
-                                    child: Center(child: Icon(Icons.delete)),
-                                    value: 'delete',
-                                    onTap: () {
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
                                       setState(() {
                                         selection = selection.map((item) => false).toList();
                                       });
@@ -324,15 +298,45 @@ Widget _estoquesTable(double maxWidth) {
                                         setState(() {});
                                       }, estoque.nome);
                                     },
-                                  )
-                                ];
-                              },
+                                  ),
+                                ],
+                              ),
+                              replacement: PopupMenuButton(
+                                icon: Icon(Icons.more_vert),
+                                itemBuilder: (context) {
+                                  return [
+                                    PopupMenuItem(
+                                      child: Center(child: Icon(Icons.edit)),
+                                      value: 'edit',
+                                      onTap: () {
+                                        Estoque newEstoque = _editFn(context, estoque);
+                                        setState(() {
+                                          estoques[key] = newEstoque;
+                                        });
+                                      }
+                                    ),
+                                    PopupMenuItem(
+                                      child: Center(child: Icon(Icons.delete)),
+                                      value: 'delete',
+                                      onTap: () {
+                                        setState(() {
+                                          selection = selection.map((item) => false).toList();
+                                        });
+                                        _deletePopup(context, () {
+                                          estoques = _deleteFn(context, estoques, key);
+                                          setState(() {});
+                                        }, estoque.nome);
+                                      },
+                                    )
+                                  ];
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
+                        ],
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
             ),

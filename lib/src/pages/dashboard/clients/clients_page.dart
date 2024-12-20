@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class ClientsPage extends StatelessWidget {
   const ClientsPage({super.key});
@@ -167,121 +168,123 @@ clientsTable(maxWidth) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DataTable(
-                  sortColumnIndex: _sortColumnIdx,
-                  sortAscending: _isAscending,
-                  horizontalMargin: maxWidth <= 800 ? 10 : 8,
-                  columnSpacing: maxWidth <= 800 ? 10 : 0,
-                  showCheckboxColumn: true,
-                  headingRowHeight: 32.0,
-                  dataRowHeight: 60.0,
-                  dividerThickness: 2,
-                  dataTextStyle: TextStyle(fontSize: maxWidth <= 800 ? 12 : null),
-                  columns: [
-                    DataColumn(
-                      label: Text('Nome'),
-                      onSort: (columnIndex, ascending) {
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          clientes.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
-                        });
-                      }
-                    ),
-                    DataColumn(
-                      label: Text('Email'),
-                      onSort: (columnIndex, ascending) {
-                        setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          clientes.sort((a, b) => _isAscending ? a.email.compareTo(b.email) : b.email.compareTo(a.email));
-                        });
-                      }
-                    ),
-                    DataColumn(
-                      label: Text('Ações'),
-                    ),
-                  ],
-                  rows: clientes.asMap().entries.map((entry) {
-                    final cliente = entry.value;
-                    final index = entry.key;
-                    return DataRow(
-                      selected: selected[index],
-                      onSelectChanged: (bool? value) {
-                        selected[index] = value!;
-                        setState(() {});
-                      },
-                      cells: [
-                      DataCell(Text(cliente.nome)),
-                      DataCell(
-                        Tooltip(message:cliente.email, child: SizedBox(width: maxWidth <= 800 ? 80 : null, child: Text(cliente.email, softWrap: true, overflow: TextOverflow.ellipsis)))
-                      ),
-                      DataCell(Row(
-                        children: [
-                          Visibility(
-                            visible: maxWidth >= 800,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
-                                  onPressed: () {
-                                    Cliente newCliente = _editCliente(context, cliente);
-                                    setState(() {
-                                      clientes[index] = newCliente;
-                                    });
-                                    print('edit cliente ${cliente.nome}');
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
-                                  onPressed: () {
-                                    setState(() {
-                                        selected = selected.map((item) => false).toList();
-                                      });
-                                    _deletePopup(context, () {
-                                      clientes = _deleteCliente(context, clientes, index);
-                                      setState(() {});
-                                    }, cliente.nome);
-                                    print('delete cliente ${cliente.nome}');
-                                  },
-                                ),
-                              ]
-                              ),
-                              replacement: PopupMenuButton(
-                              icon: Icon(Icons.more_vert, size: maxWidth <= 800 ? 28 : null),
-                              itemBuilder: (BuildContext context) {
-                                return [
-                                 PopupMenuItem(
-                                  child: Center(child: Icon(Icons.edit)),
-                                  onTap: () {
-                                    Cliente newCliente = _editCliente(context, cliente);
-                                    setState(() {
-                                      clientes[index] = newCliente;
-                                    });
-                                    print('edit cliente ${newCliente.nome}');
-                                  }
-                                 ),
-                                  PopupMenuItem(
-                                    child: Center(child: Icon(Icons.delete)),
-                                    onTap: () {
-                                      setState(() {
-                                        selected = selected.map((item) => false).toList();
-                                      });
-                                      _deletePopup(context, () {
-                                      clientes = _deleteCliente(context, clientes, index);
-                                      setState(() {});
-                                    }, cliente.nome);
-                                      print('delete cliente ${cliente.nome}');
-                                    }
-                                  ),
-                                ]; 
-                              } 
-                            ),
+                FittedBox(
+                  fit: SharedTheme.isLargeScreen(context) ? BoxFit.scaleDown : BoxFit.fitWidth,
+                  child: SizedBox(
+                    width: maxWidth,
+                    child: DataTable(
+                      sortColumnIndex: _sortColumnIdx,
+                      sortAscending: _isAscending,
+                      showCheckboxColumn: true,
+                      dividerThickness: 2,
+                      dataTextStyle: TextStyle(fontSize: maxWidth <= 800 ? 12 : null),
+                      columns: [
+                        DataColumn(
+                          label: Text('Nome'),
+                          onSort: (columnIndex, ascending) {
+                            setState(() {
+                              _sortColumnIdx = columnIndex;
+                              _isAscending = ascending;
+                              clientes.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                            });
+                          }
+                        ),
+                        DataColumn(
+                          label: Text('Email'),
+                          onSort: (columnIndex, ascending) {
+                            setState(() {
+                              _sortColumnIdx = columnIndex;
+                              _isAscending = ascending;
+                              clientes.sort((a, b) => _isAscending ? a.email.compareTo(b.email) : b.email.compareTo(a.email));
+                            });
+                          }
+                        ),
+                        DataColumn(
+                          label: Text('Ações'),
+                        ),
+                      ],
+                      rows: clientes.asMap().entries.map((entry) {
+                        final cliente = entry.value;
+                        final index = entry.key;
+                        return DataRow(
+                          selected: selected[index],
+                          onSelectChanged: (bool? value) {
+                            selected[index] = value!;
+                            setState(() {});
+                          },
+                          cells: [
+                          DataCell(Text(cliente.nome)),
+                          DataCell(
+                            Tooltip(message:cliente.email, child: SizedBox(width: maxWidth <= 800 ? 80 : null, child: Text(cliente.email, softWrap: true, overflow: TextOverflow.ellipsis)))
                           ),
-                        ],
-                      )),
-                    ]);
-                  }).toList(),
+                          DataCell(Row(
+                            children: [
+                              Visibility(
+                                visible: maxWidth >= 800,
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
+                                      onPressed: () {
+                                        Cliente newCliente = _editCliente(context, cliente);
+                                        setState(() {
+                                          clientes[index] = newCliente;
+                                        });
+                                        print('edit cliente ${cliente.nome}');
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete, size: maxWidth <= 800 ? 20 : null),
+                                      onPressed: () {
+                                        setState(() {
+                                            selected = selected.map((item) => false).toList();
+                                          });
+                                        _deletePopup(context, () {
+                                          clientes = _deleteCliente(context, clientes, index);
+                                          setState(() {});
+                                        }, cliente.nome);
+                                        print('delete cliente ${cliente.nome}');
+                                      },
+                                    ),
+                                  ]
+                                  ),
+                                  replacement: PopupMenuButton(
+                                  icon: Icon(Icons.more_vert, size: maxWidth <= 800 ? 28 : null),
+                                  itemBuilder: (BuildContext context) {
+                                    return [
+                                     PopupMenuItem(
+                                      child: Center(child: Icon(Icons.edit)),
+                                      onTap: () {
+                                        Cliente newCliente = _editCliente(context, cliente);
+                                        setState(() {
+                                          clientes[index] = newCliente;
+                                        });
+                                        print('edit cliente ${newCliente.nome}');
+                                      }
+                                     ),
+                                      PopupMenuItem(
+                                        child: Center(child: Icon(Icons.delete)),
+                                        onTap: () {
+                                          setState(() {
+                                            selected = selected.map((item) => false).toList();
+                                          });
+                                          _deletePopup(context, () {
+                                          clientes = _deleteCliente(context, clientes, index);
+                                          setState(() {});
+                                        }, cliente.nome);
+                                          print('delete cliente ${cliente.nome}');
+                                        }
+                                      ),
+                                    ]; 
+                                  } 
+                                ),
+                              ),
+                            ],
+                          )),
+                        ]);
+                      }).toList(),
+                    ),
+                  ),
                 ),
               ],
             ),
