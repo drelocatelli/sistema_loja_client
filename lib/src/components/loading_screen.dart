@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
@@ -17,7 +19,7 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   bool _isLoading = true;
-  bool _newVersion = true;
+  bool _newVersion = false;
 
   @override
   initState() {
@@ -27,9 +29,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
         _newVersion = false;
       });
     }
-    Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 800), () async {
       if(!kIsWeb) {
-        _checkVersion();
+        await _checkVersion();
       }
       setState(() {
         _isLoading = false;
@@ -38,23 +40,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   _checkVersion() async {
-    
     bool? _hasNewVersion = await CheckVersionRepository.hasNewVersion();
+    debugPrint('Has new version: $_hasNewVersion');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if(_hasNewVersion == null) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Erro ao verificar versão'),
         ));
-      } else if(_hasNewVersion) {
-        setState(() {
-          _newVersion = true;
-        });
+      } else {
+        _newVersion = _hasNewVersion;
+        setState(() {});
       }
-      if(_hasNewVersion != null && !_hasNewVersion) {
-        setState(() {
-          _newVersion = false;
-        });
-      }
+
     });
   }
 
@@ -63,7 +60,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return Container(
       color: Colors.white,
       child: Visibility(
-        visible: _newVersion,
+        visible: _newVersion && !kIsWeb,
         child: Container(
           alignment: Alignment.center,
           child: Column(

@@ -15,7 +15,10 @@ class CheckVersionRepository {
       final response = await Dio().get(endpoint);
       final version = VersionDTO.fromJson(response.data);
 
-      if(version.currentVersion != dotenv.env['VERSION']) {
+      debugPrint('Version from API: ${version.currentVersion}');
+      debugPrint('Version from .env: ${dotenv.env['VERSION']}');
+
+      if(version.currentVersion.trim() != dotenv.env['VERSION']!.trim()) {
         debugPrint('New version available');
         return true;
       } else {
