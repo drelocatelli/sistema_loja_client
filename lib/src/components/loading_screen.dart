@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:racoon_tech_panel/src/components/pulse_components.dart';
 import 'package:racoon_tech_panel/src/repository/CheckVersionRepository.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/foundation.dart';
 
 class LoadingScreen extends StatefulWidget {
   LoadingScreen({super.key, required this.child});
@@ -20,8 +21,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   initState() {
     super.initState();
+    if(kIsWeb) {
+      setState(() {
+        _newVersion = false;
+      });
+    }
     Future.delayed(const Duration(milliseconds: 800), () {
-      _checkVersion();
+      if(!kIsWeb) {
+        _checkVersion();
+      }
       setState(() {
         _isLoading = false;
       });
@@ -29,6 +37,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   _checkVersion() async {
+    
     bool? _hasNewVersion = await CheckVersionRepository.hasNewVersion();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if(_hasNewVersion == null) {
