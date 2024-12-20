@@ -21,7 +21,6 @@ class _MainLayoutState extends State<MainLayout> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   
   final _formKey = GlobalKey<FormState>();  
-  bool _isLoading = true;
 
   void _submitForm() {
      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -30,56 +29,46 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(milliseconds: 800), () {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final bool isLargeScreen = SharedTheme.isLargeScreen(context);
 
-    return _isLoading 
-    ? LoadingScreen() 
-    : Scaffold(
-        key: _scaffoldKey,
-      appBar: AppBar(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/img/logo.png',
-                    height: 40,
-                  ),
-                  const Gap(10),
-                  SelectableText(dotenv.env['TITLE'] ?? 'Sistema da loja'),
-                ],
-              ),
-              isLargeScreen ? mainMenu(context) : Container(),
-            ],
-          ),
-          leading: isLargeScreen ? null : IconButton(
-            icon: const Icon(Icons.menu),
-              onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-          ),
-      ),
-      drawer: isLargeScreen ? null : Drawer(
-        child: mainMenu(context, isLargeScreen: isLargeScreen),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              widget.child,
-            ],
+    return LoadingScreen(
+      child: Scaffold(
+          key: _scaffoldKey,
+        appBar: AppBar(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      'assets/img/logo.png',
+                      height: 40,
+                    ),
+                    const Gap(10),
+                    SelectableText(dotenv.env['TITLE'] ?? 'Sistema da loja'),
+                  ],
+                ),
+                isLargeScreen ? mainMenu(context) : Container(),
+              ],
+            ),
+            leading: isLargeScreen ? null : IconButton(
+              icon: const Icon(Icons.menu),
+                onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+            ),
+        ),
+        drawer: isLargeScreen ? null : Drawer(
+          child: mainMenu(context, isLargeScreen: isLargeScreen),
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                widget.child,
+              ],
+            ),
           ),
         ),
       ),
