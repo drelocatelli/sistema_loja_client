@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gap/gap.dart';
 import 'package:racoon_tech_panel/src/components/pulse_components.dart';
 import 'package:racoon_tech_panel/src/repository/CheckVersionRepository.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -66,19 +67,23 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: Container(
           alignment: Alignment.center,
           child: Column(
-            spacing: 30,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Nova versão disponível!", style: Theme.of(context).textTheme.headlineSmall),
+              Gap(30),
               Image.asset("assets/img/logo.png", width: 150),
+              Gap(30),
               Text("É necessário atualizar para a nova versão para continuar", style: Theme.of(context).textTheme.bodyLarge),
+              Gap(30),
               OutlinedButton(
                 onPressed: () async {
                   Uri _url = Uri.parse(dotenv.env['API_DOWNLOAD_APP']!);
                   await launchUrl(_url);
                 }, 
                 child: Text("Clique aqui pra atualizar")
-              )
+              ),
+              Gap(20),
+              Text("Versão atual: ${dotenv.env['VERSION']}", style: Theme.of(context).textTheme.bodySmall),
             ],
           )
         ),
