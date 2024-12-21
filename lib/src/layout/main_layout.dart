@@ -8,10 +8,11 @@ import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class MainLayout extends StatefulWidget {
-  MainLayout({super.key, required this.child, this.padding});
+  MainLayout({super.key, required this.child, this.padding, bool? this.isLoading});
 
   final Widget child;
   final EdgeInsets? padding;
+  final bool? isLoading;
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
@@ -33,6 +34,7 @@ class _MainLayoutState extends State<MainLayout> {
     final bool isLargeScreen = SharedTheme.isLargeScreen(context);
 
     return LoadingScreen(
+      isLoading: widget.isLoading,
       child: Scaffold(
           key: _scaffoldKey,
         appBar: AppBar(

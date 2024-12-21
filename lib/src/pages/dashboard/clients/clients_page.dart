@@ -1,12 +1,42 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
+import 'package:racoon_tech_panel/src/dto/response_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
+import 'package:racoon_tech_panel/src/repository/ClientRepository.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
-class ClientsPage extends StatelessWidget {
+class ClientsPage extends StatefulWidget {
   const ClientsPage({super.key});
 
+  @override
+  State<ClientsPage> createState() => _ClientsPageState();
+}
+
+class _ClientsPageState extends State<ClientsPage> {
+  List<Cliente> clientes = [];
+  bool _isLoading = true;
+  
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await fetchData();
+      setState(() {
+        _isLoading = false;
+      });
+    });
+    
+  }
+
+  Future<void> fetchData() async {
+    ResponseDTO<List<Cliente>> clientesList = await ClientRepository.getClients();
+    setState(() {
+      clientes = clientesList.data ?? [];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,74 +44,21 @@ class ClientsPage extends StatelessWidget {
   final maxWidth = MediaQuery.of(context).size.width;  
 
     return MainLayout(
+      isLoading: _isLoading,
       child: SelectionArea(
         child: SizedBox(
           width: maxWidth,
-          child: clientsTable(maxWidth),
+          child:clientsTable(clientes, maxWidth),
         ),
       ),
     );
   }
 }
 
-clientsTable(maxWidth) {
-  List<Cliente> clientes = [
-    Cliente(nome: 'Carlos Pereira', email: 'carlos@example.com', performance: 'Regular'),
-    Cliente(nome: 'Ana Souza', email: 'ana@example.com', performance: 'Excelente'),
-    Cliente(nome: 'João Silva', email: 'joao@example.com', performance: 'Bom'),
-    Cliente(nome: 'Maria Oliveira', email: 'maria@example.com', performance: 'Regular'),
-    Cliente(nome: 'José Almeida', email: 'jose@example.com', performance: 'Ruim'),
-    Cliente(nome: 'Luana Costa', email: 'luana@example.com', performance: 'Bom'),
-    Cliente(nome: 'Pedro Santos', email: 'pedro@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Fernanda Lima', email: 'fernanda@example.com', performance: 'Regular'),
-    Cliente(nome: 'Ricardo Martins', email: 'ricardo@example.com', performance: 'Bom'),
-    Cliente(nome: 'Patrícia Rocha', email: 'patricia@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Felipe Gomes', email: 'felipe@example.com', performance: 'Regular'),
-    Cliente(nome: 'Paula Pereira', email: 'paula@example.com', performance: 'Bom'),
-    Cliente(nome: 'Lucas Fernandes', email: 'lucas@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Bruna Silva', email: 'bruna@example.com', performance: 'Ruim'),
-    Cliente(nome: 'Rafael Costa', email: 'rafael@example.com', performance: 'Bom'),
-    Cliente(nome: 'Carla Souza', email: 'carla@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Tiago Santos', email: 'tiago@example.com', performance: 'Regular'),
-    Cliente(nome: 'Sabrina Almeida', email: 'sabrina@example.com', performance: 'Bom'),
-    Cliente(nome: 'Vinícius Rocha', email: 'vinicius@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Cláudia Lima', email: 'claudia@example.com', performance: 'Regular'),
-    Cliente(nome: 'André Martins', email: 'andre@example.com', performance: 'Bom'),
-    Cliente(nome: 'Juliana Costa', email: 'juliana@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Eduardo Pereira', email: 'eduardo@example.com', performance: 'Regular'),
-    Cliente(nome: 'Isabela Gomes', email: 'isabela@example.com', performance: 'Bom'),
-    Cliente(nome: 'Gabriel Silva', email: 'gabriel@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Amanda Rocha', email: 'amanda@example.com', performance: 'Regular'),
-    Cliente(nome: 'Matheus Lima', email: 'matheus@example.com', performance: 'Bom'),
-    Cliente(nome: 'Mariana Santos', email: 'mariana@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Ricardo Oliveira', email: 'ricardo.oliveira@example.com', performance: 'Regular'),
-    Cliente(nome: 'Beatriz Almeida', email: 'beatriz@example.com', performance: 'Bom'),
-    Cliente(nome: 'Júlio Costa', email: 'julio@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Natália Pereira', email: 'natalia@example.com', performance: 'Regular'),
-    Cliente(nome: 'Joana Fernandes', email: 'joana@example.com', performance: 'Bom'),
-    Cliente(nome: 'Thiago Martins', email: 'thiago@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Marcelo Rocha', email: 'marcelo@example.com', performance: 'Regular'),
-    Cliente(nome: 'Juliana Gomes', email: 'juliana.gomes@example.com', performance: 'Bom'),
-    Cliente(nome: 'Carlos Almeida', email: 'carlos.almeida@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Larissa Santos', email: 'larissa.santos@example.com', performance: 'Regular'),
-    Cliente(nome: 'Fábio Silva', email: 'fabio.silva@example.com', performance: 'Bom'),
-    Cliente(nome: 'Gabriela Pereira', email: 'gabriela@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Felipe Rocha', email: 'felipe.rocha@example.com', performance: 'Regular'),
-    Cliente(nome: 'Maria Clara', email: 'mariaclara@example.com', performance: 'Bom'),
-    Cliente(nome: 'Daniel Souza', email: 'daniel@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Rogério Lima', email: 'rogerio@example.com', performance: 'Regular'),
-    Cliente(nome: 'Luiz Martins', email: 'luiz@example.com', performance: 'Bom'),
-    Cliente(nome: 'Roberta Costa', email: 'roberta@example.com', performance: 'Excelente'),
-    Cliente(nome: 'Carlos Costa', email: 'carlos.costa@example.com', performance: 'Regular'),
-    Cliente(nome: 'Larissa Rocha', email: 'larissa.rocha@example.com', performance: 'Bom'),
-    Cliente(nome: 'Eduarda Almeida', email: 'eduarda@example.com', performance: 'Excelente'),
-    Cliente(nome: 'André Souza', email: 'andre.souza@example.com', performance: 'Regular'),
-    Cliente(nome: 'Sandra Pereira', email: 'sandra@example.com', performance: 'Bom'),
-    Cliente(nome: 'Ricardo Lima', email: 'ricardolima@example.com', performance: 'Excelente')
-  ];
+clientsTable(List<Cliente> clientes, maxWidth) {
 
   // sort by name
-  clientes.sort((a, b) => a.nome.compareTo(b.nome));
+  clientes.sort((a, b) => a.name.compareTo(b.name));
 
   int _sortColumnIdx = 0;
   bool _isAscending = true;
@@ -118,7 +95,7 @@ clientsTable(maxWidth) {
                       selectedIds.contains(index) ? clientes[index] : null).where((item) => item != null)
                     .toList();
 
-                  List filteredClientesTitle = selectedClients.map((cliente) => cliente?.nome).toList();
+                  List filteredClientesTitle = selectedClients.map((cliente) => cliente?.name).toList();
 
                   showDialog(
                     context: context,
@@ -185,7 +162,7 @@ clientsTable(maxWidth) {
                             setState(() {
                               _sortColumnIdx = columnIndex;
                               _isAscending = ascending;
-                              clientes.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                              clientes.sort((a, b) => _isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
                             });
                           }
                         ),
@@ -213,7 +190,7 @@ clientsTable(maxWidth) {
                             setState(() {});
                           },
                           cells: [
-                          DataCell(Text(cliente.nome)),
+                          DataCell(Text(cliente.name)),
                           DataCell(
                             Tooltip(message:cliente.email, child: SizedBox(width: maxWidth <= 800 ? 80 : null, child: Text(cliente.email, softWrap: true, overflow: TextOverflow.ellipsis)))
                           ),
@@ -230,7 +207,7 @@ clientsTable(maxWidth) {
                                         setState(() {
                                           clientes[index] = newCliente;
                                         });
-                                        print('edit cliente ${cliente.nome}');
+                                        print('edit cliente ${cliente.name}');
                                       },
                                     ),
                                     IconButton(
@@ -242,8 +219,8 @@ clientsTable(maxWidth) {
                                         _deletePopup(context, () {
                                           clientes = _deleteCliente(context, clientes, index);
                                           setState(() {});
-                                        }, cliente.nome);
-                                        print('delete cliente ${cliente.nome}');
+                                        }, cliente.name);
+                                        print('delete cliente ${cliente.name}');
                                       },
                                     ),
                                   ]
@@ -259,7 +236,7 @@ clientsTable(maxWidth) {
                                         setState(() {
                                           clientes[index] = newCliente;
                                         });
-                                        print('edit cliente ${newCliente.nome}');
+                                        print('edit cliente ${newCliente.name}');
                                       }
                                      ),
                                       PopupMenuItem(
@@ -271,8 +248,8 @@ clientsTable(maxWidth) {
                                           _deletePopup(context, () {
                                           clientes = _deleteCliente(context, clientes, index);
                                           setState(() {});
-                                        }, cliente.nome);
-                                          print('delete cliente ${cliente.nome}');
+                                        }, cliente.name);
+                                          print('delete cliente ${cliente.name}');
                                         }
                                       ),
                                     ]; 

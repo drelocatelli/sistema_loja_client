@@ -9,16 +9,17 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
 
 class LoadingScreen extends StatefulWidget {
-  LoadingScreen({super.key, required this.child});
+  LoadingScreen({super.key, required this.child, this.isLoading});
 
+  bool? isLoading;
   Widget child;
+  bool _isLoadingPassive = true;
 
   @override
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  bool _isLoading = true;
   bool _newVersion = false;
 
   @override
@@ -34,7 +35,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         await _checkVersion();
       }
       setState(() {
-        _isLoading = false;
+        widget._isLoadingPassive = false;
       });
     });
   }
@@ -61,7 +62,27 @@ class _LoadingScreenState extends State<LoadingScreen> {
       color: Colors.white,
       child: Visibility(
         visible: _newVersion && !kIsWeb,
-        child: Container(
+        child: _versionObsolete(context),
+        replacement: Visibility(
+          visible: widget.isLoading ?? widget._isLoadingPassive,
+          replacement: widget.child,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              PulseAnimation(
+                child: Image.asset("assets/img/logo.png", width: 200)
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+Widget _versionObsolete(BuildContext context) {
+  return Container(
           alignment: Alignment.center,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -83,22 +104,5 @@ class _LoadingScreenState extends State<LoadingScreen> {
               Text("Versão atual: ${dotenv.env['VERSION']}", style: Theme.of(context).textTheme.bodySmall),
             ],
           )
-        ),
-        replacement: Visibility(
-          visible: _isLoading,
-          replacement: widget.child,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              PulseAnimation(
-                child: Image.asset("assets/img/logo.png", width: 200)
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+        );
 }
-
