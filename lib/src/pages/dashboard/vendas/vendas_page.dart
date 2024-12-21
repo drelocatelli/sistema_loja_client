@@ -140,6 +140,7 @@ Widget _vendasTable(double maxWidth) {
                   child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
                 ),
                 child: FittedBox(
+                  fit: SharedTheme.isLargeScreen(context) ? BoxFit.scaleDown : BoxFit.fitWidth,
                   child: DataTable(
                     sortColumnIndex: _sortColumnIdx,
                     sortAscending: _isAscending,
