@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:racoon_tech_panel/src/dto/version_dto.dart';
+import 'package:racoon_tech_panel/src/utils/request.dart';
 
 class CheckVersionRepository {
 
@@ -12,7 +13,8 @@ class CheckVersionRepository {
   static Future<bool?> hasNewVersion() async {
     try {
       final String endpoint = api! + '/version.php';
-      final response = await Dio().get(endpoint);
+      final request = requestInterceptor();
+      final response = await request.get(endpoint);
       final version = VersionDTO.fromJson(response.data);
 
       debugPrint('Version from API: ${version.currentVersion}');

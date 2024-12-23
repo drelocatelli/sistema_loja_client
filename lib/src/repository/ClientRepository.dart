@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/dto/response_dto.dart';
+import 'package:racoon_tech_panel/src/utils/request.dart';
 
 class ClientRepository {
 
@@ -33,7 +34,8 @@ class ClientRepository {
         }
       ''';
 
-      final response = await Dio().post(
+      final dio = requestInterceptor();
+      final response = await dio.post(
         endpoint,
         data: {
           'query': getClientsQuery
@@ -41,6 +43,7 @@ class ClientRepository {
         options: Options(
           headers: {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
           }
         )
       );
@@ -48,6 +51,7 @@ class ClientRepository {
       if(response.data != null) {
         final clientsData = response.data['data']['getClients'] as List;
         List<Cliente> clients = clientsData.map((client) => Cliente.fromJson(client)).toList();
+
         return ResponseDTO<List<Cliente>>(status: response.statusCode, data: clients);
       }
 

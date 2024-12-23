@@ -1,15 +1,25 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:racoon_tech_panel/routes.dart';
+import 'package:racoon_tech_panel/src/dto/app_mode.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 import 'package:url_strategy/url_strategy.dart';
+
+
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
-  await dotenv.load(fileName: ".env.dev");
+
+  // set dotenv
+  await dotenv.load(fileName: ".env");
+  final appMode = dotenv.env['APP_MODE'] ?? AppMode.production;
+
+  if(appMode == AppMode.development) {
+    await dotenv.load(fileName: ".env.dev");
+  }
+
   runApp(const MyApp());
 }
 
