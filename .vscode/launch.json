@@ -30,6 +30,16 @@
             "args": [
                 "--web-browser-flag=--disable-web-security"
             ]
+        },
+        {
+            "name": "sistema_loja release (Chrome with --disable-web-security)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "deviceId": "chrome",
+            "args": [
+                "--web-browser-flag=--disable-web-security",
+            ]
         }
     ]
 }

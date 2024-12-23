@@ -492,9 +492,9 @@ _createClients(BuildContext context, Function refreshFn) {
               onPressed: () async {
                 if (_formKey.currentState?.validate() ?? false) {
                   _formKey.currentState?.save();
-                  Navigator.of(context).pop();
                   await _createClientReq(context, _controllers);
                   refreshFn();
+                  Navigator.of(context).pop();
                 }
               }, 
               child: Text("Adicionar novo cliente")

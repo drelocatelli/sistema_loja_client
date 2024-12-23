@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/dto/main_menu_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
   final menus = [
@@ -20,8 +20,8 @@ Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
     MainMenuDTO(label: "Clientes", fn: () => context.go('/dashboard/clientes')),
     MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
     MainMenuDTO(label: "Sair", fn: () async {
-      final storage = new FlutterSecureStorage();
-      await storage.delete(key: 'password');
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('token');
       context.go('/login');
     })
   ];

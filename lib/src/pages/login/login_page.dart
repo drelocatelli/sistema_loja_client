@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/layout/login_layout.dart';
 import 'package:racoon_tech_panel/src/repository/LoginRepository.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({super.key});
@@ -62,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: true,
                       controller: _passwordController,
                       onFieldSubmitted: (value) async {
-                        if (_formKey.currentState!.validate()) {
+                        if (_formKey.currentState?.validate() ?? false) {
                           await _loginRequest(context, _passwordController.text);
                         }
                       },
@@ -99,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () async  {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
-                          if (_formKey.currentState!.validate()) {
+                          if (_formKey.currentState?.validate() ?? false) {
                             await _loginRequest(context, _passwordController.text);
                           }
                         },
@@ -138,9 +136,10 @@ _loginRequest(BuildContext context, password) async {
   }
   debugPrint("Data: ${response.data}");
 
-  final storage = new FlutterSecureStorage();
-  await storage.write(key: 'token', value: response.data.toString());
-  final String? storedData = await storage.read(key: 'token');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('token', response.data.toString());
+  
+  debugPrint('Login successful!');
 
   context.pushReplacement('/dashboard');
 }

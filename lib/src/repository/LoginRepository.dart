@@ -3,18 +3,19 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:racoon_tech_panel/src/dto/login_dto.dart';
 import 'package:racoon_tech_panel/src/dto/response_dto.dart';
 import 'package:racoon_tech_panel/src/utils/request.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginRepository {
   static final endpoint = dotenv.env['SERVER_URL']! + ':' +  dotenv.env['SERVER_PORT']!;
 
   static Future<String?> getToken() async {
-    final storage = new FlutterSecureStorage();
-    final String? storedData = await storage.read(key: 'token');
-    return storedData;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    return token;
   }
 
   static Future<ResponseDTO<String>> login(String password) async {
