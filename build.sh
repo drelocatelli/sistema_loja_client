@@ -45,4 +45,4 @@ flutter build apk --release
 
 echo "version.php created with version $VERSION."
 
-echo "Modifications complete: Removed <base href> and updated <title> in index.html"
+# echo "Modifications complete: Removed <base href> and updated <title> in index.html"

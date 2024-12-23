@@ -8,6 +8,7 @@ import 'package:racoon_tech_panel/src/repository/CheckVersionRepository.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
 
+
 class LoadingScreen extends StatefulWidget {
   LoadingScreen({super.key, required this.child, this.isLoading});
 
@@ -20,6 +21,7 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  ValueNotifier<bool> _isLoading = ValueNotifier(true);
   bool _newVersion = false;
 
   @override
@@ -30,11 +32,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
         _newVersion = false;
       });
     }
+    if(widget.isLoading == null) {
+      widget.isLoading = true;
+    }
+    setState(() {});
     Future.delayed(const Duration(milliseconds: 800), () async {
       if(!kIsWeb) {
         await _checkVersion();
       }
       setState(() {
+        
+        
         widget._isLoadingPassive = false;
       });
     });
@@ -64,7 +72,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
         visible: _newVersion && !kIsWeb,
         child: _versionObsolete(context),
         replacement: Visibility(
-          visible: widget.isLoading ?? widget._isLoadingPassive,
+          visible: widget.isLoading != null && widget.isLoading! && widget._isLoadingPassive,
           replacement: widget.child,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
