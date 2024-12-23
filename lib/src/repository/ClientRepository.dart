@@ -68,20 +68,91 @@ class ClientRepository {
     
   }
 
-  static Future<ResponseDTO> deleteClient(String id) async {
+  // static Future<ResponseDTO<Cliente>> deleteClient(String id) async {
+  //   try {
+  //     final endpoint = dotenv.env['SERVER_URL']!+ ':' + dotenv.env['SERVER_PORT']!;
+  //     final String deleteClientQuery = '''
+  //         mutation DeleteClient {
+  //           deleteClient(id: "$id") {
+  //               id
+  //               name
+  //               email
+  //               rg
+  //               cpf
+  //               phone
+  //               address
+  //               cep
+  //               city
+  //               state
+  //               country
+  //               created_at
+  //               updated_at
+  //               deleted_at
+  //           }
+  //       }
+  //     ''';
+
+  //     final dio = requestInterceptor();
+  //     await dio.post(
+  //       endpoint,
+  //       data: {
+  //         'query': deleteClientQuery
+  //       },
+  //       options: Options(
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Access-Control-Allow-Origin': '*',
+  //         }
+  //       )
+  //     );
+
+  //     return ResponseDTO(status: 200);
+
+  //   } on DioException catch(err) {
+  //     debugPrint("${err.toString()}");
+
+  //     String? message = null;
+  //     if(err.type == DioExceptionType.connectionError) {
+  //       message = 'Não foi possível estabelecer comunicação com o servidor';
+  //     }
+  //     return ResponseDTO(status: 500, message: message);
+  //   }
+  // }
+
+  static Future<ResponseDTO<List<Cliente>>> deleteClients(List<String> ids) async {
     try {
       final endpoint = dotenv.env['SERVER_URL']!+ ':' + dotenv.env['SERVER_PORT']!;
-      final String deleteClientQuery = '''
-        mutation DeleteClient {
-            deleteClient(id: "$id")
-        }
+
+      ids = ids.map((id) => "$id").toList();
+      debugPrint("$ids");
+      
+      final String deleteClientsQuery = '''
+          mutation DeleteClients {
+              deleteClients(ids: $ids) {
+                  id
+                  name
+                  email
+                  rg
+                  cpf
+                  phone
+                  address
+                  cep
+                  city
+                  state
+                  country
+                  created_at
+                  updated_at
+                  deleted_at
+              }
+          }
+
       ''';
 
       final dio = requestInterceptor();
-      await dio.post(
+      final response =await dio.post(
         endpoint,
         data: {
-          'query': deleteClientQuery
+          'query': deleteClientsQuery
         },
         options: Options(
           headers: {
@@ -91,7 +162,16 @@ class ClientRepository {
         )
       );
 
-      return ResponseDTO(status: 200);
+      debugPrint(jsonEncode(response.data['data']));
+
+      if(response.data != null) {
+        final clientsData = response.data['data']['deleteClients'] as List;
+        List<Cliente> clients = clientsData.map((client) => Cliente.fromJson(client)).toList();
+
+        return ResponseDTO<List<Cliente>>(status: response.statusCode, data: clients);
+      }
+
+      return ResponseDTO<List<Cliente>>(status: response.statusCode, data: []);
 
     } on DioException catch(err) {
       debugPrint("${err.toString()}");
@@ -103,9 +183,5 @@ class ClientRepository {
       return ResponseDTO(status: 500, message: message);
     }
   }
-
-  // static Future<ResponseDTO> deleteClients(List<String> ids) async {
-
-  // }
   
 }

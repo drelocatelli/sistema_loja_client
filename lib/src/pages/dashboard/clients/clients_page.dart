@@ -1,15 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gap/gap.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/dto/response_dto.dart';
-import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/clients/components/clients_table.dart';
 import 'package:racoon_tech_panel/src/repository/ClientRepository.dart';
-import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class ClientsPage extends StatefulWidget {
   const ClientsPage({super.key});

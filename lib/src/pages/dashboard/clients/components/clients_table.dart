@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
@@ -79,14 +81,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                           TextButton(
                             child: Text('Excluir'),
                             onPressed: () async {
-                              for(int i = 0; i < selectedClients.length; i++) {
-                                await ClientRepository.deleteClient(selectedClients[i]!.id);
-                                refreshFn();
-                              }
-                              // setState(() {
-                              //   clientes.removeWhere((cliente) => selectedIds.contains(clientes.indexOf(cliente)));
-                              //   selected = List<bool>.generate(clientes.length, (int index) => false);
-                              // });
+                              await _deleteClientes(context, clientes, selectedClients.map((item) => item!.id).toList(), refreshFn);
                               Navigator.of(context).pop();
                             },
                           ),
@@ -183,10 +178,11 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                           setState(() {
                                             selected = selected.map((item) => false).toList();
                                           });
-                                          _deletePopup(context, () {
-                                          clientes = _deleteCliente(context, clientes, index);
+                                          _deletePopup(context, () async {
+                                          final _availableClientes = await _deleteClientes(context, clientes, [cliente.id], refreshFn);
+                                          clientes = _availableClientes.whereType<Cliente>().toList();
                                           setState(() {});
-                                        }, cliente.name, cliente.id, refreshFn);
+                                        }, clientes, cliente.name, cliente.id, refreshFn);
                                           print('delete cliente ${cliente.name}');
                                         }
                                       ),
@@ -218,10 +214,11 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                         setState(() {
                                             selected = selected.map((item) => false).toList();
                                           });
-                                        _deletePopup(context, () {
-                                          clientes = _deleteCliente(context, clientes, index);
+                                        _deletePopup(context, () async {
+                                          final _availableClientes = await _deleteClientes(context, clientes, [cliente.id], refreshFn);
+                                          clientes = _availableClientes.whereType<Cliente>().toList();
                                           setState(() {});
-                                        }, cliente.name, cliente.id, refreshFn);
+                                        }, clientes, cliente.name, cliente.id, refreshFn);
                                         print('delete cliente ${cliente.name}');
                                       },
                                     ),
@@ -266,7 +263,7 @@ Widget _pesquisa(double maxWidth) {
   );
 }
 
-_deletePopup(BuildContext context, deleteCb, clienteNome, String clienteId, Function refreshFn) {
+_deletePopup(BuildContext context, deleteCb, List<Cliente> clientes, clienteNome, String clienteId, Function refreshFn) {
   showDialog(
     context: context, 
     builder: (context) {
@@ -281,17 +278,7 @@ _deletePopup(BuildContext context, deleteCb, clienteNome, String clienteId, Func
           ),
           TextButton(
             onPressed: () async {
-              final deletedClients = await ClientRepository.deleteClient(clienteId);
-              if(deletedClients.status != 200) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(deletedClients.message ?? 'Ocorreu um erro inesperado!'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-              refreshFn();
+              _deleteClientes(context, clientes, [clienteId], refreshFn);
               Navigator.of(context).pop();
             }, 
             child: Text('Excluir')
@@ -302,10 +289,20 @@ _deletePopup(BuildContext context, deleteCb, clienteNome, String clienteId, Func
   );
 }
 
-List<Cliente> _deleteCliente(BuildContext context, List<Cliente> clientes, int indexToRemove) {
-  clientes.removeAt(indexToRemove);
-  
-  
+Future<List<Cliente?>> _deleteClientes(BuildContext context, List<Cliente> clientes, List<String> clienteIds, Function refreshFn) async {
+  final client = await ClientRepository.deleteClients(clienteIds);
+    if(client.status != 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(client.message ?? 'Ocorreu um erro inesperado!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  final deletedCliente = clientes.where((element) => element.id == clienteIds);
+  clientes.remove(deletedCliente);
+  refreshFn();
+
   return clientes;
 }
 
