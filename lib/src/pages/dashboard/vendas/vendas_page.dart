@@ -59,7 +59,18 @@ Widget _vendasTable(double maxWidth) {
           Helpers.rowOrWrap(
             wrap: !SharedTheme.isLargeScreen(context),
             children: [
-              Text('Gerenciar vendas', style: Theme.of(context).textTheme.headlineMedium),
+              Row(
+                spacing: 10,
+                children: [
+                  Text('Gerenciar vendas', style: Theme.of(context).textTheme.headlineMedium),
+                  ElevatedButton(
+                    onPressed: () {
+                      _novaVendaDialog(context);
+                    }, 
+                    child: Text('Adicionar nova venda')
+                  ),
+                ],
+              ),
               Align(alignment: Alignment.bottomRight, child: _pesquisa(maxWidth)),
             ],
           ),
@@ -67,12 +78,6 @@ Widget _vendasTable(double maxWidth) {
             mainAxisAlignment: MainAxisAlignment.end,
             spacing: 5,
             children: [
-              OutlinedButton(
-                onPressed: () {
-                  _novaVendaDialog(context);
-                }, 
-                child: Text('Nova venda')
-              ),
               Visibility(
                 visible: selection.contains(true),
                 child: OutlinedButton(
@@ -130,144 +135,141 @@ Widget _vendasTable(double maxWidth) {
               ),
             ],
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
-              width: SharedTheme.isLargeScreen(context) ? maxWidth : null,
-              child: Visibility(
-                visible: vendas.isNotEmpty,
-                replacement: Center(
-                  child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
-                ),
-                child: FittedBox(
-                  fit: SharedTheme.isLargeScreen(context) ? BoxFit.scaleDown : BoxFit.fitWidth,
-                  child: DataTable(
-                    sortColumnIndex: _sortColumnIdx,
-                    sortAscending: _isAscending,
-                    showCheckboxColumn: true,
-                    columns: [
-                      DataColumn(
-                        label: Text('N°'),
-                        onSort: (columnIndex, ascending) => 
-                          setState(() {
-                            _sortColumnIdx = columnIndex;
-                            _isAscending = ascending;
-                            vendas.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
-                          }),
-                      ),
-                      DataColumn(
-                        label: Text('Produto'),
-                        onSort: (columnIndex, ascending) => 
-                          setState(() {
-                            _sortColumnIdx = columnIndex;
-                            _isAscending = ascending;
-                            vendas.sort((a, b) => _isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
-                          }),
-                      ),
-                      DataColumn(
-                        label: Text('Cliente'),
-                        onSort: (columnIndex, ascending) => 
-                          setState(() {
-                            _sortColumnIdx = columnIndex;
-                            _isAscending = ascending;
-                            vendas.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
-                          }),
-                      ),
-                      DataColumn(
-                        label: Text('Responsável'),
-                        onSort: (columnIndex, ascending) => 
-                          setState(() {
-                            _sortColumnIdx = columnIndex;
-                            _isAscending = ascending;
-                            vendas.sort((a, b) => _isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
-                          }),
-                      ),
-                      DataColumn(
-                        label: Text('Categoria'),
-                        onSort: (columnIndex, ascending) => 
-                          setState(() {
-                            _sortColumnIdx = columnIndex;
-                            _isAscending = ascending;
-                            vendas.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
-                          }),
-                      ),
-                      
-                      DataColumn(
-                        label: Text('Valor'),
-                        onSort: (columnIndex, ascending) => 
-                          setState(() {
-                            _sortColumnIdx = columnIndex;
-                            _isAscending = ascending;
-                            vendas.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
-                          }),
-                      ),
-                      DataColumn(
-                        label: Text('Data'),
-                        onSort: (columnIndex, ascending) => 
-                          setState(() {
-                            _sortColumnIdx = columnIndex;
-                            _isAscending = ascending;
-                            vendas.sort((a, b) => _isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
-                          }),
-                      ),
-                      DataColumn(
-                        label: Text('Ações'),
-                      ),
-                    ],
-                    rows: vendas.asMap().entries.map((entry) {
-                      final key = entry.key;
-                      final venda = entry.value;
-                      return DataRow(
-                        selected: selection[entry.key],
-                        onSelectChanged: (value) {
-                          setState(() {
-                            selection[key] = value!;
-                          });
-                        },
-                        cells: [
-                          DataCell(Text(venda.numero.toString())),
-                          DataCell(Text(venda.produto)),
-                          DataCell(Text(venda.nome)),
-                          DataCell(Text(venda.responsavel)),
-                          DataCell(Text(venda.categoria)),
-                          DataCell(Text("R\$ ${venda.valor.toString()}")),
-                          DataCell(Text(venda.data)),
-                          DataCell(
-                            PopupMenuButton(
-                                icon: Icon(Icons.more_vert),
-                                itemBuilder: (context) {
-                                  return [
-                                    PopupMenuItem(
-                                      child: Center(child: Icon(Icons.edit)),
-                                      value: 'edit',
-                                      onTap: () {
-                                        Venda newVenda = _editFn(context, venda);
-                                        setState(() {
-                                          vendas[key] = newVenda;
-                                        });
-                                      }
-                                    ),
-                                    PopupMenuItem(
-                                      child: Center(child: Icon(Icons.delete)),
-                                      value: 'delete',
-                                      onTap: () {
-                                        setState((){
-                                          selection = selection.map((item) => false).toList();
-                                        });
-                                        _deletePopup(context, () {
-                                          vendas = _deleteFn(context, vendas, key);
-                                          setState(() {});
-                                        }, venda.produto);
-                                      },
-                                    )
-                                  ];
-                                },
-                              ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  ),
+          Visibility(
+            visible: vendas.isNotEmpty,
+            replacement: Center(
+              child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
+            ),
+            child: _isFitedBoxOrNot(
+              context,
+              
+              child: SizedBox(
+                child: DataTable(
+                  sortColumnIndex: _sortColumnIdx,
+                  sortAscending: _isAscending,
+                  showCheckboxColumn: true,
+                  columns: [
+                    DataColumn(
+                      label: Text('N°'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          vendas.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
+                        }),
+                    ),
+                    DataColumn(
+                      label: Text('Produto'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          vendas.sort((a, b) => _isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
+                        }),
+                    ),
+                    DataColumn(
+                      label: Text('Cliente'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          vendas.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                        }),
+                    ),
+                    DataColumn(
+                      label: Text('Responsável'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          vendas.sort((a, b) => _isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
+                        }),
+                    ),
+                    DataColumn(
+                      label: Text('Categoria'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          vendas.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                        }),
+                    ),
+                    
+                    DataColumn(
+                      label: Text('Valor'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          vendas.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
+                        }),
+                    ),
+                    DataColumn(
+                      label: Text('Data'),
+                      onSort: (columnIndex, ascending) => 
+                        setState(() {
+                          _sortColumnIdx = columnIndex;
+                          _isAscending = ascending;
+                          vendas.sort((a, b) => _isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
+                        }),
+                    ),
+                    DataColumn(
+                      label: Text('Ações'),
+                    ),
+                  ],
+                  rows: vendas.asMap().entries.map((entry) {
+                    final key = entry.key;
+                    final venda = entry.value;
+                    return DataRow(
+                      selected: selection[entry.key],
+                      onSelectChanged: (value) {
+                        setState(() {
+                          selection[key] = value!;
+                        });
+                      },
+                      cells: [
+                        DataCell(Text(venda.numero.toString())),
+                        DataCell(Text(venda.produto)),
+                        DataCell(Text(venda.nome)),
+                        DataCell(Text(venda.responsavel)),
+                        DataCell(Text(venda.categoria)),
+                        DataCell(Text("R\$ ${venda.valor.toString()}")),
+                        DataCell(Text(venda.data)),
+                        DataCell(
+                          PopupMenuButton(
+                              icon: Icon(Icons.more_vert),
+                              itemBuilder: (context) {
+                                return [
+                                  PopupMenuItem(
+                                    child: Center(child: Icon(Icons.edit)),
+                                    value: 'edit',
+                                    onTap: () {
+                                      Venda newVenda = _editFn(context, venda);
+                                      setState(() {
+                                        vendas[key] = newVenda;
+                                      });
+                                    }
+                                  ),
+                                  PopupMenuItem(
+                                    child: Center(child: Icon(Icons.delete)),
+                                    value: 'delete',
+                                    onTap: () {
+                                      setState((){
+                                        selection = selection.map((item) => false).toList();
+                                      });
+                                      _deletePopup(context, () {
+                                        vendas = _deleteFn(context, vendas, key);
+                                        setState(() {});
+                                      }, venda.produto);
+                                    },
+                                  )
+                                ];
+                              },
+                            ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -455,13 +457,26 @@ _novaVendaDialog(BuildContext context) {
                       ],
                     ),
                     Gap(30),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.pop();
-                      }, 
-                      child: 
-                      Text("Salvar venda")
-                    )
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      spacing: 10,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            context.pop();
+                          }, 
+                          child: 
+                          Text("Cancelar")
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.pop();
+                          }, 
+                          child: 
+                          Text("Salvar venda")
+                        )
+                      ],
+                    ),
                   ],
                 ),
               )
@@ -473,3 +488,18 @@ _novaVendaDialog(BuildContext context) {
   );
 }
 
+_isFitedBoxOrNot(BuildContext context, {required Widget child}) {
+  final maxWidth = MediaQuery.of(context).size.width;
+  
+  return Visibility(
+    visible: maxWidth <= 1000,
+    child: FittedBox(
+      fit: BoxFit.fitWidth,
+      child: child
+    ),
+    replacement: SizedBox(
+      width: maxWidth,
+      child: child
+    ),
+  );
+}

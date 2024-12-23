@@ -45,7 +45,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                     ],
                   ),
                   ElevatedButton(
-                    child: SharedTheme.isLargeScreen(context) ? Text("Adicionar") : Icon(Icons.add),
+                    child: SharedTheme.isLargeScreen(context) ? Text("Adicionar novo cliente") : Icon(Icons.add),
                      style: ElevatedButton.styleFrom(
                       padding: SharedTheme.isLargeScreen(context) ? null : EdgeInsets.all(3),
                     ),
@@ -489,6 +489,10 @@ _createClients(BuildContext context, Function refreshFn) {
           ),
           actions: [
             TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Fechar"),
+            ),
+            ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState?.validate() ?? false) {
                   _formKey.currentState?.save();
@@ -498,10 +502,6 @@ _createClients(BuildContext context, Function refreshFn) {
                 }
               }, 
               child: Text("Adicionar novo cliente")
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Fechar"),
             ),
           ],
         ),
