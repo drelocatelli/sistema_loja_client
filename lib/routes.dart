@@ -40,7 +40,7 @@ _noTransitionRoute(Widget page) {
 }
 
 final GoRouter routes = GoRouter(
-  initialLocation: '/dashboard',
+  initialLocation: '/login',
   routes: [
     GoRoute(
       path: '/dashboard',

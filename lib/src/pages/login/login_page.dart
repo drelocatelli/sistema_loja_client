@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/layout/login_layout.dart';
+import 'package:racoon_tech_panel/src/repository/LoginRepository.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class LoginPage extends StatefulWidget {
@@ -13,17 +17,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _isLoading = true;
+  bool _storePassword = true;
 
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      setState(() {
-        _isLoading = false;
-      });
-    });
-  }
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -56,34 +52,15 @@ class _LoginPageState extends State<LoginPage> {
                     Text("Login", style: TextStyle(color: SharedTheme.secondaryColor, fontSize: 30, fontWeight: FontWeight.bold)),
                     Gap(18),
                     TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'E-mail',
-                        hintText: "exemplo@raccoontech.com",
-                        labelStyle: TextStyle(color: SharedTheme.secondaryColor),
-                        enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: SharedTheme.secondaryColor.withOpacity(0.3), width: 1.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: SharedTheme.secondaryColor.withOpacity(0.3), width: 2.0),
-                      ),
-                      errorBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red, width: 2.0),
-                      ),
-                      focusedErrorBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.redAccent, width: 2.5),
-                      ),
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Preencha o campo';
+                      obscureText: true,
+                      controller: _passwordController,
+                      onFieldSubmitted: (value) async {
+                        if (_formKey.currentState!.validate()) {
+                          await _loginRequest(context, _passwordController.text, storePassword: _storePassword);
                         }
-                        return null;
                       },
-                    ),
-                    Gap(18),
-                    TextFormField(
                       decoration: InputDecoration(
-                        labelText: 'Senha',
+                        labelText: 'Digite a senha',
                         hintText: "******",
                         labelStyle: TextStyle(color: SharedTheme.secondaryColor),
                         enabledBorder: OutlineInputBorder(
@@ -106,17 +83,36 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _storePassword = !_storePassword;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: _storePassword, 
+                            onChanged: (bool? value) {
+                            setState(() {
+                              _storePassword = value!;
+                            });
+                          }),
+                          Text("Salvar sessão")
+                        ],
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50)
                         ),
-                        onPressed: () {
+                        onPressed: () async  {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
                           if (_formKey.currentState!.validate()) {
-                            context.pushReplacement('/dashboard');
+                            await _loginRequest(context, _passwordController.text, storePassword: _storePassword);
                           }
                         },
                         child: Row(
@@ -127,7 +123,8 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                    )
+                    ),
+                    
                   ],
                 ),
               ),
@@ -137,4 +134,25 @@ class _LoginPageState extends State<LoginPage> {
       )
     );
   }
+}
+
+_loginRequest(BuildContext context, password, {bool storePassword = false}) async {
+  final response = await LoginRepository.login(password);
+
+  if(response.status != 200) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(response.message ?? 'Ocorreu um erro inesperado!'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
+
+  if(storePassword) {
+    final storage = new FlutterSecureStorage();
+    await storage.write(key: 'password', value: password);
+  }
+
+  context.pushReplacement('/dashboard');
 }

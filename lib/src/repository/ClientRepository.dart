@@ -68,57 +68,6 @@ class ClientRepository {
     
   }
 
-  // static Future<ResponseDTO<Cliente>> deleteClient(String id) async {
-  //   try {
-  //     final endpoint = dotenv.env['SERVER_URL']!+ ':' + dotenv.env['SERVER_PORT']!;
-  //     final String deleteClientQuery = '''
-  //         mutation DeleteClient {
-  //           deleteClient(id: "$id") {
-  //               id
-  //               name
-  //               email
-  //               rg
-  //               cpf
-  //               phone
-  //               address
-  //               cep
-  //               city
-  //               state
-  //               country
-  //               created_at
-  //               updated_at
-  //               deleted_at
-  //           }
-  //       }
-  //     ''';
-
-  //     final dio = requestInterceptor();
-  //     await dio.post(
-  //       endpoint,
-  //       data: {
-  //         'query': deleteClientQuery
-  //       },
-  //       options: Options(
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Access-Control-Allow-Origin': '*',
-  //         }
-  //       )
-  //     );
-
-  //     return ResponseDTO(status: 200);
-
-  //   } on DioException catch(err) {
-  //     debugPrint("${err.toString()}");
-
-  //     String? message = null;
-  //     if(err.type == DioExceptionType.connectionError) {
-  //       message = 'Não foi possível estabelecer comunicação com o servidor';
-  //     }
-  //     return ResponseDTO(status: 500, message: message);
-  //   }
-  // }
-
   static Future<ResponseDTO<List<Cliente>>> deleteClients(List<String> ids) async {
     try {
       final endpoint = dotenv.env['SERVER_URL']!+ ':' + dotenv.env['SERVER_PORT']!;

@@ -53,6 +53,12 @@ class SharedTheme {
               foregroundColor: (secondaryColor),
               backgroundColor: (Color.fromRGBO(252, 247, 240, 1 ))
             ),
+          ),
+
+          checkboxTheme: CheckboxThemeData(
+            checkColor: WidgetStatePropertyAll(Colors.white),
+            fillColor: WidgetStatePropertyAll(secondaryColor),
+            overlayColor: WidgetStatePropertyAll(Colors.white),
           )
         );
   }
