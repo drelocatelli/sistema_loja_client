@@ -59,8 +59,6 @@ clientsTable(List<Cliente> clientes, maxWidth, bool isReloading, Function refres
                       selectedIds.contains(index) ? clientes[index] : null).where((item) => item != null)
                     .toList();
   
-                  List filteredClientesTitle = selectedClients.map((cliente) => cliente?.name).toList();
-  
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -80,11 +78,16 @@ clientsTable(List<Cliente> clientes, maxWidth, bool isReloading, Function refres
                           ),
                           TextButton(
                             child: Text('Excluir'),
-                            onPressed: () {
-                              setState(() {
-                                clientes.removeWhere((cliente) => selectedIds.contains(clientes.indexOf(cliente)));
-                                selected = List<bool>.generate(clientes.length, (int index) => false);
-                              });
+                            onPressed: () async {
+                              for(int i = 0; i < selectedClients.length; i++) {
+                                await ClientRepository.deleteClient(selectedClients[i]!.id);
+                                await Future.delayed(Duration(milliseconds: 500));
+                                refreshFn();
+                              }
+                              // setState(() {
+                              //   clientes.removeWhere((cliente) => selectedIds.contains(clientes.indexOf(cliente)));
+                              //   selected = List<bool>.generate(clientes.length, (int index) => false);
+                              // });
                               Navigator.of(context).pop();
                             },
                           ),
