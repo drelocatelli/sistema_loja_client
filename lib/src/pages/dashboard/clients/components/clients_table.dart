@@ -35,15 +35,11 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
             wrap: maxWidth <= 800,
             children: [
               Row(
+                spacing: 10,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Text("Clientes",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                      IconButton(onPressed: () => refreshFn(), icon: RefreshComponent(isLoading: isReloading)),
-                    ],
-                  ),
+                  Text("Clientes",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   ElevatedButton(
                     child: SharedTheme.isLargeScreen(context) ? Text("Adicionar novo cliente") : Icon(Icons.add),
                      style: ElevatedButton.styleFrom(
@@ -56,7 +52,13 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                 ],
               ),
               Gap(10),
-              Align(alignment: Alignment.topRight, child: _pesquisa(maxWidth)),
+              Align(alignment: Alignment.topRight, child: Row(
+                spacing: 10,
+                children: [
+                  IconButton(onPressed: () => refreshFn(), icon: RefreshComponent(isLoading: isReloading)),
+                  _pesquisa(maxWidth),
+                ],
+              )),
             ],
           ),
           Align(
