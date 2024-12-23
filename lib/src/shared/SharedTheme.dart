@@ -56,10 +56,20 @@ class SharedTheme {
           ),
 
           checkboxTheme: CheckboxThemeData(
-            checkColor: WidgetStatePropertyAll(Colors.white),
-            fillColor: WidgetStatePropertyAll(secondaryColor),
-            overlayColor: WidgetStatePropertyAll(Colors.white),
-          )
+          // Define border for both selected and unselected states
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.orange, width: 2), // Custom border color and width
+          ),
+          // Set dynamic fillColor for the checkbox depending on its state
+          fillColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return secondaryColor; // Color when checked
+            }
+            return Colors.transparent; // Color when unchecked (transparent border)
+          }),
+          // Set dynamic checkColor for the checkmark
+          checkColor: WidgetStateProperty.all(Colors.white), // Checkmark color
+        ),
         );
   }
 

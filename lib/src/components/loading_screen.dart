@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/components/pulse_components.dart';
 import 'package:racoon_tech_panel/src/repository/CheckVersionRepository.dart';
+import 'package:racoon_tech_panel/src/repository/LoginRepository.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
 
@@ -27,6 +30,36 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   initState() {
     super.initState();
+    (() async {
+      await _checkLogin();
+      await _checkNewVersion();
+    })();
+    Future.delayed(const Duration(milliseconds: 800), () async {
+      if(!kIsWeb) {
+        await _checkVersion();
+      }
+      setState(() {
+        widget._isLoadingPassive = false;
+      });
+    });
+  }
+
+  _checkLogin() async {
+    final storage = new FlutterSecureStorage();
+    final storedLogin = await storage.read(key: 'password');
+    if(storedLogin == null) {
+      context.go('/login');
+      return;
+    }
+    final login = await LoginRepository.login(storedLogin);
+    if(login.status != 200) {
+      context.go('/login');
+      return;
+    }
+    debugPrint('Logged as ${storedLogin}');
+  }
+
+  _checkNewVersion() {
     if(kIsWeb) {
       setState(() {
         _newVersion = false;
@@ -36,16 +69,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
       widget.isLoading = true;
     }
     setState(() {});
-    Future.delayed(const Duration(milliseconds: 800), () async {
-      if(!kIsWeb) {
-        await _checkVersion();
-      }
-      setState(() {
-        
-        
-        widget._isLoadingPassive = false;
-      });
-    });
   }
 
   _checkVersion() async {

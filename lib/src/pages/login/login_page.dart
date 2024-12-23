@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _passwordController,
                       onFieldSubmitted: (value) async {
                         if (_formKey.currentState!.validate()) {
-                          await _loginRequest(context, _passwordController.text, storePassword: _storePassword);
+                          await _loginRequest(context, _passwordController.text);
                         }
                       },
                       decoration: InputDecoration(
@@ -83,25 +83,6 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _storePassword = !_storePassword;
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: _storePassword, 
-                            onChanged: (bool? value) {
-                            setState(() {
-                              _storePassword = value!;
-                            });
-                          }),
-                          Text("Salvar sessão")
-                        ],
-                      ),
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
                       child: ElevatedButton(
@@ -112,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
                           if (_formKey.currentState!.validate()) {
-                            await _loginRequest(context, _passwordController.text, storePassword: _storePassword);
+                            await _loginRequest(context, _passwordController.text);
                           }
                         },
                         child: Row(
@@ -136,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-_loginRequest(BuildContext context, password, {bool storePassword = false}) async {
+_loginRequest(BuildContext context, password) async {
   final response = await LoginRepository.login(password);
 
   if(response.status != 200) {
@@ -149,10 +130,8 @@ _loginRequest(BuildContext context, password, {bool storePassword = false}) asyn
     return;
   }
 
-  if(storePassword) {
-    final storage = new FlutterSecureStorage();
-    await storage.write(key: 'password', value: password);
-  }
+  final storage = new FlutterSecureStorage();
+  await storage.write(key: 'password', value: password);
 
   context.pushReplacement('/dashboard');
 }

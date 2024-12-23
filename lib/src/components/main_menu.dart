@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/dto/main_menu_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
@@ -18,7 +19,11 @@ Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
     MainMenuDTO(label: "Estoque", fn: () => context.go('/dashboard/estoque')),
     MainMenuDTO(label: "Clientes", fn: () => context.go('/dashboard/clientes')),
     MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
-    MainMenuDTO(label: "Sair", fn: () => context.go('/login'))
+    MainMenuDTO(label: "Sair", fn: () async {
+      final storage = new FlutterSecureStorage();
+      await storage.delete(key: 'password');
+      context.go('/login');
+    })
   ];
   
   List<Widget> buttons() {
