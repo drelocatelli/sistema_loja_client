@@ -16,7 +16,10 @@
             "name": "sistema_loja (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "args": [
+                "--verbose"
+            ]
         },
         {
             "name": "sistema_loja (Chrome with --disable-web-security)",

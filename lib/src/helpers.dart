@@ -30,9 +30,17 @@ class Helpers {
   }
 
   static Widget rowOrWrap({required bool wrap, required List<Widget> children, double spacing = 10}) {
+
+    final wrapWidgets = children.map((widget) {
+      if (widget is Flexible) {
+        return widget.child; // Return the child of the `Expanded` widget
+      }
+      return widget; // Return the widget as-is if it's not `Expanded`
+    }).toList();
+    
     return wrap ? Wrap(
       runSpacing: spacing,
-      children: children,
+      children: wrapWidgets,
     ) : Row(
       spacing: spacing,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

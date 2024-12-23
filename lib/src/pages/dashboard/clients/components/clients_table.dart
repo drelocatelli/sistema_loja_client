@@ -351,7 +351,7 @@ _createClients(BuildContext context, Function refreshFn) {
         child: AlertDialog(
           title: const Text("Cadastrar Cliente"),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width * (SharedTheme.isLargeScreen(context) ? 0.5 : 0.8),
+            width: SharedTheme.isLargeScreen(context) ? MediaQuery.of(context).size.width * 0.5 : MediaQuery.of(context).size.width * 0.3,
             child: Form(
               key: _formKey,
               child: SizedBox(
@@ -363,7 +363,7 @@ _createClients(BuildContext context, Function refreshFn) {
                     children: [
                       TextFormField(
                         controller: _controllers['name'],
-                        validator: (value) {
+                        validator: (String? value) {
                           if (value == null || value.isEmpty) {
                             return 'Campo obrigatório';
                           }
@@ -490,8 +490,8 @@ _createClients(BuildContext context, Function refreshFn) {
           actions: [
             TextButton(
               onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
+                if (_formKey.currentState?.validate() ?? false) {
+                  _formKey.currentState?.save();
                   await _createClientReq(context, _controllers);
                   refreshFn();
                   Navigator.of(context).pop();
