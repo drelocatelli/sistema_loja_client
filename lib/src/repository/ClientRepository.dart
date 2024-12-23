@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/dto/response_dto.dart';
+import 'package:racoon_tech_panel/src/repository/LoginRepository.dart';
 import 'package:racoon_tech_panel/src/utils/request.dart';
 
 class ClientRepository {
@@ -34,6 +35,8 @@ class ClientRepository {
         }
       ''';
 
+      final token = await LoginRepository.getToken();
+
       final dio = requestInterceptor();
       final response = await dio.post(
         endpoint,
@@ -44,6 +47,7 @@ class ClientRepository {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
+            'Authorization': "Bearer $token", 
           }
         )
       );
@@ -73,7 +77,8 @@ class ClientRepository {
       final endpoint = dotenv.env['SERVER_URL']!+ ':' + dotenv.env['SERVER_PORT']!;
 
       ids = ids.map((id) => "$id").toList();
-      debugPrint("$ids");
+      
+      final token = await LoginRepository.getToken();
       
       final String deleteClientsQuery = '''
           mutation DeleteClients {
@@ -107,6 +112,7 @@ class ClientRepository {
           headers: {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
+            'Authorization': "Bearer $token",
           }
         )
       );

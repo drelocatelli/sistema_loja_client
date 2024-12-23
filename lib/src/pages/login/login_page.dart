@@ -22,8 +22,15 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
   final width = MediaQuery.of(context).size.width;  
+
   
     return LoginLayout(
       child: Column(
@@ -131,7 +138,9 @@ _loginRequest(BuildContext context, password) async {
   }
 
   final storage = new FlutterSecureStorage();
-  await storage.write(key: 'password', value: password);
+  await storage.write(key: 'token', value: response.data);
+  final String? storedData = await storage.read(key: 'token');
+  debugPrint("Saved data: ${storedData}");
 
   context.pushReplacement('/dashboard');
 }

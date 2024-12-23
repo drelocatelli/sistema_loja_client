@@ -31,7 +31,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
   initState() {
     super.initState();
     (() async {
-      await _checkLogin();
       await _checkNewVersion();
     })();
     Future.delayed(const Duration(milliseconds: 800), () async {
@@ -42,21 +41,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
         widget._isLoadingPassive = false;
       });
     });
-  }
-
-  _checkLogin() async {
-    final storage = new FlutterSecureStorage();
-    final storedLogin = await storage.read(key: 'password');
-    if(storedLogin == null) {
-      context.go('/login');
-      return;
-    }
-    final login = await LoginRepository.login(storedLogin);
-    if(login.status != 200) {
-      context.go('/login');
-      return;
-    }
-    debugPrint('Logged as ${storedLogin}');
   }
 
   _checkNewVersion() {

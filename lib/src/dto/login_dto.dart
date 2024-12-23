@@ -1,12 +1,14 @@
 class LoginDTO {
   final bool error;
   final LoginData? data; // Nullable data
+  final String? token;
   final String message;
 
   LoginDTO({
     required this.error,
     required this.data,
     required this.message,
+    required this.token,
   });
 
   factory LoginDTO.fromJson(Map<String, dynamic> json) {
@@ -14,6 +16,7 @@ class LoginDTO {
       error: json['error'] as bool,
       data: json['data'] != null ? LoginData.fromJson(json['data']) : null,
       message: json['message'] as String,
+      token: json['token'] ?? '',
     );
   }
 
@@ -22,6 +25,7 @@ class LoginDTO {
       'error': error,
       'data': data?.toJson(),
       'message': message,
+      'token': token,
     };
   }
 }
