@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
@@ -34,6 +35,10 @@ clientsDetails(BuildContext context, Cliente cliente) {
 
 
 List<Widget> _userDetailsGrid(BuildContext context, Cliente cliente) {
+  String createdAt = cliente.createdAt.toString();
+  DateTime dateTime = DateTime.parse(createdAt);
+  String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
+  
   return [
     _detailTile(context, "Nome completo:", cliente.name),
     if (cliente.rg != null) _detailTile(context, "RG:", cliente.rg!),
@@ -43,7 +48,7 @@ List<Widget> _userDetailsGrid(BuildContext context, Cliente cliente) {
     if (cliente.address != null) _detailTile(context, "Endereço:", cliente.address!),
     if (cliente.cep != null) _detailTile(context, "CEP:", cliente.cep!),
     if (cliente.city != null) _detailTile(context, "Cidade:", cliente.city!),
-    _detailTile(context, "Último cadastro:", cliente.createdAt.toString()),
+    _detailTile(context, "Último cadastro:", formattedDate),
   ];
 }
 
