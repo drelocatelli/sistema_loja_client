@@ -29,11 +29,12 @@ class Helpers {
     );
   }
 
-  static Widget rowOrWrap({required bool wrap, required List<Widget> children}) {
+  static Widget rowOrWrap({required bool wrap, required List<Widget> children, double spacing = 10}) {
     return wrap ? Wrap(
-      spacing: 10,
+      runSpacing: spacing,
       children: children,
     ) : Row(
+      spacing: spacing,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: children,
     );

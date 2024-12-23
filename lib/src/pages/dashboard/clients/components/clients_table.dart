@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:racoon_tech_panel/src/components/refresh_component.dart';
@@ -34,10 +35,24 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
             wrap: maxWidth <= 800,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Clientes",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  IconButton(onPressed: () => refreshFn(), icon: RefreshComponent(isLoading: isReloading)),
+                  Row(
+                    children: [
+                      Text("Clientes",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      IconButton(onPressed: () => refreshFn(), icon: RefreshComponent(isLoading: isReloading)),
+                    ],
+                  ),
+                  ElevatedButton(
+                    child: SharedTheme.isLargeScreen(context) ? Text("Adicionar") : Icon(Icons.add),
+                     style: ElevatedButton.styleFrom(
+                      padding: SharedTheme.isLargeScreen(context) ? null : EdgeInsets.all(3),
+                    ),
+                    onPressed: () {
+                      _createClients(context, refreshFn);
+                    }
+                  )
                 ],
               ),
               Gap(10),
@@ -290,7 +305,7 @@ _deletePopup(BuildContext context, deleteCb, List<Cliente> clientes, clienteNome
 }
 
 Future<List<Cliente?>> _deleteClientes(BuildContext context, List<Cliente> clientes, List<String> clienteIds, Function refreshFn) async {
-  final client = await ClientRepository.deleteClients(clienteIds);
+  final client = await ClientRepository.delete(clienteIds);
     if(client.status != 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -310,4 +325,226 @@ Cliente _editCliente(BuildContext context, Cliente cliente) {
   print('edit cliente');
 
   return cliente;
+}
+
+_createClients(BuildContext context, Function refreshFn) {
+
+  final _formKey = GlobalKey<FormState>();
+
+  Map<String, TextEditingController> _controllers = {
+    "country": TextEditingController(text: 'Brasil'),
+    "state": TextEditingController(),
+    "name": TextEditingController(),
+    "email": TextEditingController(),
+    "rg": MaskedTextController(mask: '0000-000'),
+    "cpf": MaskedTextController(mask: '000.000.000-00'),
+    "phone": MaskedTextController(mask: '(00) 0 0000-0000'),
+    "cep": MaskedTextController(mask: '00000-000'),
+    "address": TextEditingController(),
+    "city": TextEditingController(),
+  };
+  
+  showDialog(
+    context: context,
+    builder: (context) {
+      return SelectionArea(
+        child: AlertDialog(
+          title: const Text("Cadastrar Cliente"),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * (SharedTheme.isLargeScreen(context) ? 0.5 : 0.8),
+            child: Form(
+              key: _formKey,
+              child: SizedBox(
+                height: SharedTheme.isLargeScreen(context) ? null : MediaQuery.of(context).size.height * 0.5,
+                child: SingleChildScrollView(
+                  child: Column(
+                    spacing: 20,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        controller: _controllers['name'],
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo obrigatório';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Nome completo*',
+                          border: OutlineInputBorder(),
+                          isDense: true
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _controllers['email'],
+                        decoration: const InputDecoration(
+                          labelText: 'E-mail',
+                          border: OutlineInputBorder(),
+                          isDense: true
+                        ),
+                      ),
+                      
+                      Helpers.rowOrWrap(
+                        wrap: !SharedTheme.isLargeScreen(context),
+                        children: [
+                          Flexible(
+                            child: TextFormField(
+                              controller: _controllers['rg'],
+                              decoration: const InputDecoration(
+                                labelText: 'RG',
+                                hintText:   '0000-000',
+                                border: OutlineInputBorder(),
+                                isDense: true
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              controller: _controllers['cpf'],
+                              decoration: const InputDecoration(
+                                labelText: 'CPF',
+                                hintText:   '000.000.000-00',
+                                border: OutlineInputBorder(),
+                                isDense: true
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextFormField(
+                        controller: _controllers['phone'],
+                        decoration: const InputDecoration(
+                          labelText: 'Telefone',
+                          hintText:   '(00) 0 0000-0000',
+                          border: OutlineInputBorder(),
+                          isDense: true
+                        ),
+                      ),
+                      Helpers.rowOrWrap(
+                        wrap: !SharedTheme.isLargeScreen(context),
+                        children: [
+                          Flexible(
+                            flex: 3,
+                            child: TextFormField(
+                              controller: _controllers['address'],
+                              decoration: const InputDecoration(
+                                labelText: 'Endereço',
+                                border: OutlineInputBorder(),
+                                isDense: true
+                              ),
+                            ),
+                          ),
+                        Flexible(
+                          child: TextFormField(
+                            controller: _controllers['cep'],
+                            decoration: const InputDecoration(
+                              labelText: 'CEP',
+                              hintText:   '00000-000',
+                              border: OutlineInputBorder(),
+                              isDense: true
+                            ),
+                          ),
+                        ),
+                        ],
+                      ),
+                      Helpers.rowOrWrap(
+                        wrap: !SharedTheme.isLargeScreen(context),
+                        children: [
+                          Flexible(
+                            child: TextFormField(
+                              controller: _controllers['state'],
+                              decoration: const InputDecoration(
+                                labelText: 'Estado',
+                                border: OutlineInputBorder(),
+                                isDense: true
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            child: TextFormField(
+                              controller: _controllers['city'],
+                              decoration: const InputDecoration(
+                                labelText: 'Cidade',
+                                border: OutlineInputBorder(),
+                                isDense: true
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextFormField(
+                        controller: _controllers['country'],
+                        decoration: const InputDecoration(
+                          labelText: 'País',
+                          border: OutlineInputBorder(),
+                          isDense: true
+                        ),
+                      ),
+                      
+                    ]
+                  ),
+                ),
+              )
+            )
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  await _createClientReq(context, _controllers);
+                  refreshFn();
+                  Navigator.of(context).pop();
+                }
+              }, 
+              child: Text("Adicionar novo cliente")
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Fechar"),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+_createClientReq(BuildContext context, Map<String, TextEditingController> controllers) async {
+  final client = Cliente(
+    id: "-1",
+    createdAt: DateTime.now(),
+    updatedAt: DateTime.now(),
+    name: controllers['name']!.text,
+    email: controllers['email']!.text,
+    rg: controllers['rg']!.text,
+    cpf: controllers['cpf']!.text,
+    phone: controllers['phone']!.text,
+    address: controllers['address']!.text,
+    cep: controllers['cep']!.text,
+    city: controllers['city']!.text,
+    state: controllers['state']!.text,
+    country: controllers['country']!.text
+  );
+
+
+  final response = await ClientRepository.create(client);
+  if(response.status != 200) {
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Erro ao adicionar cliente'),
+          content: Text(response.message ?? 'Ocorreu um erro inesperado!'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Fechar"),
+            ),
+          ],
+        );
+      }
+    );
+  } 
+
 }

@@ -32,7 +32,7 @@ class _ClientsPageState extends State<ClientsPage> {
   }
 
   Future<void> fetchData() async {
-    ResponseDTO<List<Cliente>> clientesList = await ClientRepository.getClients();
+    ResponseDTO<List<Cliente>> clientesList = await ClientRepository.get();
     if(clientesList.status != 200) {
       showDialog(
         context: context, 

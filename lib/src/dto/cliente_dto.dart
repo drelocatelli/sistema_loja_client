@@ -1,6 +1,6 @@
 class Cliente {
   final String name;
-  final String email;
+  final String? email;
   String id;
   String? address;
   String? cep;
@@ -32,22 +32,21 @@ class Cliente {
   });
 
   // Converte o modelo em um mapa para ser usado em JSON
-  Map<String, dynamic> toJson() {
+   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       'name': name,
       'email': email,
+      'rg': rg,
+      'cpf': cpf,
+      'phone': phone,
       'address': address,
       'cep': cep,
       'city': city,
       'state': state,
       'country': country,
-      'cpf': cpf,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
-      'deleted_at': deletedAt,
-      'phone': phone,
-      'rg': rg,
     };
   }
 

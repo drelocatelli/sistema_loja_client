@@ -136,11 +136,11 @@ _loginRequest(BuildContext context, password) async {
     );
     return;
   }
+  debugPrint("Data: ${response.data}");
 
   final storage = new FlutterSecureStorage();
-  await storage.write(key: 'token', value: response.data);
+  await storage.write(key: 'token', value: response.data.toString());
   final String? storedData = await storage.read(key: 'token');
-  debugPrint("Saved data: ${storedData}");
 
   context.pushReplacement('/dashboard');
 }
