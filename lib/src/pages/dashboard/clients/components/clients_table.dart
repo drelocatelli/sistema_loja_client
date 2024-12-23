@@ -8,7 +8,7 @@ import 'package:racoon_tech_panel/src/pages/dashboard/clients/components/clients
 import 'package:racoon_tech_panel/src/repository/ClientRepository.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
-clientsTable(List<Cliente> clientes, maxWidth, bool isReloading, Function refreshFn) {
+clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, required Function refreshFn}) {
 
   debugPrint(isReloading.toString());
 
@@ -81,7 +81,6 @@ clientsTable(List<Cliente> clientes, maxWidth, bool isReloading, Function refres
                             onPressed: () async {
                               for(int i = 0; i < selectedClients.length; i++) {
                                 await ClientRepository.deleteClient(selectedClients[i]!.id);
-                                await Future.delayed(Duration(milliseconds: 500));
                                 refreshFn();
                               }
                               // setState(() {
@@ -282,7 +281,16 @@ _deletePopup(BuildContext context, deleteCb, clienteNome, String clienteId, Func
           ),
           TextButton(
             onPressed: () async {
-              await ClientRepository.deleteClient(clienteId);
+              final deletedClients = await ClientRepository.deleteClient(clienteId);
+              if(deletedClients.status != 200) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(deletedClients.message ?? 'Ocorreu um erro inesperado!'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
+              }
               refreshFn();
               Navigator.of(context).pop();
             }, 

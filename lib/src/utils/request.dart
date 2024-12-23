@@ -7,7 +7,7 @@ requestInterceptor() {
   final dio = Dio();
   dio.interceptors.add(InterceptorsWrapper(
     onRequest: (options, handler) {
-      debugPrint("Requisição pro servidor: ${dotenv.env['SERVER_URL']}");
+      debugPrint("Requisição pro servidor: ${dotenv.env['SERVER_URL']}:${dotenv.env['SERVER_PORT']!}");
       return handler.next(options);
     },
     onError: (error, handler) {

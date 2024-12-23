@@ -11,7 +11,7 @@ class ClientRepository {
 
   static Future<ResponseDTO<List<Cliente>>> getClients() async {
     try {
-      final endpoint = dotenv.env['SERVER_URL']!;
+      final endpoint = dotenv.env['SERVER_URL']! + ':' +  dotenv.env['SERVER_PORT']!;
       
       const String getClientsQuery = '''
         query GetClients {
@@ -56,15 +56,21 @@ class ClientRepository {
       }
 
       return ResponseDTO<List<Cliente>>(status: response.statusCode, data: []);
-    } catch(err) {
-      return ResponseDTO(status: 500, message: err.toString());
+    } on DioException catch(err) {
+      debugPrint("${err.toString()}");
+
+      String? message = null;
+      if(err.type == DioExceptionType.connectionError) {
+        message = 'Não foi possível estabelecer comunicação com o servidor';
+      }
+      return ResponseDTO(status: 500, message: message);
     }
     
   }
 
   static Future<ResponseDTO> deleteClient(String id) async {
     try {
-      final endpoint = dotenv.env['SERVER_URL']!;
+      final endpoint = dotenv.env['SERVER_URL']!+ ':' + dotenv.env['SERVER_PORT']!;
       final String deleteClientQuery = '''
         mutation DeleteClient {
             deleteClient(id: "$id")
@@ -87,9 +93,19 @@ class ClientRepository {
 
       return ResponseDTO(status: 200);
 
-    } catch(err) {
-      return ResponseDTO(status: 500, message: err.toString());
+    } on DioException catch(err) {
+      debugPrint("${err.toString()}");
+
+      String? message = null;
+      if(err.type == DioExceptionType.connectionError) {
+        message = 'Não foi possível estabelecer comunicação com o servidor';
+      }
+      return ResponseDTO(status: 500, message: message);
     }
   }
+
+  // static Future<ResponseDTO> deleteClients(List<String> ids) async {
+
+  // }
   
 }

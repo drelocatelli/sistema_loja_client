@@ -37,6 +37,25 @@ class _ClientsPageState extends State<ClientsPage> {
 
   Future<void> fetchData() async {
     ResponseDTO<List<Cliente>> clientesList = await ClientRepository.getClients();
+    if(clientesList.status != 200) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Ocorreu um erro"),
+            content: Text(clientesList.message ?? 'Ocorreu um erro inesperado!', style: Theme.of(context).textTheme.bodyMedium),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }, 
+                child: Text('Fechar')
+              ),
+            ],
+          );  
+        }
+      );
+    }
     setState(() {
       clientes = clientesList.data ?? [];
     });
@@ -52,7 +71,7 @@ class _ClientsPageState extends State<ClientsPage> {
       child: SelectionArea(
         child: SizedBox(
           width: maxWidth,
-          child: clientsTable(clientes, maxWidth, _isReloading, () async {
+          child: clientsTable(clientes, maxWidth, isReloading: _isReloading, refreshFn: () async {
             setState(() { _isReloading = true; });
             await Future.delayed(const Duration(seconds: 1));
             await fetchData();
