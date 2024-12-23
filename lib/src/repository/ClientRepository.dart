@@ -61,5 +61,35 @@ class ClientRepository {
     }
     
   }
+
+  static Future<ResponseDTO> deleteClient(String id) async {
+    try {
+      final endpoint = dotenv.env['SERVER_URL']!;
+      final String deleteClientQuery = '''
+        mutation DeleteClient {
+            deleteClient(id: "$id")
+        }
+      ''';
+
+      final dio = requestInterceptor();
+      await dio.post(
+        endpoint,
+        data: {
+          'query': deleteClientQuery
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          }
+        )
+      );
+
+      return ResponseDTO(status: 200);
+
+    } catch(err) {
+      return ResponseDTO(status: 500, message: err.toString());
+    }
+  }
   
 }

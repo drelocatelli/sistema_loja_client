@@ -5,6 +5,7 @@ import 'package:racoon_tech_panel/src/components/refresh_component.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/clients/components/clients_details.dart';
+import 'package:racoon_tech_panel/src/repository/ClientRepository.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 clientsTable(List<Cliente> clientes, maxWidth, bool isReloading, Function refreshFn) {
@@ -183,7 +184,7 @@ clientsTable(List<Cliente> clientes, maxWidth, bool isReloading, Function refres
                                           _deletePopup(context, () {
                                           clientes = _deleteCliente(context, clientes, index);
                                           setState(() {});
-                                        }, cliente.name);
+                                        }, cliente.name, cliente.id, refreshFn);
                                           print('delete cliente ${cliente.name}');
                                         }
                                       ),
@@ -218,7 +219,7 @@ clientsTable(List<Cliente> clientes, maxWidth, bool isReloading, Function refres
                                         _deletePopup(context, () {
                                           clientes = _deleteCliente(context, clientes, index);
                                           setState(() {});
-                                        }, cliente.name);
+                                        }, cliente.name, cliente.id, refreshFn);
                                         print('delete cliente ${cliente.name}');
                                       },
                                     ),
@@ -227,7 +228,7 @@ clientsTable(List<Cliente> clientes, maxWidth, bool isReloading, Function refres
                                       icon: const Icon(Icons.more_horiz)
                                     )
                                   ]
-                                  ),
+                                ),
                               ),
                             ],
                           )),
@@ -263,7 +264,7 @@ Widget _pesquisa(double maxWidth) {
   );
 }
 
-_deletePopup(BuildContext context, deleteCb, clienteNome) {
+_deletePopup(BuildContext context, deleteCb, clienteNome, String clienteId, Function refreshFn) {
   showDialog(
     context: context, 
     builder: (context) {
@@ -277,9 +278,10 @@ _deletePopup(BuildContext context, deleteCb, clienteNome) {
             child: Text('Cancelar')
           ),
           TextButton(
-            onPressed: () {
-                deleteCb();
-                Navigator.of(context).pop();
+            onPressed: () async {
+              await ClientRepository.deleteClient(clienteId);
+              refreshFn();
+              Navigator.of(context).pop();
             }, 
             child: Text('Excluir')
           ),
