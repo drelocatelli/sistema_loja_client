@@ -71,4 +71,10 @@ class LoginRepository {
     }
     
   }
+
+  // bool isLoggedIn() async {
+
+  //   final p
+
+  // }
 }

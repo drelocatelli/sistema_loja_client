@@ -28,6 +28,8 @@ EOF
 
 sed -i "s/^VERSION='.*'/VERSION='$VERSION'/g" .env
 sed -i "s/^VERSION='.*'/VERSION='$VERSION'/g" .env.dev
+sed -i "s/^APP_MODE'.*'/APP_MODE'production'/g" .env.dev
+sed -i "s/^APP_MODE'.*'/APP_MODE'production'/g" .env
 
 # Build the Flutter web app
 flutter build web --release --base-href="/raccoontech/"
@@ -42,6 +44,9 @@ INDEX_FILE="build/web/index.html"
 sed -i 's|<title>.*</title>|<title>Raccoon Tech</title>|' "$INDEX_FILE"
 
 flutter build apk --release
+
+sed -i "s/^APP_MODE'.*'/APP_MODE'development'/g" .env.dev
+sed -i "s/^APP_MODE'.*'/APP_MODE'development'/g" .env
 
 echo "version.php created with version $VERSION."
 

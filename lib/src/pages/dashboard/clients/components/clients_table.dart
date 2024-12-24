@@ -32,37 +32,52 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Helpers.rowOrWrap(
-            wrap: maxWidth <= 800,
+            wrap: !SharedTheme.isLargeScreen(context),
             children: [
-              Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
                 children: [
-                  Text("Clientes",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  ElevatedButton(
-                    child: SharedTheme.isLargeScreen(context) ? Text("Adicionar novo cliente") : Icon(Icons.add),
-                     style: ElevatedButton.styleFrom(
-                      padding: SharedTheme.isLargeScreen(context) ? null : EdgeInsets.all(3),
-                    ),
-                    onPressed: () {
-                      _createClients(context, refreshFn);
-                    }
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Clientes",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      Row(
+                        children: [
+                          IconButton(onPressed: () => refreshFn(), icon: RefreshComponent(isLoading: isReloading)),
+                          ElevatedButton(
+                            child: SharedTheme.isLargeScreen(context) ? Text("Adicionar novo cliente") : Icon(Icons.add),
+                             style: ElevatedButton.styleFrom(
+                              padding: SharedTheme.isLargeScreen(context) ? null : EdgeInsets.all(3),
+                            ),
+                            onPressed: () {
+                              _createClients(context, refreshFn);
+                            }
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Visibility(
+                    visible: !SharedTheme.isLargeScreen(context), 
+                    child:  _pesquisa(maxWidth)
                   )
                 ],
               ),
               Gap(10),
-              Align(alignment: Alignment.topRight, child: Row(
-                spacing: 10,
-                children: [
-                  IconButton(onPressed: () => refreshFn(), icon: RefreshComponent(isLoading: isReloading)),
-                  _pesquisa(maxWidth),
-                ],
-              )),
+              Visibility(
+                visible: SharedTheme.isLargeScreen(context),
+                child: Align(alignment: Alignment.topLeft, child: Row(
+                  spacing: 10,
+                  children: [
+                    IconButton(onPressed: () => refreshFn(), icon: RefreshComponent(isLoading: isReloading)),
+                    _pesquisa(maxWidth),
+                  ],
+                )),
+              ),
             ],
           ),
           Align(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.topRight,
             child: Visibility(
               visible: selected.contains(true),
               child: OutlinedButton(
