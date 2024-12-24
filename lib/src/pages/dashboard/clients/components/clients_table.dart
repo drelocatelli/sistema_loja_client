@@ -67,13 +67,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
               Gap(10),
               Visibility(
                 visible: SharedTheme.isLargeScreen(context),
-                child: Align(alignment: Alignment.topLeft, child: Row(
-                  spacing: 10,
-                  children: [
-                    InkWell(onTap: () => refreshFn(), child: RefreshComponent(isLoading: isReloading)),
-                    _pesquisa(maxWidth),
-                  ],
-                )),
+                child: Align(alignment: Alignment.topLeft, child: _pesquisa(maxWidth)),
               ),
             ],
           ),
