@@ -21,6 +21,8 @@ class _ClientsPageState extends State<ClientsPage> {
   List<Cliente> clientes = [];
   bool _isLoading = true;
   bool _isReloading = false;
+  final NumberPaginatorController _controller = NumberPaginatorController();
+
   
   @override
   void initState() {
@@ -34,7 +36,13 @@ class _ClientsPageState extends State<ClientsPage> {
     
   }
 
-  Future<void> fetchData({int? page}) async {
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  Future<void> fetchData({int? page = 1}) async {
     ResponseDTO<ClientesResponseDTO> clientesList = await ClientRepository.get(page: page);
     if(clientesList.status != 200) {
       showDialog(
@@ -64,10 +72,8 @@ class _ClientsPageState extends State<ClientsPage> {
   Widget build(BuildContext context) {
 
   final maxWidth = MediaQuery.of(context).size.width;  
-  final NumberPaginatorController _controller = NumberPaginatorController();
   int _currentIdx = 0;
   int _currentPage = 1;
-  bool _isReloading = false;
 
     return MainLayout(
       isLoading: _isLoading,
