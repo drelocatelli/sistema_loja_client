@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
+import 'package:number_paginator/number_paginator.dart';
 import 'package:racoon_tech_panel/src/components/loading_screen.dart';
 import 'package:racoon_tech_panel/src/components/main_menu.dart';
 import 'package:racoon_tech_panel/src/dto/main_menu_dto.dart';
@@ -8,11 +9,12 @@ import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class MainLayout extends StatefulWidget {
-  MainLayout({super.key, required this.child, this.padding, bool? this.isLoading});
+  MainLayout({super.key, required this.child, this.padding, bool? this.isLoading, this.floatingActionButton});
 
   final Widget child;
   final EdgeInsets? padding;
   final bool? isLoading;
+  Widget? floatingActionButton;
 
   @override
   State<MainLayout> createState() => _MainLayoutState();
@@ -37,6 +39,7 @@ class _MainLayoutState extends State<MainLayout> {
       isLoading: widget.isLoading,
       child: Scaffold(
           key: _scaffoldKey,
+          floatingActionButton: widget.floatingActionButton,
         appBar: AppBar(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

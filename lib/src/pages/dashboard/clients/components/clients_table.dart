@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:racoon_tech_panel/src/components/refresh_component.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
@@ -517,6 +514,22 @@ _createClients(BuildContext context, Function refreshFn) {
                   await _createClientReq(context, _controllers);
                   refreshFn();
                   Navigator.of(context).pop();
+                  showDialog(
+                    context: context,
+                     builder: (context) {
+                       return AlertDialog(
+                         title: Text('Cliente cadastrado com sucesso!'),
+                         actions: [
+                           TextButton(
+                             onPressed: () {
+                               Navigator.of(context).pop();
+                             }, 
+                             child: Text('Fechar')
+                           ),
+                         ]
+                       );
+                     }
+                  );
                 }
               }, 
               child: Text("Adicionar novo cliente")
