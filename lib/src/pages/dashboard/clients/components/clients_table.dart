@@ -40,7 +40,10 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       Row(
                         children: [
-                          InkWell(onTap: () => refreshFn(), child: RefreshComponent(isLoading: isReloading)),
+                          Visibility(
+                            visible: !SharedTheme.isLargeScreen(context),
+                            child: InkWell(onTap: () => refreshFn(), child: RefreshComponent(isLoading: isReloading))
+                          ),
                           Gap(10),
                           ElevatedButton(
                             child: SharedTheme.isLargeScreen(context) ? Text("Adicionar novo cliente") : Icon(Icons.add),
