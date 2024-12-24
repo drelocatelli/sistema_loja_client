@@ -28,9 +28,10 @@ class _ClientsPageState extends State<ClientsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await fetchData();
+      final newClientes = await fetchData();
       setState(() {
         _isLoading = false;
+        clientes = newClientes;
       });
     });
     
@@ -42,8 +43,11 @@ class _ClientsPageState extends State<ClientsPage> {
     _controller.dispose();
   }
 
-  Future<void> fetchData({int? page = 1, String? searchTerm}) async {
+  Future<List<Cliente>> fetchData({int? page = 1, String? searchTerm}) async {
     ResponseDTO<ClientesResponseDTO> clientesList = await ClientRepository.get(page: page, searchTerm: searchTerm);
+
+    final newClientes = clientesList.data?.clientes ?? [];
+
     if(clientesList.status != 200) {
       showDialog(
         context: context, 
@@ -63,9 +67,11 @@ class _ClientsPageState extends State<ClientsPage> {
         }
       );
     }
-    setState(() {
-      clientes = clientesList.data?.clientes ?? [];
-    });
+
+
+    debugPrint("Clientes fetched: ${newClientes.length}");
+
+    return newClientes;
   }
 
   @override
@@ -91,12 +97,14 @@ class _ClientsPageState extends State<ClientsPage> {
             setState(() {
               _currentIdx = index;
               _currentPage = index + 1;
-              debugPrint(_currentPage.toString());
             });
             setState(() { _isReloading = true; });
             await Future.delayed(const Duration(seconds: 1));
-            await fetchData(page: _currentPage);
-            setState(() { _isReloading = false; });
+            final newClientes = await fetchData(page: _currentPage);
+            setState(() { 
+              _isReloading = false; 
+              clientes = newClientes;
+            });
           },
         ),
       ),
@@ -105,19 +113,19 @@ class _ClientsPageState extends State<ClientsPage> {
           width: maxWidth,
           child: clientsTable(clientes, maxWidth, isReloading: _isReloading, refreshFn: () async {
             setState(() { _isReloading = true; });
-            await Future.delayed(const Duration(seconds: 1));
-            await fetchData(page: 1);
-            setState(() { _isReloading = false; });
+            final newClientes = await fetchData(page: 1);
+            setState(() { 
+              _isReloading = false; 
+              clientes = newClientes;
+            });
           },
           search: _pesquisa(maxWidth, (String searchTerm) async {
+            final newClientes = await fetchData(page: 1, searchTerm: searchTerm);
             setState(() { 
-              _isReloading = true;
               _currentIdx = 0;
               _currentPage = 1;
+              clientes = newClientes;
              });
-            Future.delayed(const Duration(seconds: 1));
-            await fetchData(page: 1, searchTerm: searchTerm);
-            setState(() { _isReloading = false; });
           }),
           )
         ),

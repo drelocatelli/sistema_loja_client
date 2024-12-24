@@ -10,8 +10,6 @@ import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, required Function refreshFn, required Widget search}) {
 
-  debugPrint(isReloading.toString());
-
   // sort by name
   clientes.sort((a, b) => a.name.compareTo(b.name));
 

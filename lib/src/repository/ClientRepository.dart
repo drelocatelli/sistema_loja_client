@@ -28,8 +28,6 @@ class ClientRepository {
       .where((entry) => entry != null)
       .join(', ');
 
-    debugPrint("payload: ${payloadStr}");
-    
     final String query = '''
       query GetClients {
           getClients($payloadStr) {
@@ -65,6 +63,7 @@ class ClientRepository {
       cbData: (response) {
         final clientsData = response.data['data']['getClients'];
         final clientesDTO = ClientesResponseDTO.fromJson(clientsData);
+
 
         return ResponseDTO<ClientesResponseDTO>(status: response.statusCode, data: clientesDTO);
       }, 

@@ -10,8 +10,6 @@ Widget rowOrWrap(BuildContext context, {required List<Widget> children, required
     return widget; // Return the widget as-is if it's not `Expanded`
   }).toList();
 
-  debugPrint("wrap: ${wrap.toString()}");
-
   if(wrap) {
     return Wrap(children: wrapChildren);
   }
