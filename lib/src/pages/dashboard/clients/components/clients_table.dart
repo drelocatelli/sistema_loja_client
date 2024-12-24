@@ -8,7 +8,7 @@ import 'package:racoon_tech_panel/src/pages/dashboard/clients/components/clients
 import 'package:racoon_tech_panel/src/repository/ClientRepository.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
-clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, required Function refreshFn}) {
+clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, required Function refreshFn, required Widget search}) {
 
   debugPrint(isReloading.toString());
 
@@ -60,14 +60,14 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                   ),
                   Visibility(
                     visible: !SharedTheme.isLargeScreen(context), 
-                    child:  _pesquisa(maxWidth)
+                    child:  search
                   )
                 ],
               ),
               Gap(10),
               Visibility(
                 visible: SharedTheme.isLargeScreen(context),
-                child: Align(alignment: Alignment.topLeft, child: _pesquisa(maxWidth)),
+                child: Align(alignment: Alignment.topLeft, child: search),
               ),
             ],
           ),
@@ -166,6 +166,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                             });
                           }
                         ),
+                        
                         DataColumn(
                           label: Text('Ações'),
                         ),
@@ -272,23 +273,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
   );
 }
 
-Widget _pesquisa(double maxWidth) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 8.0),
-    child: SizedBox(
-      width: maxWidth >= 800 ? 400 : null,
-      child: TextFormField(
-       decoration: const InputDecoration(
-          hintText: 'Digite sua busca',
-          border: OutlineInputBorder(), 
-          suffixIcon: Icon(Icons.search),
-          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-          isDense: true
-        ),
-      ),
-    ),
-  );
-}
+
 
 _deletePopup(BuildContext context, deleteCb, List<Cliente> clientes, clienteNome, String clienteId, Function refreshFn) {
   showDialog(

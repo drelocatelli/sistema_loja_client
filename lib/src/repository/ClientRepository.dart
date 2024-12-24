@@ -12,11 +12,27 @@ import 'package:racoon_tech_panel/src/utils/request.dart';
 
 class ClientRepository {
 
-  static Future<ResponseDTO<ClientesResponseDTO>> get({int? page = 1}) async {
+  static Future<ResponseDTO<ClientesResponseDTO>> get({int? page = 1, String? searchTerm}) async {
 
+    Map<String, dynamic> payload = {
+      'page': page
+    };
+
+    if(searchTerm != null) {
+      payload['searchTerm'] = searchTerm;
+    }
+
+    String payloadStr = payload
+      .entries
+      .map((entry) => (entry.value != '') ? '${entry.key}: ${(entry.value is String) ? '"${entry.value}"' : '${entry.value}'}' : null)
+      .where((entry) => entry != null)
+      .join(', ');
+
+    debugPrint("payload: ${payloadStr}");
+    
     final String query = '''
       query GetClients {
-          getClients(page: $page) {
+          getClients($payloadStr) {
               clients {
                   id
                   name

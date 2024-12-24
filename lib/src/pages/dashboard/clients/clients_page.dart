@@ -42,8 +42,8 @@ class _ClientsPageState extends State<ClientsPage> {
     _controller.dispose();
   }
 
-  Future<void> fetchData({int? page = 1}) async {
-    ResponseDTO<ClientesResponseDTO> clientesList = await ClientRepository.get(page: page);
+  Future<void> fetchData({int? page = 1, String? searchTerm}) async {
+    ResponseDTO<ClientesResponseDTO> clientesList = await ClientRepository.get(page: page, searchTerm: searchTerm);
     if(clientesList.status != 200) {
       showDialog(
         context: context, 
@@ -77,7 +77,8 @@ class _ClientsPageState extends State<ClientsPage> {
 
     return MainLayout(
       isLoading: _isLoading,
-      floatingActionButton: Padding(
+      floatingActionButton: Container(
+        color: Colors.white,
         padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
         child: NumberPaginator(
           config: NumberPaginatorUIConfig(
@@ -87,11 +88,15 @@ class _ClientsPageState extends State<ClientsPage> {
           initialPage: _currentIdx,
           controller: _controller,
           onPageChange: (int index) async {
-            setState(() async {
+            setState(() {
               _currentIdx = index;
               _currentPage = index + 1;
-              await fetchData(page: _currentPage);
+              debugPrint(_currentPage.toString());
             });
+            setState(() { _isReloading = true; });
+            await Future.delayed(const Duration(seconds: 1));
+            await fetchData(page: _currentPage);
+            setState(() { _isReloading = false; });
           },
         ),
       ),
@@ -103,12 +108,43 @@ class _ClientsPageState extends State<ClientsPage> {
             await Future.delayed(const Duration(seconds: 1));
             await fetchData(page: 1);
             setState(() { _isReloading = false; });
-          })
+          },
+          search: _pesquisa(maxWidth, (String searchTerm) async {
+            setState(() { 
+              _isReloading = true;
+              _currentIdx = 0;
+              _currentPage = 1;
+             });
+            Future.delayed(const Duration(seconds: 1));
+            await fetchData(page: 1, searchTerm: searchTerm);
+            setState(() { _isReloading = false; });
+          }),
+          )
         ),
       ),
     );
   }
 }
 
+Widget _pesquisa(double maxWidth, Function fetchCb) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8.0),
+    child: SizedBox(
+      width: maxWidth >= 800 ? 400 : null,
+      child: TextFormField(
+        onFieldSubmitted: (String value) {
+          fetchCb(value);
+        },
+       decoration: const InputDecoration(
+          hintText: 'Procurar por nome...',
+          border: OutlineInputBorder(), 
+          suffixIcon: Icon(Icons.search),
+          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+          isDense: true
+        ),
+      ),
+    ),
+  );
+}
 
 
