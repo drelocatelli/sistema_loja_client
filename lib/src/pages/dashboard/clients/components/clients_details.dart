@@ -42,7 +42,7 @@ List<Widget> _userDetailsGrid(BuildContext context, Cliente cliente) {
   return [
     _detailTile(context, "Nome completo:", cliente.name),
     if (cliente.rg != null) _detailTile(context, "RG:", cliente.rg!),
-    if (cliente.email != null && cliente.email!.length != 0) _detailTile(context, "E-mail:", cliente.email!),
+    if (cliente.email != null && cliente.email!.isNotEmpty) _detailTile(context, "E-mail:", cliente.email!),
     if (cliente.cpf != null) _detailTile(context, "CPF:", cliente.cpf!),
     if (cliente.phone != null) _detailTile(context, "Telefone:", cliente.phone!),
     if (cliente.address != null) _detailTile(context, "Endereço:", cliente.address!),

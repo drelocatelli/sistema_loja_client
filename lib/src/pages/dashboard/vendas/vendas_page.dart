@@ -48,8 +48,8 @@ Widget _vendasTable(double maxWidth) {
     ..sort((a, b) => a.key.compareTo(b.key))
     ..forEach((entry) => entry.value.numero = entry.key + 1);
 
-  int _sortColumnIdx = 0; // coluna de data
-  bool _isAscending = true;
+  int sortColumnIdx = 0; // coluna de data
+  bool isAscending = true;
   List<bool> selection = List<bool>.generate(vendas.length, (int index) => false);
   
   return StatefulBuilder(
@@ -67,7 +67,7 @@ Widget _vendasTable(double maxWidth) {
                     onPressed: () {
                       _novaVendaDialog(context);
                     }, 
-                    child: Text('Adicionar nova venda')
+                    child: const Text('Adicionar nova venda')
                   ),
                 ],
               ),
@@ -103,14 +103,14 @@ Widget _vendasTable(double maxWidth) {
                       context: context, 
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text("Excluir selecionados"),
-                          content: Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
+                          title: const Text("Excluir selecionados"),
+                          content: const Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
                           actions: [
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               }, 
-                              child: Text("Cancelar")
+                              child: const Text("Cancelar")
                             ),
                             TextButton(
                               onPressed: () {
@@ -123,14 +123,14 @@ Widget _vendasTable(double maxWidth) {
                                 });
                                 Navigator.of(context).pop();
                               }, 
-                              child: Text("Confirmar")
+                              child: const Text("Confirmar")
                             ),
                           ],
                         );
                       }
                     );
                   }, 
-                  child: Text("Excluir selecionados")
+                  child: const Text("Excluir selecionados")
                 ),
               ),
             ],
@@ -145,75 +145,75 @@ Widget _vendasTable(double maxWidth) {
               
               child: SizedBox(
                 child: DataTable(
-                  sortColumnIndex: _sortColumnIdx,
-                  sortAscending: _isAscending,
+                  sortColumnIndex: sortColumnIdx,
+                  sortAscending: isAscending,
                   showCheckboxColumn: true,
                   columns: [
                     DataColumn(
-                      label: Text('N°'),
+                      label: const Text('N°'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
+                          sortColumnIdx = columnIndex;
+                          isAscending = ascending;
+                          vendas.sort((a, b) => isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
                         }),
                     ),
                     DataColumn(
-                      label: Text('Produto'),
+                      label: const Text('Produto'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
+                          sortColumnIdx = columnIndex;
+                          isAscending = ascending;
+                          vendas.sort((a, b) => isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
                         }),
                     ),
                     DataColumn(
-                      label: Text('Cliente'),
+                      label: const Text('Cliente'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                          sortColumnIdx = columnIndex;
+                          isAscending = ascending;
+                          vendas.sort((a, b) => isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
                         }),
                     ),
                     DataColumn(
-                      label: Text('Responsável'),
+                      label: const Text('Responsável'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
+                          sortColumnIdx = columnIndex;
+                          isAscending = ascending;
+                          vendas.sort((a, b) => isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
                         }),
                     ),
                     DataColumn(
-                      label: Text('Categoria'),
+                      label: const Text('Categoria'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                          sortColumnIdx = columnIndex;
+                          isAscending = ascending;
+                          vendas.sort((a, b) => isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
                         }),
                     ),
                     
                     DataColumn(
-                      label: Text('Valor'),
+                      label: const Text('Valor'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
+                          sortColumnIdx = columnIndex;
+                          isAscending = ascending;
+                          vendas.sort((a, b) => isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
                         }),
                     ),
                     DataColumn(
-                      label: Text('Data'),
+                      label: const Text('Data'),
                       onSort: (columnIndex, ascending) => 
                         setState(() {
-                          _sortColumnIdx = columnIndex;
-                          _isAscending = ascending;
-                          vendas.sort((a, b) => _isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
+                          sortColumnIdx = columnIndex;
+                          isAscending = ascending;
+                          vendas.sort((a, b) => isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
                         }),
                     ),
-                    DataColumn(
+                    const DataColumn(
                       label: Text('Ações'),
                     ),
                   ],
@@ -237,21 +237,20 @@ Widget _vendasTable(double maxWidth) {
                         DataCell(Text(venda.data)),
                         DataCell(
                           PopupMenuButton(
-                              icon: Icon(Icons.more_vert),
+                              icon: const Icon(Icons.more_vert),
                               itemBuilder: (context) {
                                 return [
                                   PopupMenuItem(
-                                    child: Center(child: Icon(Icons.edit)),
                                     value: 'edit',
                                     onTap: () {
                                       Venda newVenda = _editFn(context, venda);
                                       setState(() {
                                         vendas[key] = newVenda;
                                       });
-                                    }
+                                    },
+                                    child: Center(child: Icon(Icons.edit))
                                   ),
                                   PopupMenuItem(
-                                    child: Center(child: Icon(Icons.delete)),
                                     value: 'delete',
                                     onTap: () {
                                       setState((){
@@ -262,6 +261,7 @@ Widget _vendasTable(double maxWidth) {
                                         setState(() {});
                                       }, venda.produto);
                                     },
+                                    child: Center(child: Icon(Icons.delete)),
                                   )
                                 ];
                               },
@@ -295,13 +295,13 @@ Widget _pesquisa(double maxWidth) {
               value: 'produto',
               onChanged: (String? value) {
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   labelText: 'Buscar por:',
                   border: OutlineInputBorder(), 
                   contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 5),
                   isDense: true
                 ),
-                items: [
+                items: const [
                   DropdownMenuItem(value: 'cliente', child: Text('Cliente')),
                   DropdownMenuItem(value: 'produto', child: Text('Produto')),
                   DropdownMenuItem(value: 'categoria', child: Text('Categoria')),
@@ -312,7 +312,7 @@ Widget _pesquisa(double maxWidth) {
           Expanded(
             flex: 2,
             child: TextFormField(
-             decoration: InputDecoration(
+             decoration: const InputDecoration(
                 hintText: 'Digite sua busca',
                 border: OutlineInputBorder(), 
                 suffixIcon: Icon(Icons.search),
@@ -332,20 +332,20 @@ _deletePopup(BuildContext context, deleteCb, titulo) {
     context: context, 
     builder: (context) {
       return AlertDialog(
-        title: Text('Deseja realmente excluir o ${titulo}?'),
+        title: Text('Deseja realmente excluir o $titulo?'),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             }, 
-            child: Text('Cancelar')
+            child: const Text('Cancelar')
           ),
           TextButton(
             onPressed: () {
                 deleteCb();
                 Navigator.of(context).pop();
             }, 
-            child: Text('Excluir')
+            child: const Text('Excluir')
           ),
         ]
       );
@@ -367,7 +367,7 @@ _novaVendaDialog(BuildContext context) {
 
   Venda venda;
 
-  Map<String, TextEditingController> _controllers = {
+  Map<String, TextEditingController> controllers = {
     "data": TextEditingController(text: DateFormat('dd/MM/yyyy').format(DateTime.now())),
     "produto": TextEditingController(),
     "responsavel": TextEditingController(),
@@ -375,7 +375,7 @@ _novaVendaDialog(BuildContext context) {
     "categoria": TextEditingController(),
   };
 
-  _selectDate(BuildContext context) async {
+  selectDate(BuildContext context) async {
     
     final DateTime? picked = await showDatePicker(
       context: context, 
@@ -385,7 +385,7 @@ _novaVendaDialog(BuildContext context) {
     );
 
     if(picked! != null) {
-      _controllers["data"]!.text = DateFormat('dd/MM/yyyy').format(picked);
+      controllers["data"]!.text = DateFormat('dd/MM/yyyy').format(picked);
     }
   }
   
@@ -393,7 +393,7 @@ _novaVendaDialog(BuildContext context) {
     context: context, 
     builder: (context) {
       return AlertDialog(
-        title: Text('Nova venda'),
+        title: const Text('Nova venda'),
         content: SizedBox(
           width: maxWidth / 3,
           child: Column(
@@ -410,16 +410,16 @@ _novaVendaDialog(BuildContext context) {
                       children: [
                         Expanded(
                           child: TextFormField(
-                            controller: _controllers["produto"],
-                            decoration: InputDecoration(labelText: 'Produto'),
+                            controller: controllers["produto"],
+                            decoration: const InputDecoration(labelText: 'Produto'),
                           ),
                         ),
                         DropdownMenu(
-                          controller: _controllers["categoria"]!,
+                          controller: controllers["categoria"]!,
                           width: maxWidth < 800 ? double.infinity : null,
                           enableFilter: true,
-                          label: Text("Categoria"),
-                          dropdownMenuEntries: [
+                          label: const Text("Categoria"),
+                          dropdownMenuEntries: const [
                             DropdownMenuEntry(value: 1, label: "Categoria 1"),
                             DropdownMenuEntry(value: 2, label: "Categoria 2"),
                             DropdownMenuEntry(value: 3, label: "Categoria 3"),
@@ -429,34 +429,34 @@ _novaVendaDialog(BuildContext context) {
                     ),
                     
                     TextFormField(
-                      controller: _controllers["valor"]!,
-                      keyboardType: TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: 'Valor', prefixText: 'R\$ '),
+                      controller: controllers["valor"]!,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: const InputDecoration(labelText: 'Valor', prefixText: 'R\$ '),
                     ),
                     TextFormField(
-                      controller: _controllers["data"]!,
-                      onTap: () => _selectDate(context),
+                      controller: controllers["data"]!,
+                      onTap: () => selectDate(context),
                        decoration: InputDecoration(
                           labelText: "Data",
                           suffixIcon: IconButton(
-                            icon: Icon(Icons.calendar_today),
-                            onPressed: () => _selectDate(context),
+                            icon: const Icon(Icons.calendar_today),
+                            onPressed: () => selectDate(context),
                           ),
                         ),
                     ),
-                    Gap(20),
+                    const Gap(20),
                     DropdownMenu(
                       width: double.infinity,
                       enableFilter: true,
-                      controller: _controllers["responsavel"]!,
-                      label: Text("Responsável"),
-                      dropdownMenuEntries: [
+                      controller: controllers["responsavel"]!,
+                      label: const Text("Responsável"),
+                      dropdownMenuEntries: const [
                         DropdownMenuEntry(value: 1, label: "Colaborador 1"),
                         DropdownMenuEntry(value: 2, label: "Colaborador 2"),
                         DropdownMenuEntry(value: 3, label: "Colaborador 3"),
                       ],
                     ),
-                    Gap(30),
+                    const Gap(30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       spacing: 10,
@@ -466,14 +466,14 @@ _novaVendaDialog(BuildContext context) {
                             context.pop();
                           }, 
                           child: 
-                          Text("Cancelar")
+                          const Text("Cancelar")
                         ),
                         ElevatedButton(
                           onPressed: () {
                             context.pop();
                           }, 
                           child: 
-                          Text("Salvar venda")
+                          const Text("Salvar venda")
                         )
                       ],
                     ),
@@ -493,12 +493,12 @@ _isFitedBoxOrNot(BuildContext context, {required Widget child}) {
   
   return Visibility(
     visible: maxWidth <= 1000,
-    child: FittedBox(
-      fit: BoxFit.fitWidth,
-      child: child
-    ),
     replacement: SizedBox(
       width: maxWidth,
+      child: child
+    ),
+    child: FittedBox(
+      fit: BoxFit.fitWidth,
       child: child
     ),
   );

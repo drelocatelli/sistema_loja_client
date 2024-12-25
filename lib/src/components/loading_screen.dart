@@ -19,7 +19,7 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  ValueNotifier<bool> _isLoading = ValueNotifier(true);
+  final ValueNotifier<bool> _isLoading = ValueNotifier(true);
   bool _newVersion = false;
 
   @override
@@ -44,22 +44,20 @@ class _LoadingScreenState extends State<LoadingScreen> {
         _newVersion = false;
       });
     }
-    if(widget.isLoading == null) {
-      widget.isLoading = true;
-    }
+    widget.isLoading ??= true;
     setState(() {});
   }
 
   _checkVersion() async {
-    bool? _hasNewVersion = await CheckVersionRepository.hasNewVersion();
-    debugPrint('Has new version: $_hasNewVersion');
+    bool? hasNewVersion = await CheckVersionRepository.hasNewVersion();
+    debugPrint('Has new version: $hasNewVersion');
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(_hasNewVersion == null) {
+      if(hasNewVersion == null) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Erro ao verificar versão'),
         ));
       } else {
-        _newVersion = _hasNewVersion;
+        _newVersion = hasNewVersion;
         setState(() {});
       }
 
@@ -72,7 +70,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
       color: Colors.white,
       child: Visibility(
         visible: _newVersion && !kIsWeb,
-        child: _versionObsolete(context),
         replacement: Visibility(
           visible: widget.isLoading != null && widget.isLoading! && widget._isLoadingPassive,
           replacement: widget.child,
@@ -86,6 +83,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
             ],
           ),
         ),
+        child: _versionObsolete(context),
       ),
     );
   }
@@ -98,19 +96,19 @@ Widget _versionObsolete(BuildContext context) {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Nova versão disponível!", style: Theme.of(context).textTheme.headlineSmall),
-              Gap(30),
+              const Gap(30),
               Image.asset("assets/img/logo.png", width: 150),
-              Gap(30),
+              const Gap(30),
               Text("É necessário atualizar para a nova versão para continuar", style: Theme.of(context).textTheme.bodyLarge),
-              Gap(30),
+              const Gap(30),
               OutlinedButton(
                 onPressed: () async {
-                  Uri _url = Uri.parse(dotenv.env['API_DOWNLOAD_APP']!);
-                  await launchUrl(_url);
+                  Uri url = Uri.parse(dotenv.env['API_DOWNLOAD_APP']!);
+                  await launchUrl(url);
                 }, 
-                child: Text("Clique aqui pra atualizar")
+                child: const Text("Clique aqui pra atualizar")
               ),
-              Gap(20),
+              const Gap(20),
               Text("Versão atual: ${dotenv.env['VERSION']}", style: Theme.of(context).textTheme.bodySmall),
             ],
           )

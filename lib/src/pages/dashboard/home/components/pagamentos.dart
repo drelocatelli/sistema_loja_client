@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class Pagamentos extends StatelessWidget {
-  Pagamentos({super.key});
+  const Pagamentos({super.key});
 
 
   @override
@@ -13,14 +13,14 @@ class Pagamentos extends StatelessWidget {
        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
          children: [
-           Row(
+           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
              children: [
                Text("Saída", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
              ],
            ),
            table(maxWidth),
-          Gap(50),
+          const Gap(50),
 
          ],
        )
@@ -48,10 +48,10 @@ return SingleChildScrollView(
               DataCell(SizedBox(width: 80, child: Text("R\$ ${payment['valor'].toStringAsFixed(2)}"))),
               DataCell(
                 PopupMenuButton(
-                    icon: Icon(Icons.more_vert),
+                    icon: const Icon(Icons.more_vert),
                     itemBuilder: (context)  {
                      return [
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         child: Text("Mais detalhes")
                       ),
                      ];

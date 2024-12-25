@@ -37,12 +37,12 @@ class MyApp extends StatelessWidget {
       routeInformationParser: routes.routeInformationParser,
       routeInformationProvider: routes.routeInformationProvider,
       // getPages: routes,
-      locale: Locale('pt', 'BR'),
-      supportedLocales: [
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: const [
         Locale('pt', 'BR'),
         Locale('en', 'US'),
       ],
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],

@@ -9,7 +9,7 @@ import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class MainLayout extends StatefulWidget {
-  MainLayout({super.key, required this.child, this.padding, bool? this.isLoading, this.floatingActionButton});
+  MainLayout({super.key, required this.child, this.padding, this.isLoading, this.floatingActionButton});
 
   final Widget child;
   final EdgeInsets? padding;
@@ -67,7 +67,7 @@ class _MainLayoutState extends State<MainLayout> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: widget.padding ?? EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
+            padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -91,19 +91,19 @@ Widget busca(isLargeScreen, formKey, submitForm) {
         decoration: InputDecoration(
           hintText: !isLargeScreen ? "Pesquisar..." : "",
           hintStyle: const TextStyle(color: Colors.grey),
-          enabledBorder: UnderlineInputBorder(
+          enabledBorder: const UnderlineInputBorder(
             borderSide: BorderSide(
               color: Colors.grey,
               width: 1.5,
             ),
           ),
-          focusedBorder: UnderlineInputBorder(
+          focusedBorder: const UnderlineInputBorder(
             borderSide: BorderSide(
               color: Colors.grey,
               width: 1.5,
             ),
           ),
-          border: UnderlineInputBorder(
+          border: const UnderlineInputBorder(
             borderSide: BorderSide(
             ),
           ),
@@ -124,7 +124,7 @@ Widget busca(isLargeScreen, formKey, submitForm) {
               !isLargeScreen ? Container() : Row(
                 children: [
                   Text("PESQUISAR:", style: TextStyle(color: SharedTheme.secondaryColor, fontWeight: FontWeight.bold)),
-                  Gap(4),
+                  const Gap(4),
                 ],
               ),
               isLargeScreen ? containerForm() : Expanded(

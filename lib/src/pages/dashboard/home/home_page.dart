@@ -6,7 +6,7 @@ import 'package:racoon_tech_panel/src/pages/dashboard/home/components/recebiment
 import 'package:racoon_tech_panel/src/pages/dashboard/home/components/relatorios.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -91,11 +91,11 @@ class _HomePageState extends State<HomePage> {
             },
             child: relatoriosShowing
                 ? Container(
-                    key: ValueKey(
+                    key: const ValueKey(
                         'relatorios'), // Chave única para diferenciar os estados
                     child: relatorios(),
                   )
-                : SizedBox(
+                : const SizedBox(
                     key: ValueKey('empty'), // Chave para o widget vazio
                   ),
           ),

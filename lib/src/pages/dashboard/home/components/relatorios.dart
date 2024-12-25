@@ -15,10 +15,10 @@ Widget relatorios() {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 30,
         children: [
-          Text("Relatórios de vendas", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const Text("Relatórios de vendas", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           SfCartesianChart(
             // Initialize category axis
-            primaryXAxis: CategoryAxis(),
+            primaryXAxis: const CategoryAxis(),
 
             series: <LineSeries<SalesData, String>>[
               LineSeries<SalesData, String>(

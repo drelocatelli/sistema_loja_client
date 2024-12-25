@@ -22,6 +22,7 @@ class _ClientsPageState extends State<ClientsPage> {
   bool _isLoading = true;
   bool _isReloading = false;
   final NumberPaginatorController _controller = NumberPaginatorController();
+  int _totalPages = 1;
 
   
   @override
@@ -53,14 +54,14 @@ class _ClientsPageState extends State<ClientsPage> {
         context: context, 
         builder: (context) {
           return AlertDialog(
-            title: Text("Ocorreu um erro"),
+            title: const Text("Ocorreu um erro"),
             content: Text(clientesList.message ?? 'Ocorreu um erro inesperado!', style: Theme.of(context).textTheme.bodyMedium),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 }, 
-                child: Text('Fechar')
+                child: const Text('Fechar')
               ),
             ],
           );  
@@ -68,6 +69,9 @@ class _ClientsPageState extends State<ClientsPage> {
       );
     }
 
+    setState(() {
+      _totalPages = clientesList.data?.pagination?.totalPages ?? 1;
+    });
 
     debugPrint("Clientes fetched: ${newClientes.length}");
 
@@ -78,8 +82,8 @@ class _ClientsPageState extends State<ClientsPage> {
   Widget build(BuildContext context) {
 
   final maxWidth = MediaQuery.of(context).size.width;  
-  int _currentIdx = 0;
-  int _currentPage = 1;
+  int currentIdx = 0;
+  int currentPage = 1;
 
     return MainLayout(
       isLoading: _isLoading,
@@ -90,17 +94,17 @@ class _ClientsPageState extends State<ClientsPage> {
           config: NumberPaginatorUIConfig(
             buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
           ),
-          numberPages: 10,
-          initialPage: _currentIdx,
+          numberPages: _totalPages,
+          initialPage: currentIdx,
           controller: _controller,
           onPageChange: (int index) async {
             setState(() {
-              _currentIdx = index;
-              _currentPage = index + 1;
+              currentIdx = index;
+              currentPage = index + 1;
             });
             setState(() { _isReloading = true; });
             await Future.delayed(const Duration(seconds: 1));
-            final newClientes = await fetchData(page: _currentPage);
+            final newClientes = await fetchData(page: currentPage);
             setState(() { 
               _isReloading = false; 
               clientes = newClientes;
@@ -122,8 +126,8 @@ class _ClientsPageState extends State<ClientsPage> {
           search: _pesquisa(maxWidth, (String searchTerm) async {
             final newClientes = await fetchData(page: 1, searchTerm: searchTerm);
             setState(() { 
-              _currentIdx = 0;
-              _currentPage = 1;
+              currentIdx = 0;
+              currentPage = 1;
               clientes = newClientes;
              });
           }),

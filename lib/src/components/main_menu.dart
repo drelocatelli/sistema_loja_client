@@ -38,17 +38,17 @@ Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
           child: entry.value.submenu != null 
             ? PopupMenuButton(
               tooltip: '',
+              itemBuilder: (BuildContext context) => entry.value.submenu!.map((e) => PopupMenuItem(
+                onTap: e.fn,
+                child: Text(e.label),
+              )).toList(),
+              offset: const Offset(0, 28),
               child: Row(
                 children: [
                   Text(label),
                   entry.value.submenu != null ? Icon(Icons.arrow_drop_down) : Container(),
                 ],
               ),
-              itemBuilder: (BuildContext context) => entry.value.submenu!.map((e) => PopupMenuItem(
-                child: Text(e.label),
-                onTap: e.fn,
-              )).toList(),
-              offset: Offset(0, 28),
             )
             : Row(
               children: [

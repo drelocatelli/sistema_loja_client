@@ -11,7 +11,7 @@ class SharedTheme {
     return ThemeData(
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: false,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
         ),
         appBarTheme: SharedAppBarTheme.main(),
@@ -33,12 +33,12 @@ class SharedTheme {
                   animationDuration: const Duration(milliseconds: 70))),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ButtonStyle(
-              elevation: WidgetStatePropertyAll(0),
-              padding: WidgetStatePropertyAll(EdgeInsets.all(12)),
+              elevation: const WidgetStatePropertyAll(0),
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(12)),
               backgroundColor: WidgetStatePropertyAll(secondaryColor),
             ),
           ),
-          iconButtonTheme: IconButtonThemeData(
+          iconButtonTheme: const IconButtonThemeData(
             style: ButtonStyle(
               padding: WidgetStatePropertyAll(EdgeInsets.all(4)),
             ),
@@ -51,13 +51,13 @@ class SharedTheme {
                   color: secondaryColor
                 ),
               foregroundColor: (secondaryColor),
-              backgroundColor: (Color.fromRGBO(252, 247, 240, 1 ))
+              backgroundColor: (const Color.fromRGBO(252, 247, 240, 1 ))
             ),
           ),
 
           checkboxTheme: CheckboxThemeData(
           // Define border for both selected and unselected states
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             side: BorderSide(color: Colors.orange, width: 2), // Custom border color and width
           ),
           // Set dynamic fillColor for the checkbox depending on its state

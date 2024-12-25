@@ -16,8 +16,8 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
   // get clients that doesnt deleted
   clientes = clientes.where((item) => item.deletedAt == null).toList();
 
-  int _sortColumnIdx = 0;
-  bool _isAscending = true;
+  int sortColumnIdx = 0;
+  bool isAscending = true;
   List<bool> selected = List<bool>.generate(clientes.length, (int index) => false);
 
   return StatefulBuilder(
@@ -34,7 +34,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Clientes",
+                      const Text("Clientes",
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       Row(
                         children: [
@@ -42,15 +42,15 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                             visible: !SharedTheme.isLargeScreen(context),
                             child: InkWell(onTap: () => refreshFn(), child: RefreshComponent(isLoading: isReloading))
                           ),
-                          Gap(10),
+                          const Gap(10),
                           ElevatedButton(
-                            child: SharedTheme.isLargeScreen(context) ? Text("Adicionar novo cliente") : Icon(Icons.add),
-                             style: ElevatedButton.styleFrom(
-                              padding: SharedTheme.isLargeScreen(context) ? null : EdgeInsets.all(3),
+                            style: ElevatedButton.styleFrom(
+                              padding: SharedTheme.isLargeScreen(context) ? null : const EdgeInsets.all(3),
                             ),
                             onPressed: () {
                               _createClients(context, refreshFn);
-                            }
+                            },
+                            child: SharedTheme.isLargeScreen(context) ? Text("Adicionar novo cliente") : Icon(Icons.add)
                           ),
                         ],
                       ),
@@ -62,7 +62,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                   )
                 ],
               ),
-              Gap(10),
+              const Gap(10),
               Visibility(
                 visible: SharedTheme.isLargeScreen(context),
                 child: Align(alignment: Alignment.topLeft, child: search),
@@ -90,8 +90,8 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text('Deseja excluir os clientes?'),
-                        content: Column(
+                        title: const Text('Deseja excluir os clientes?'),
+                        content: const Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text('Esta ação não poderá ser desfeita.'),
@@ -100,11 +100,11 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                         ),
                         actions: [
                           TextButton(
-                            child: Text('Cancelar'),
+                            child: const Text('Cancelar'),
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           TextButton(
-                            child: Text('Excluir'),
+                            child: const Text('Excluir'),
                             onPressed: () async {
                               await _deleteClientes(context, clientes, selectedClients.map((item) => item!.id).toList(), refreshFn);
                               Navigator.of(context).pop();
@@ -115,13 +115,13 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                     },
                   );
                   
-                }, 
-                child: Text('Excluir selecionados'),
+                },
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Color.fromRGBO(220, 64, 38, 1)),
                   backgroundColor: (const Color.fromRGBO(250, 242, 241, 1)),
                   foregroundColor: (const Color.fromRGBO(220, 64, 38, 1))
-                ),
+                ), 
+                child: Text('Excluir selecionados'),
               ),
             ),
           ),
@@ -135,11 +135,11 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                 child: child,
               );
             },
-            child: isReloading ? Center(child: Text("Buscando dados, aguarde...")) : Container(),
+            child: isReloading ? const Center(child: Text("Buscando dados, aguarde...")) : Container(),
           ),
           Visibility(
             visible: clientes.isNotEmpty,
-            replacement: Center(child: Text('Nenhum cliente cadastrado')),
+            replacement: const Center(child: Text('Nenhum cliente cadastrado')),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -148,24 +148,24 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                   child: SizedBox(
                     width: maxWidth,
                     child: DataTable(
-                      sortColumnIndex: _sortColumnIdx,
-                      sortAscending: _isAscending,
+                      sortColumnIndex: sortColumnIdx,
+                      sortAscending: isAscending,
                       showCheckboxColumn: true,
                       dividerThickness: 2,
                       dataTextStyle: TextStyle(fontSize: maxWidth <= 800 ? 12 : null),
                       columns: [
                         DataColumn(
-                          label: Text('Nome'),
+                          label: const Text('Nome'),
                           onSort: (columnIndex, ascending) {
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
-                              clientes.sort((a, b) => _isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              clientes.sort((a, b) => isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
                             });
                           }
                         ),
                         
-                        DataColumn(
+                        const DataColumn(
                           label: Text('Ações'),
                         ),
                       ],
@@ -189,7 +189,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                   itemBuilder: (BuildContext context) {
                                     return [
                                      PopupMenuItem(
-                                      child: Center(child: Icon(Icons.edit)),
+                                      child: const Center(child: Icon(Icons.edit)),
                                       onTap: () {
                                         Cliente newCliente = _editCliente(context, cliente);
                                         setState(() {
@@ -199,21 +199,21 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                       }
                                      ),
                                       PopupMenuItem(
-                                        child: Center(child: Icon(Icons.delete)),
+                                        child: const Center(child: Icon(Icons.delete)),
                                         onTap: () {
                                           setState(() {
                                             selected = selected.map((item) => false).toList();
                                           });
                                           _deletePopup(context, () async {
-                                          final _availableClientes = await _deleteClientes(context, clientes, [cliente.id], refreshFn);
-                                          clientes = _availableClientes.whereType<Cliente>().toList();
+                                          final availableClientes = await _deleteClientes(context, clientes, [cliente.id], refreshFn);
+                                          clientes = availableClientes.whereType<Cliente>().toList();
                                           setState(() {});
                                         }, clientes, cliente.name, cliente.id, refreshFn);
                                           print('delete cliente ${cliente.name}');
                                         }
                                       ),
                                       PopupMenuItem(
-                                        child: Center(child: Icon(Icons.more_horiz)),
+                                        child: const Center(child: Icon(Icons.more_horiz)),
                                         onTap: () {
                                           clientsDetails(context, cliente);
                                           print('delete cliente ${cliente.name}');
@@ -241,8 +241,8 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                             selected = selected.map((item) => false).toList();
                                           });
                                         _deletePopup(context, () async {
-                                          final _availableClientes = await _deleteClientes(context, clientes, [cliente.id], refreshFn);
-                                          clientes = _availableClientes.whereType<Cliente>().toList();
+                                          final availableClientes = await _deleteClientes(context, clientes, [cliente.id], refreshFn);
+                                          clientes = availableClientes.whereType<Cliente>().toList();
                                           setState(() {});
                                         }, clientes, cliente.name, cliente.id, refreshFn);
                                         print('delete cliente ${cliente.name}');
@@ -278,20 +278,20 @@ _deletePopup(BuildContext context, deleteCb, List<Cliente> clientes, clienteNome
     context: context, 
     builder: (context) {
       return AlertDialog(
-        title: Text('Deseja realmente excluir o cliente ${clienteNome}?'),
+        title: Text('Deseja realmente excluir o cliente $clienteNome?'),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             }, 
-            child: Text('Cancelar')
+            child: const Text('Cancelar')
           ),
           TextButton(
             onPressed: () async {
               _deleteClientes(context, clientes, [clienteId], refreshFn);
               Navigator.of(context).pop();
             }, 
-            child: Text('Excluir')
+            child: const Text('Excluir')
           ),
         ]
       );
@@ -324,9 +324,9 @@ Cliente _editCliente(BuildContext context, Cliente cliente) {
 
 _createClients(BuildContext context, Function refreshFn) {
 
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
 
-  Map<String, TextEditingController> _controllers = {
+  Map<String, TextEditingController> controllers = {
     "country": TextEditingController(text: 'Brasil'),
     "state": TextEditingController(),
     "name": TextEditingController(),
@@ -348,7 +348,7 @@ _createClients(BuildContext context, Function refreshFn) {
           content: SizedBox(
             width: SharedTheme.isLargeScreen(context) ? MediaQuery.of(context).size.width * 0.5 : MediaQuery.of(context).size.width * 0.3,
             child: Form(
-              key: _formKey,
+              key: formKey,
               child: SizedBox(
                 height: SharedTheme.isLargeScreen(context) ? null : MediaQuery.of(context).size.height * 0.5,
                 child: SingleChildScrollView(
@@ -357,7 +357,7 @@ _createClients(BuildContext context, Function refreshFn) {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextFormField(
-                        controller: _controllers['name'],
+                        controller: controllers['name'],
                         validator: (String? value) {
                           if (value == null || value.isEmpty) {
                             return 'Campo obrigatório';
@@ -371,7 +371,7 @@ _createClients(BuildContext context, Function refreshFn) {
                         ),
                       ),
                       TextFormField(
-                        controller: _controllers['email'],
+                        controller: controllers['email'],
                         decoration: const InputDecoration(
                           labelText: 'E-mail',
                           border: OutlineInputBorder(),
@@ -384,7 +384,7 @@ _createClients(BuildContext context, Function refreshFn) {
                         children: [
                           Flexible(
                             child: TextFormField(
-                              controller: _controllers['rg'],
+                              controller: controllers['rg'],
                               decoration: const InputDecoration(
                                 labelText: 'RG',
                                 hintText:   '0000-000',
@@ -395,7 +395,7 @@ _createClients(BuildContext context, Function refreshFn) {
                           ),
                           Flexible(
                             child: TextFormField(
-                              controller: _controllers['cpf'],
+                              controller: controllers['cpf'],
                               decoration: const InputDecoration(
                                 labelText: 'CPF',
                                 hintText:   '000.000.000-00',
@@ -407,7 +407,7 @@ _createClients(BuildContext context, Function refreshFn) {
                         ],
                       ),
                       TextFormField(
-                        controller: _controllers['phone'],
+                        controller: controllers['phone'],
                         decoration: const InputDecoration(
                           labelText: 'Telefone',
                           hintText:   '(00) 0 0000-0000',
@@ -421,7 +421,7 @@ _createClients(BuildContext context, Function refreshFn) {
                           Flexible(
                             flex: 3,
                             child: TextFormField(
-                              controller: _controllers['address'],
+                              controller: controllers['address'],
                               decoration: const InputDecoration(
                                 labelText: 'Endereço',
                                 border: OutlineInputBorder(),
@@ -431,7 +431,7 @@ _createClients(BuildContext context, Function refreshFn) {
                           ),
                         Flexible(
                           child: TextFormField(
-                            controller: _controllers['cep'],
+                            controller: controllers['cep'],
                             decoration: const InputDecoration(
                               labelText: 'CEP',
                               hintText:   '00000-000',
@@ -447,7 +447,7 @@ _createClients(BuildContext context, Function refreshFn) {
                         children: [
                           Flexible(
                             child: TextFormField(
-                              controller: _controllers['state'],
+                              controller: controllers['state'],
                               decoration: const InputDecoration(
                                 labelText: 'Estado',
                                 border: OutlineInputBorder(),
@@ -457,7 +457,7 @@ _createClients(BuildContext context, Function refreshFn) {
                           ),
                           Flexible(
                             child: TextFormField(
-                              controller: _controllers['city'],
+                              controller: controllers['city'],
                               decoration: const InputDecoration(
                                 labelText: 'Cidade',
                                 border: OutlineInputBorder(),
@@ -468,7 +468,7 @@ _createClients(BuildContext context, Function refreshFn) {
                         ],
                       ),
                       TextFormField(
-                        controller: _controllers['country'],
+                        controller: controllers['country'],
                         decoration: const InputDecoration(
                           labelText: 'País',
                           border: OutlineInputBorder(),
@@ -489,22 +489,22 @@ _createClients(BuildContext context, Function refreshFn) {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (_formKey.currentState?.validate() ?? false) {
-                  _formKey.currentState?.save();
-                  await _createClientReq(context, _controllers);
+                if (formKey.currentState?.validate() ?? false) {
+                  formKey.currentState?.save();
+                  await _createClientReq(context, controllers);
                   refreshFn();
                   Navigator.of(context).pop();
                   showDialog(
                     context: context,
                      builder: (context) {
                        return AlertDialog(
-                         title: Text('Cliente cadastrado com sucesso!'),
+                         title: const Text('Cliente cadastrado com sucesso!'),
                          actions: [
                            TextButton(
                              onPressed: () {
                                Navigator.of(context).pop();
                              }, 
-                             child: Text('Fechar')
+                             child: const Text('Fechar')
                            ),
                          ]
                        );
@@ -512,7 +512,7 @@ _createClients(BuildContext context, Function refreshFn) {
                   );
                 }
               }, 
-              child: Text("Adicionar novo cliente")
+              child: const Text("Adicionar novo cliente")
             ),
           ],
         ),
@@ -545,7 +545,7 @@ _createClientReq(BuildContext context, Map<String, TextEditingController> contro
       context: context, 
       builder: (context) {
         return AlertDialog(
-          title: Text('Erro ao adicionar cliente'),
+          title: const Text('Erro ao adicionar cliente'),
           content: Text(response.message ?? 'Ocorreu um erro inesperado!'),
           actions: [
             TextButton(

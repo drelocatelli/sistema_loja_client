@@ -7,7 +7,7 @@ import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -15,9 +15,9 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _storePassword = true;
+  final bool _storePassword = true;
 
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: [
                     Text("Login", style: TextStyle(color: SharedTheme.secondaryColor, fontSize: 30, fontWeight: FontWeight.bold)),
-                    Gap(18),
+                    const Gap(18),
                     TextFormField(
                       obscureText: true,
                       controller: _passwordController,
@@ -101,10 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                             await _loginRequest(context, _passwordController.text);
                           }
                         },
-                        child: Row(
+                        child: const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Continuar'),
+                            Text('Continuar'),
                             Icon(Icons.arrow_right)
                           ],
                         ),

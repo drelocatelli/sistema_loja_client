@@ -19,7 +19,7 @@ class LoginLayout extends StatelessWidget {
               'assets/img/logo.png',
               height: 40,
             ),
-            Gap(18),
+            const Gap(18),
             SelectableText(dotenv.env['TITLE'] ?? 'Sistema da loja'),
           ],
         ),

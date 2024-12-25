@@ -12,7 +12,7 @@ class CheckVersionRepository {
 
   static Future<bool?> hasNewVersion() async {
     try {
-      final String endpoint = api! + '/version.php';
+      final String endpoint = '${api!}/version.php';
       final request = requestInterceptor();
       final response = await request.get(endpoint);
       final version = VersionDTO.fromJson(response.data);
@@ -31,6 +31,7 @@ class CheckVersionRepository {
     } catch(e) {
       debugPrint('Error checking version: $e');
     }
+    return null;
 
   }
   

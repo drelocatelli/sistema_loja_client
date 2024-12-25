@@ -10,9 +10,9 @@ class Problems extends StatelessWidget {
        child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
          children: [
-           Text("Despesas", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+           const Text("Despesas", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
            table(),
-          Gap(50),
+          const Gap(50),
 
          ],
        )
@@ -40,10 +40,10 @@ return SingleChildScrollView(
               DataCell(Text("R\$ ${payment['valor'].toStringAsFixed(2)}")),
               DataCell(
                 PopupMenuButton(
-                  icon: Icon(Icons.more_vert),
+                  icon: const Icon(Icons.more_vert),
                   itemBuilder: (context)  {
                    return [
-                    PopupMenuItem(
+                    const PopupMenuItem(
                       child: Text("Mais detalhes")
                     ),
                    ];

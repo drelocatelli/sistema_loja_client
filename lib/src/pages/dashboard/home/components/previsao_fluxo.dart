@@ -26,6 +26,13 @@ Widget previsaoFluxo(
     return Container(
       width: maxWidth,
       height: 110,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(.2), blurRadius: 6)
+        ],
+        color: color.withOpacity(.8),
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+      ),
       child: Stack(
         children: [
           Padding(
@@ -78,13 +85,6 @@ Widget previsaoFluxo(
           )
         ],
       ),
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(.2), blurRadius: 6)
-        ],
-        color: color.withOpacity(.8),
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-      ),
     );
   }
 
@@ -100,7 +100,7 @@ Widget previsaoFluxo(
               Icons.arrow_upward_sharp,
               fn: fnRecebimentos,
               recebimentosShowing),
-          Visibility(visible: !SharedTheme.isLargeScreen(context), child: _recebimentosCard(recebimentosShowing, padding: EdgeInsets.only(top: 20))),
+          Visibility(visible: !SharedTheme.isLargeScreen(context), child: _recebimentosCard(recebimentosShowing, padding: const EdgeInsets.only(top: 20))),
         ],
       ),
       Column(
@@ -113,7 +113,7 @@ Widget previsaoFluxo(
               Icons.warning,
               fn: fnProblems,
               problemsShowing),
-            Visibility(visible: !SharedTheme.isLargeScreen(context), child: _problemsCard(problemsShowing, padding: EdgeInsets.only(top: 20))),
+            Visibility(visible: !SharedTheme.isLargeScreen(context), child: _problemsCard(problemsShowing, padding: const EdgeInsets.only(top: 20))),
         ],
       ),
       Column(
@@ -126,7 +126,7 @@ Widget previsaoFluxo(
               Icons.attach_money,
               fn: fnPagamentos,
               pagamentosShowing),
-          Visibility(visible: !SharedTheme.isLargeScreen(context), child: _pagamentosCard(pagamentosShowing, padding: EdgeInsets.only(top: 20))),
+          Visibility(visible: !SharedTheme.isLargeScreen(context), child: _pagamentosCard(pagamentosShowing, padding: const EdgeInsets.only(top: 20))),
         ],
       ),
     ];
@@ -139,7 +139,7 @@ Widget previsaoFluxo(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
+            const Expanded(
                 child: Text("Previsão de fluxo de caixa",
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
@@ -168,7 +168,7 @@ Widget previsaoFluxo(
                   spacing: 10,
                   children: columns(constraints.maxWidth));
         }),
-        Gap(20),
+        const Gap(20),
         Visibility(
           visible: SharedTheme.isLargeScreen(context),
           child: Column(
@@ -194,8 +194,8 @@ Widget _recebimentosCard(bool isShowing, {EdgeInsets padding = const EdgeInsets.
     },
     child: isShowing ? Padding(
       padding: padding,
-      child: Recebimentos(),
-    ) : SizedBox());
+      child: const Recebimentos(),
+    ) : const SizedBox());
 }
 
 Widget _pagamentosCard(bool isShowing, {EdgeInsets padding = const EdgeInsets.all(0)}) {
@@ -213,7 +213,7 @@ Widget _pagamentosCard(bool isShowing, {EdgeInsets padding = const EdgeInsets.al
         child: isShowing ? Padding(
           padding: padding,
           child: Pagamentos(),
-        ) : SizedBox());
+        ) : const SizedBox());
 }
 
 Widget _problemsCard(bool isShowing, {EdgeInsets padding = const EdgeInsets.all(0)}) {
@@ -230,8 +230,8 @@ Widget _problemsCard(bool isShowing, {EdgeInsets padding = const EdgeInsets.all(
         },
         child: isShowing ? Padding(
           padding: padding,
-          child: Problems(),
-        ) : SizedBox());
+          child: const Problems(),
+        ) : const SizedBox());
 }
 
 

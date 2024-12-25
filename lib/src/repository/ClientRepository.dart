@@ -124,9 +124,9 @@ class ClientRepository {
 
   static Future<ResponseDTO<List<Cliente>>> delete(List<String> ids) async {
     try {
-      final endpoint = dotenv.env['SERVER_URL']!+ ':' + dotenv.env['SERVER_PORT']!;
+      final endpoint = '${dotenv.env['SERVER_URL']!}:${dotenv.env['SERVER_PORT']!}';
 
-      ids = ids.map((id) => "$id").toList();
+      ids = ids.map((id) => id).toList();
       
       final token = await LoginRepository.getToken();
       
@@ -179,9 +179,9 @@ class ClientRepository {
       return ResponseDTO<List<Cliente>>(status: response.statusCode, data: []);
 
     } on DioException catch(err) {
-      debugPrint("${err.toString()}");
+      debugPrint(err.toString());
 
-      String? message = null;
+      String? message;
       if(err.type == DioExceptionType.connectionError) {
         message = 'Não foi possível estabelecer comunicação com o servidor';
       }

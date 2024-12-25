@@ -78,8 +78,8 @@ Widget _estoquesTable(double maxWidth) {
     ..sort((a, b) => a.key.compareTo(b.key))
     ..forEach((entry) => entry.value.numero = entry.key + 1);
 
-  int _sortColumnIdx = 0; // coluna de data
-  bool _isAscending = true;
+  int sortColumnIdx = 0; // coluna de data
+  bool isAscending = true;
   List<bool> selection = List<bool>.generate(estoques.length, (int index) => false);
   
   return StatefulBuilder(
@@ -120,14 +120,14 @@ Widget _estoquesTable(double maxWidth) {
                     context: context, 
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Excluir selecionados"),
-                        content: Text("Você tem certeza que deseja excluir os estoques selecionadas?"),
+                        title: const Text("Excluir selecionados"),
+                        content: const Text("Você tem certeza que deseja excluir os estoques selecionadas?"),
                         actions: [
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             }, 
-                            child: Text("Cancelar")
+                            child: const Text("Cancelar")
                           ),
                           TextButton(
                             onPressed: () {
@@ -140,14 +140,14 @@ Widget _estoquesTable(double maxWidth) {
                               });
                               Navigator.of(context).pop();
                             }, 
-                            child: Text("Confirmar")
+                            child: const Text("Confirmar")
                           ),
                         ],
                       );
                     }
                   );
                 }, 
-                child: Text("Excluir selecionados")
+                child: const Text("Excluir selecionados")
               ),
             )
           ),
@@ -165,96 +165,96 @@ Widget _estoquesTable(double maxWidth) {
                   child: SizedBox(
                     width: SharedTheme.isLargeScreen(context) ? maxWidth : null,
                     child: DataTable(
-                      sortColumnIndex: _sortColumnIdx,
-                      sortAscending: _isAscending,
+                      sortColumnIndex: sortColumnIdx,
+                      sortAscending: isAscending,
                       dataRowHeight: 55,
                       showCheckboxColumn: true,
                       columns: [
                         DataColumn(
-                          label: Text('N°'),
+                          label: const Text('N°'),
                           onSort: (columnIndex, ascending) => 
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
-                              estoques.sort((a, b) => _isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              estoques.sort((a, b) => isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
                             }),
                         ),
-                        DataColumn(
+                        const DataColumn(
                           label: Text('Foto'),
                         ),
                         DataColumn(
-                          label: Text('Nome'),
+                          label: const Text('Nome'),
                           onSort: (columnIndex, ascending) => 
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
-                              estoques.sort((a, b) => _isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              estoques.sort((a, b) => isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
                             }),
                         ),
                         
                         DataColumn(
-                          label: Text('Descrição'),
+                          label: const Text('Descrição'),
                           onSort: (columnIndex, ascending) => 
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
-                              estoques.sort((a, b) => _isAscending ? a.descricao.compareTo(b.descricao) : b.descricao.compareTo(a.descricao));
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              estoques.sort((a, b) => isAscending ? a.descricao.compareTo(b.descricao) : b.descricao.compareTo(a.descricao));
                             }),
                         ),
                         DataColumn(
-                          label: Text('Categoria'),
+                          label: const Text('Categoria'),
                           onSort: (columnIndex, ascending) => 
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
-                              estoques.sort((a, b) => _isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              estoques.sort((a, b) => isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
                             }),
                         ),
                         DataColumn(
-                          label: Text('Quantidade'),
+                          label: const Text('Quantidade'),
                           onSort: (columnIndex, ascending) => 
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
-                              estoques.sort((a, b) => _isAscending ? a.quantidade.compareTo(b.quantidade) : b.quantidade.compareTo(a.quantidade));
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              estoques.sort((a, b) => isAscending ? a.quantidade.compareTo(b.quantidade) : b.quantidade.compareTo(a.quantidade));
                             }),
                         ),
                         DataColumn(
-                          label: Text('Valor'),
+                          label: const Text('Valor'),
                           onSort: (columnIndex, ascending) => 
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
-                              estoques.sort((a, b) => _isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              estoques.sort((a, b) => isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
                             }),
                         ),
                         DataColumn(
-                          label: Text('Valor total'),
+                          label: const Text('Valor total'),
                           onSort: (columnIndex, ascending) => 
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
-                              estoques.sort((a, b) => _isAscending ? a.total.compareTo(b.total) : b.total.compareTo(a.total));
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              estoques.sort((a, b) => isAscending ? a.total.compareTo(b.total) : b.total.compareTo(a.total));
                             }),
                         ),
                         DataColumn(
-                          label: Text('Publicado'),
+                          label: const Text('Publicado'),
                           onSort: (columnIndex, ascending) => 
                             setState(() {
-                              _sortColumnIdx = columnIndex;
-                              _isAscending = ascending;
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
                               estoques.sort((a, b) {
                                 if (a.publicado && !b.publicado) {
-                                  return _isAscending ? -1 : 1;
+                                  return isAscending ? -1 : 1;
                                 } else if (!a.publicado && b.publicado) {
-                                  return _isAscending ? 1 : -1;
+                                  return isAscending ? 1 : -1;
                                 } else {
                                   return 0;
                                 }
                               });
                             }),
                         ),
-                        DataColumn(
+                        const DataColumn(
                           label: Text('Ações'),
                         ),
                       ],
@@ -272,15 +272,45 @@ Widget _estoquesTable(double maxWidth) {
                             DataCell(Text(estoque.numero.toString())),
                             DataCell(Tooltip(message: 'Clique para expandir', child: WidgetZoom(heroAnimationTag: 'tag', zoomWidget: Image.network(estoque.foto_url, width: 80, height: 80, fit: BoxFit.contain)))),
                             DataCell(Text(estoque.nome)),
-                            DataCell(Text(estoque.descricao.substring(0, 8) + '...')),
+                            DataCell(Text('${estoque.descricao.substring(0, 8)}...')),
                             DataCell(Text(estoque.categoria)),
                             DataCell(Text(estoque.quantidade.toString())),
                             DataCell(Text("R\$ ${estoque.valor.toString()}")),
                             DataCell(Text("R\$ ${estoque.total.toString()}")),
-                            DataCell(Text("${estoque.publicado ? "Público" : "Anotação"}")),
+                            DataCell(Text(estoque.publicado ? "Público" : "Anotação")),
                             DataCell(
                               Visibility(
                                 visible: maxWidth > 800,
+                                replacement: PopupMenuButton(
+                                  icon: const Icon(Icons.more_vert),
+                                  itemBuilder: (context) {
+                                    return [
+                                      PopupMenuItem(
+                                        value: 'edit',
+                                        onTap: () {
+                                          Estoque newEstoque = _editFn(context, estoque);
+                                          setState(() {
+                                            estoques[key] = newEstoque;
+                                          });
+                                        },
+                                        child: Center(child: Icon(Icons.edit))
+                                      ),
+                                      PopupMenuItem(
+                                        value: 'delete',
+                                        onTap: () {
+                                          setState(() {
+                                            selection = selection.map((item) => false).toList();
+                                          });
+                                          _deletePopup(context, () {
+                                            estoques = _deleteFn(context, estoques, key);
+                                            setState(() {});
+                                          }, estoque.nome);
+                                        },
+                                        child: Center(child: Icon(Icons.delete)),
+                                      )
+                                    ];
+                                  },
+                                ),
                                 child: Row(
                                   children: [
                                     IconButton(
@@ -302,36 +332,6 @@ Widget _estoquesTable(double maxWidth) {
                                       },
                                     ),
                                   ],
-                                ),
-                                replacement: PopupMenuButton(
-                                  icon: Icon(Icons.more_vert),
-                                  itemBuilder: (context) {
-                                    return [
-                                      PopupMenuItem(
-                                        child: Center(child: Icon(Icons.edit)),
-                                        value: 'edit',
-                                        onTap: () {
-                                          Estoque newEstoque = _editFn(context, estoque);
-                                          setState(() {
-                                            estoques[key] = newEstoque;
-                                          });
-                                        }
-                                      ),
-                                      PopupMenuItem(
-                                        child: Center(child: Icon(Icons.delete)),
-                                        value: 'delete',
-                                        onTap: () {
-                                          setState(() {
-                                            selection = selection.map((item) => false).toList();
-                                          });
-                                          _deletePopup(context, () {
-                                            estoques = _deleteFn(context, estoques, key);
-                                            setState(() {});
-                                          }, estoque.nome);
-                                        },
-                                      )
-                                    ];
-                                  },
                                 ),
                               ),
                             ),
@@ -356,20 +356,20 @@ _deletePopup(BuildContext context, deleteCb, titulo) {
     context: context, 
     builder: (context) {
       return AlertDialog(
-        title: Text('Deseja realmente excluir o produto ${titulo}?'),
+        title: Text('Deseja realmente excluir o produto $titulo?'),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             }, 
-            child: Text('Cancelar')
+            child: const Text('Cancelar')
           ),
           TextButton(
             onPressed: () {
                 deleteCb();
                 Navigator.of(context).pop();
             }, 
-            child: Text('Excluir')
+            child: const Text('Excluir')
           ),
         ]
       );
@@ -391,13 +391,13 @@ Widget _pesquisa(double maxWidth) {
               value: 'nome',
               onChanged: (String? value) {
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   labelText: 'Buscar por:',
                   border: OutlineInputBorder(), 
                   contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 5),
                   isDense: true
                 ),
-                items: [
+                items: const [
                   DropdownMenuItem(value: 'nome', child: Text('Nome')),
                   DropdownMenuItem(value: 'descrição', child: Text('Descrição')),
                   DropdownMenuItem(value: 'categoria', child: Text('Categoria')),
@@ -407,7 +407,7 @@ Widget _pesquisa(double maxWidth) {
           Expanded(
             flex: 2,
             child: TextFormField(
-             decoration: InputDecoration(
+             decoration: const InputDecoration(
                 hintText: 'Digite sua busca',
                 border: OutlineInputBorder(), 
                 suffixIcon: Icon(Icons.search),

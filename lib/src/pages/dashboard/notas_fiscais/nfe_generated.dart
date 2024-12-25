@@ -31,9 +31,9 @@ Widget _nfeGenerated(BuildContext context, {required NFeDTO nfeDetails, bool min
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       _nfeHeader(context, nfeDetails: nfeDetails, minified),
-      Gap(18),
+      const Gap(18),
       DottedLine(width: widget),
-      Gap(10),
+      const Gap(10),
       _nfeBody(context, nfeDetails: nfeDetails, minified),
     ],
   );
@@ -54,9 +54,9 @@ Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
           TextSpan(
             text: dotenv.env['TITLE'] ?? 'Sistema da loja',
             children: [
-              TextSpan(text:  "\n${dotenv.env['ENDERECO']}".toUpperCase(),  style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+              TextSpan(text:  "\n${dotenv.env['ENDERECO']}".toUpperCase(),  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
             ],
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)
           )
         ),
       ),
@@ -82,7 +82,7 @@ Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
                   box(child: Text(nfeDetails.entradaOuSaida.value.toString()))
                 ],
               ),
-              Gap(5),
+              const Gap(5),
               SelectableText.rich(
                 TextSpan(
                   children: [
@@ -90,7 +90,7 @@ Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
                     TextSpan(text: "Série ${nfeDetails.serie}\n"),
                     TextSpan(text: "Folha ${nfeDetails.folha}"),
                   ],
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 )
               ),
 
@@ -99,7 +99,7 @@ Widget _nfeBody(BuildContext context, minified, {required NFeDTO nfeDetails}) {
         ),
       ),
       box(
-        child: Text("teste")
+        child: const Text("teste")
       )
     ],
   );
@@ -133,15 +133,15 @@ Widget _nfeHeader(BuildContext context, bool minified, {required NFeDTO nfeDetai
                           style: Theme.of(context).textTheme.headlineMedium)),
                   SelectableText.rich(
                     TextSpan(
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 16, color: Colors.black), // Default style
                       children: [
                         TextSpan(
                             text: "N°: ${nfeDetails.number}\n",
-                            style: TextStyle(fontSize: 12)),
+                            style: const TextStyle(fontSize: 12)),
                         TextSpan(
                             text: "Série: ${nfeDetails.serie}",
-                            style: TextStyle(fontSize: 12)),
+                            style: const TextStyle(fontSize: 12)),
                       ],
                     ),
                   ),
@@ -207,15 +207,15 @@ Widget rowOrWrap(BuildContext context, {required List<Widget> children, required
 }
 
 Widget smallText(String text) {
-  return Text(text, style: TextStyle(fontSize: 12));
+  return Text(text, style: const TextStyle(fontSize: 12));
 }
 
 Widget box({required Widget child}) {
   return Container(
-    child: child,
     decoration: BoxDecoration(
       border: Border.all(color: Colors.grey),
     ),
-    padding: EdgeInsets.all(10),
+    padding: const EdgeInsets.all(10),
+    child: child,
   );
 }

@@ -21,7 +21,7 @@ class Estoque {
     this.numero = 0,
     this.publicado = false,
   }) {
-    this.total = this.valor * this.quantidade;
+    total = valor * quantidade;
   }
 
   factory Estoque.fromJson(Map<String, dynamic> json) {

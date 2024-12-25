@@ -11,8 +11,8 @@ Future<void> printDoc(BuildContext context, Widget widget, {bool minified = fals
   final double height = MediaQuery.of(context).size.height;
   
   Widget wrappedWidget = MediaQuery(
-    data: new MediaQueryData(),
-    child: new MaterialApp(
+    data: const MediaQueryData(),
+    child: MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: SharedTheme.main(),
       home: Scaffold(body: widget),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PulseAnimation extends StatefulWidget {
   final Widget child; // O widget que será animado
 
-  const PulseAnimation({Key? key, required this.child}) : super(key: key);
+  const PulseAnimation({super.key, required this.child});
 
   @override
   _PulseAnimationState createState() => _PulseAnimationState();
@@ -19,7 +19,7 @@ class _PulseAnimationState extends State<PulseAnimation> with SingleTickerProvid
 
     // Configura o AnimationController
     _controller = AnimationController(
-      duration: Duration(milliseconds: 500), // Duração da animação
+      duration: const Duration(milliseconds: 500), // Duração da animação
       vsync: this,
     )..repeat(reverse: true); // Repete e inverte a animação para simular o "pulsar"
 

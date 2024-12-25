@@ -9,7 +9,7 @@ class BaseRepository {
 
   static Future<ResponseDTO<T>> graphQlRequest<T>({required String query, required bool authentication ,required Function cbData, required Function cbNull}) async {
     try {
-      final  endpoint = dotenv.env['SERVER_URL']!+ ':' + dotenv.env['SERVER_PORT']!;
+      final  endpoint = '${dotenv.env['SERVER_URL']!}:${dotenv.env['SERVER_PORT']!}';
 
       final token = await LoginRepository.getToken();
 
@@ -41,9 +41,9 @@ class BaseRepository {
       return cbNull(response);
 
     }  on DioException catch(err) {
-      debugPrint("${err.toString()}");
+      debugPrint(err.toString());
 
-      String? message = null;
+      String? message;
       if(err.type == DioExceptionType.connectionError) {
         message = 'Não foi possível estabelecer comunicação com o servidor';
       }

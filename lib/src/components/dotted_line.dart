@@ -39,7 +39,7 @@ class DottedLine extends StatelessWidget {
   final double height;
   final double width;
 
-  DottedLine({this.height = 1.0, this.width = 200.0});
+  const DottedLine({super.key, this.height = 1.0, this.width = 200.0});
 
   @override
   Widget build(BuildContext context) {

@@ -13,12 +13,12 @@ class NotasFiscaisPage extends StatelessWidget {
 
   final _formKey = GlobalKey<FormState>();
   bool isMinified = true;
-  bool _isPrinting = false;
+  final bool _isPrinting = false;
 
   @override
   Widget build(BuildContext context) {
-    bool _isNfeGenerated = false;
-    NFeDTO _nfeFormValues = NFeDTO(entradaOuSaida: NFeEntradaSaidaEnum.ENTRADA);
+    bool isNfeGenerated = false;
+    NFeDTO nfeFormValues = NFeDTO(entradaOuSaida: NFeEntradaSaidaEnum.ENTRADA);
 
     return MainLayout(
       child: SelectionArea(
@@ -32,14 +32,14 @@ class NotasFiscaisPage extends StatelessWidget {
               builder: (context, setState) {
                 return Column(
                   children: [
-                    Gap(20),
+                    const Gap(20),
                     _form(context, _formKey, (NFeDTO? formValues) {
                       if(formValues == null) {
                           return;
                       }
                       setState(() {
-                        _nfeFormValues = formValues;
-                        _isNfeGenerated = true;
+                        nfeFormValues = formValues;
+                        isNfeGenerated = true;
                       });
                     }),
                   ],
@@ -59,18 +59,18 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
 
   NFeDTO formValues = NFeDTO(entradaOuSaida: NFeEntradaSaidaEnum.ENTRADA);
 
-  final Map<String, TextEditingController> _controllers = {
+  final Map<String, TextEditingController> controllers = {
     "number" : TextEditingController(text: formValues.number.toString()),
     "serie" : TextEditingController(text: formValues.serie.toString()),
-    "recebimentoDate" : TextEditingController(text: formValues.recebimentoDate.length != 0 ? formValues.recebimentoDate : DateFormat('dd/MM/yyyy').format(DateTime.now())),
+    "recebimentoDate" : TextEditingController(text: formValues.recebimentoDate.isNotEmpty ? formValues.recebimentoDate : DateFormat('dd/MM/yyyy').format(DateTime.now())),
     "idEAssinaturaDoRecebedor" : TextEditingController(text: formValues.idEAssinaturaDoRecebedor.toString()),
     "entradaOuSaida" : TextEditingController(text: "0"),
     "folha" : TextEditingController(text: "1/1"),
   };
 
-  String _saidaOrEntrada = "0";
+  String saidaOrEntrada = "0";
 
-  _selectDateRecebimento(BuildContext context) async {
+  selectDateRecebimento(BuildContext context) async {
     
     final DateTime? picked = await showDatePicker(
       context: context, 
@@ -80,7 +80,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
     );
 
     if(picked! != null) {
-      _controllers["recebimentoDate"]!.text = DateFormat('dd/MM/yyyy').format(picked);
+      controllers["recebimentoDate"]!.text = DateFormat('dd/MM/yyyy').format(picked);
     }
   }
   
@@ -102,7 +102,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
                 inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly, // Allow only digits
               ],
-                controller: _controllers["number"],
+                controller: controllers["number"],
                 decoration: const InputDecoration(
                   labelText: "N°",
                 ),
@@ -115,7 +115,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
                 inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly, // Allow only digits
               ],
-                controller: _controllers["serie"],
+                controller: controllers["serie"],
                 decoration: const InputDecoration(
                   labelText: "Série",
                 ),
@@ -123,7 +123,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
             ),
             Expanded(
               child: TextFormField(
-                controller: _controllers["idEAssinaturaDoRecebedor"],
+                controller: controllers["idEAssinaturaDoRecebedor"],
                 decoration: const InputDecoration(
                   labelText: "Identificação e assinatura do recebedor",
                 ),
@@ -157,14 +157,14 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
                   //   )
                   // ),
                   TextFormField(
-                    controller: _controllers['recebimentoDate'],
-                    onTap: () => _selectDateRecebimento(context),
+                    controller: controllers['recebimentoDate'],
+                    onTap: () => selectDateRecebimento(context),
                     readOnly: true,
                     decoration: InputDecoration(
                       labelText: "Data do recebimento",
                       suffixIcon: IconButton(
-                        icon: Icon(Icons.calendar_today),
-                        onPressed: () => _selectDateRecebimento(context),
+                        icon: const Icon(Icons.calendar_today),
+                        onPressed: () => selectDateRecebimento(context),
                       ),
                     ),
                   )
@@ -177,25 +177,25 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
                 builder: (context, setState) {
                   return SizedBox(
                     child: DropdownButtonFormField<String>(
-                      hint: Text("Entrada/Saída"),
-                      decoration: InputDecoration(
+                      hint: const Text("Entrada/Saída"),
+                      decoration: const InputDecoration(
                         labelText: 'Entrada/Saída'
                       ),
                       padding: EdgeInsets.zero,
-                      value: _saidaOrEntrada,
+                      value: saidaOrEntrada,
                       items: [
                         DropdownMenuItem(
-                          child: Text("Entrada"),
-                          value: NFeEntradaSaidaEnum.ENTRADA.value.toString()
+                          value: NFeEntradaSaidaEnum.ENTRADA.value.toString(),
+                          child: Text("Entrada")
                         ),
                         DropdownMenuItem(
-                          child: Text("Saída"),
-                          value: NFeEntradaSaidaEnum.SAIDA.value.toString()
+                          value: NFeEntradaSaidaEnum.SAIDA.value.toString(),
+                          child: Text("Saída")
                         )
                       ], 
                       onChanged: (String? value) {
-                        _saidaOrEntrada = value ?? '0';
-                        _controllers['entradaOuSaida']?.text = _saidaOrEntrada;
+                        saidaOrEntrada = value ?? '0';
+                        controllers['entradaOuSaida']?.text = saidaOrEntrada;
                         setState(() {});
                       }
                     ),
@@ -207,7 +207,7 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
           ],
         ),
         TextFormField(
-          controller: _controllers['folha'],
+          controller: controllers['folha'],
           decoration: const InputDecoration(
             labelText: "Folha",
           ),
@@ -215,20 +215,20 @@ Form _form(BuildContext context, GlobalKey<FormState> formKey, Function fnShowNf
         ElevatedButton(onPressed: () {
           formKey.currentState?.save();
 
-          formValues.number = _controllers['number']?.text ?? '';
-          formValues.recebimentoDate = _controllers['recebimentoDate']?.text ?? DateTime.now().toString();
+          formValues.number = controllers['number']?.text ?? '';
+          formValues.recebimentoDate = controllers['recebimentoDate']?.text ?? DateTime.now().toString();
 
-          formValues.serie = _controllers['serie']?.text ?? '';
-          formValues.idEAssinaturaDoRecebedor = _controllers['idEAssinaturaDoRecebedor']?.text ?? '';
-          String entradaOrSaida = _controllers['entradaOuSaida']?.text ?? '';
+          formValues.serie = controllers['serie']?.text ?? '';
+          formValues.idEAssinaturaDoRecebedor = controllers['idEAssinaturaDoRecebedor']?.text ?? '';
+          String entradaOrSaida = controllers['entradaOuSaida']?.text ?? '';
           formValues.entradaOuSaida = entradaOrSaida == "0" ? NFeEntradaSaidaEnum.ENTRADA : NFeEntradaSaidaEnum.SAIDA;
-          formValues.folha = _controllers['folha']?.text ?? '';
+          formValues.folha = controllers['folha']?.text ?? '';
           
           fnShowNfe(formValues);
 
           context.go('/dashboard/nfe/gerada', extra: formValues);
-        }, child: Text("Gerar NF-e")),
-        Gap(20),
+        }, child: const Text("Gerar NF-e")),
+        const Gap(20),
       ],
     )
   );
