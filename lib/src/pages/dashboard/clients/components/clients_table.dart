@@ -19,6 +19,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
   int sortColumnIdx = 0;
   bool isAscending = true;
   List<bool> selected = List<bool>.generate(clientes.length, (int index) => false);
+  bool _isDeletingLoad = false;
 
   return StatefulBuilder(
     builder: (context, setState) {
@@ -89,28 +90,36 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Deseja excluir os clientes?'),
-                        content: const Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('Esta ação não poderá ser desfeita.'),
-                            Text('Tem certeza que deseja excluir?'),
-                          ],
-                        ),
-                        actions: [
-                          TextButton(
-                            child: const Text('Cancelar'),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                          TextButton(
-                            child: const Text('Excluir'),
-                            onPressed: () async {
-                              await _deleteClientes(context, clientes, selectedClients.map((item) => item!.id).toList(), refreshFn);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return AlertDialog(
+                            title: const Text('Deseja excluir os clientes?'),
+                            content: const Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Esta ação não poderá ser desfeita.'),
+                                Text('Tem certeza que deseja excluir?'),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text('Cancelar'),
+                                onPressed: () => Navigator.of(context).pop(),
+                              ),
+                              TextButton(
+                                child: Text(_isDeletingLoad ? 'Excluindo...' : 'Excluir'),
+                                onPressed: () async {
+                                  setState(() {
+                                    _isDeletingLoad = true;
+                                  });
+                                  await Future.delayed(Duration(milliseconds: 2000));
+                                  await _deleteClientes(context, clientes, selectedClients.map((item) => item!.id).toList(), refreshFn);
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        }
                       );
                     },
                   );
@@ -274,26 +283,36 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
 
 
 _deletePopup(BuildContext context, deleteCb, List<Cliente> clientes, clienteNome, String clienteId, Function refreshFn) {
+  bool _isDeletingLoad = false;
+  
   showDialog(
     context: context, 
     builder: (context) {
-      return AlertDialog(
-        title: Text('Deseja realmente excluir o cliente $clienteNome?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            }, 
-            child: const Text('Cancelar')
-          ),
-          TextButton(
-            onPressed: () async {
-              _deleteClientes(context, clientes, [clienteId], refreshFn);
-              Navigator.of(context).pop();
-            }, 
-            child: const Text('Excluir')
-          ),
-        ]
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Deseja realmente excluir o cliente $clienteNome?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }, 
+                child: const Text('Cancelar')
+              ),
+              TextButton(
+                onPressed: () async {
+                  setState(() {
+                    _isDeletingLoad = true;
+                  });
+                  await _deleteClientes(context, clientes, [clienteId], refreshFn);
+                  await Future.delayed(const Duration(seconds: 1));
+                  Navigator.of(context).pop();
+                }, 
+                child: Text(_isDeletingLoad ? 'Aguarde...' : 'Excluir')
+              ),
+            ]
+          );
+        }
       );
     }
   );
