@@ -313,6 +313,7 @@ Widget _pesquisa(double maxWidth) {
           Expanded(
             flex: 2,
             child: TextFormField(
+              autofocus: true,
              decoration: const InputDecoration(
                 hintText: 'Digite sua busca',
                 border: OutlineInputBorder(), 

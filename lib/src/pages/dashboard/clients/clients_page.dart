@@ -90,26 +90,29 @@ class _ClientsPageState extends State<ClientsPage> {
       floatingActionButton: Container(
         color: Colors.white,
         padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
-        child: NumberPaginator(
-          config: NumberPaginatorUIConfig(
-            buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+        child: Visibility(
+          visible: _totalPages > 1,
+          child: NumberPaginator(
+            config: NumberPaginatorUIConfig(
+              buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+            ),
+            numberPages: _totalPages,
+            initialPage: currentIdx,
+            controller: _controller,
+            onPageChange: (int index) async {
+              setState(() {
+                currentIdx = index;
+                currentPage = index + 1;
+              });
+              setState(() { _isReloading = true; });
+              await Future.delayed(const Duration(seconds: 1));
+              final newClientes = await fetchData(page: currentPage);
+              setState(() { 
+                _isReloading = false; 
+                clientes = newClientes;
+              });
+            },
           ),
-          numberPages: _totalPages,
-          initialPage: currentIdx,
-          controller: _controller,
-          onPageChange: (int index) async {
-            setState(() {
-              currentIdx = index;
-              currentPage = index + 1;
-            });
-            setState(() { _isReloading = true; });
-            await Future.delayed(const Duration(seconds: 1));
-            final newClientes = await fetchData(page: currentPage);
-            setState(() { 
-              _isReloading = false; 
-              clientes = newClientes;
-            });
-          },
         ),
       ),
       child: SelectionArea(
@@ -144,6 +147,7 @@ Widget _pesquisa(double maxWidth, Function fetchCb) {
     child: SizedBox(
       width: maxWidth >= 800 ? 400 : null,
       child: TextFormField(
+        autofocus: true,
         onFieldSubmitted: (String value) {
           fetchCb(value);
         },
