@@ -49,7 +49,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                               padding: SharedTheme.isLargeScreen(context) ? null : const EdgeInsets.all(3),
                             ),
                             onPressed: () {
-                              _createClients(context, refreshFn);
+                              _createClients(context, refreshFn, null);
                             },
                             child: SharedTheme.isLargeScreen(context) ? Text("Adicionar novo cliente") : Icon(Icons.add)
                           ),
@@ -200,11 +200,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                      PopupMenuItem(
                                       child: const Center(child: Icon(Icons.edit)),
                                       onTap: () {
-                                        Cliente newCliente = _editCliente(context, cliente);
-                                        setState(() {
-                                          clientes[index] = newCliente;
-                                        });
-                                        print('edit cliente ${newCliente.name}');
+                                        _createClients(context, refreshFn, cliente);
                                       }
                                      ),
                                       PopupMenuItem(
@@ -236,11 +232,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                     IconButton(
                                       icon: Icon(Icons.edit, size: maxWidth <= 800 ? 20 : null),
                                       onPressed: () {
-                                        Cliente newCliente = _editCliente(context, cliente);
-                                        setState(() {
-                                          clientes[index] = newCliente;
-                                        });
-                                        print('edit cliente ${cliente.name}');
+                                        _createClients(context, refreshFn, cliente);
                                       },
                                     ),
                                     IconButton(
@@ -335,17 +327,12 @@ Future<List<Cliente?>> _deleteClientes(BuildContext context, List<Cliente> clien
   return clientes;
 }
 
-Cliente _editCliente(BuildContext context, Cliente cliente) {
-  print('edit cliente');
-
-  return cliente;
-}
-
-_createClients(BuildContext context, Function refreshFn) {
+_createClients(BuildContext context, Function refreshFn, Cliente? cliente) {
 
   final formKey = GlobalKey<FormState>();
 
   Map<String, TextEditingController> controllers = {
+    "id": TextEditingController(text: "-1"),
     "country": TextEditingController(text: 'Brasil'),
     "state": TextEditingController(),
     "name": TextEditingController(),
@@ -357,6 +344,20 @@ _createClients(BuildContext context, Function refreshFn) {
     "address": TextEditingController(),
     "city": TextEditingController(),
   };
+
+  if(cliente != null) {
+    controllers['id']?.text = cliente.id;
+    controllers['name']?.text = cliente.name;
+    controllers['email']?.text = cliente.email ?? '';
+    controllers['rg']?.text = cliente.rg ?? '';
+    controllers['cpf']?.text = cliente.cpf ?? '';
+    controllers['phone']?.text = cliente.phone ?? '';
+    controllers['address']?.text = cliente.address ?? '';
+    controllers['cep']?.text = cliente.cep ?? '';
+    controllers['city']?.text = cliente.city ?? '';
+    controllers['state']?.text = cliente.state ?? '';
+    controllers['country']?.text = cliente.country ?? '';
+  }
   
   showDialog(
     context: context,
@@ -510,14 +511,14 @@ _createClients(BuildContext context, Function refreshFn) {
               onPressed: () async {
                 if (formKey.currentState?.validate() ?? false) {
                   formKey.currentState?.save();
-                  await _createClientReq(context, controllers);
+                  await _createClientReq(context, controllers, cliente != null);
                   refreshFn();
                   Navigator.of(context).pop();
                   showDialog(
                     context: context,
                      builder: (context) {
                        return AlertDialog(
-                         title: const Text('Cliente cadastrado com sucesso!'),
+                         title: Text(cliente != null ? 'Cliente alterado' : 'Cliente cadastrado com sucesso!'),
                          actions: [
                            TextButton(
                              onPressed: () {
@@ -531,7 +532,7 @@ _createClients(BuildContext context, Function refreshFn) {
                   );
                 }
               }, 
-              child: const Text("Adicionar novo cliente")
+              child: Text(cliente != null ? 'Confirmar alteração' : "Adicionar novo cliente")
             ),
           ],
         ),
@@ -540,9 +541,9 @@ _createClients(BuildContext context, Function refreshFn) {
   );
 }
 
-_createClientReq(BuildContext context, Map<String, TextEditingController> controllers) async {
+_createClientReq(BuildContext context, Map<String, TextEditingController> controllers, bool hasCliente) async {
   final client = Cliente(
-    id: "-1",
+    id: controllers['id']?.text ?? "-1",
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
     name: controllers['name']!.text,
@@ -556,7 +557,6 @@ _createClientReq(BuildContext context, Map<String, TextEditingController> contro
     state: controllers['state']!.text,
     country: controllers['country']!.text
   );
-
 
   final response = await ClientRepository.create(client);
   if(response.status != 200) {

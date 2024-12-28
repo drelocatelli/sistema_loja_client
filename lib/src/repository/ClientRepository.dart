@@ -87,33 +87,53 @@ class ClientRepository {
         .map((entry) => (entry.value != '') ? '${entry.key}: "${entry.value}"' : null)
         .where((entry) => entry != null)
         .join(', ');
-    
-    final String createClientQuery = '''
+
+    final String returnStr = '''
+        id
+        name
+        email
+        rg
+        cpf
+        phone
+        address
+        cep
+        city
+        state
+        country
+        created_at
+        updated_at
+        deleted_at
+    ''';
+
+    String queryName = 'createClient';
+
+    String query = '''
         mutation CreateClient {
-            createClient($payload) {
-                id
-                name
-                email
-                rg
-                cpf
-                phone
-                address
-                cep
-                city
-                state
-                country
-                created_at
-                updated_at
-                deleted_at
+            ${queryName}($payload) {
+                ${returnStr}
             }
         }
       ''';
+
+      if(client.id != '-1') {
+        queryName = 'updateClient';
+        query = '''
+        mutation UpdateClient {
+            ${queryName}(id: "${client.id}", $payload) {
+                ${returnStr}
+            }
+        }
+      ''';
+      }
+
+
+    debugPrint(query);
     
     return await BaseRepository.graphQlRequest(
-      query: createClientQuery, 
+      query: query, 
       authentication: true, 
       cbData: (response) {
-        final clientData = response.data['data']['createClient'] as Map<String, dynamic>;
+        final clientData = response.data['data'][queryName] as Map<String, dynamic>;
         return ResponseDTO(status: response.statusCode, data: Cliente.fromJson(clientData));
       }, 
       cbNull: (response) {
