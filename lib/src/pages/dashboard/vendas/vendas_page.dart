@@ -143,135 +143,138 @@ Widget _vendasTable(double maxWidth) {
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              child: DataTable(
-                  sortColumnIndex: sortColumnIdx,
-                  sortAscending: isAscending,
-                  showCheckboxColumn: true,
-                  columns: [
-                    DataColumn(
-                      label: const Text('N°'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          sortColumnIdx = columnIndex;
-                          isAscending = ascending;
-                          vendas.sort((a, b) => isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
-                        }),
-                    ),
-                    DataColumn(
-                      label: const Text('Produto'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          sortColumnIdx = columnIndex;
-                          isAscending = ascending;
-                          vendas.sort((a, b) => isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
-                        }),
-                    ),
-                    DataColumn(
-                      label: const Text('Cliente'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          sortColumnIdx = columnIndex;
-                          isAscending = ascending;
-                          vendas.sort((a, b) => isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
-                        }),
-                    ),
-                    DataColumn(
-                      label: const Text('Responsável'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          sortColumnIdx = columnIndex;
-                          isAscending = ascending;
-                          vendas.sort((a, b) => isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
-                        }),
-                    ),
-                    DataColumn(
-                      label: const Text('Categoria'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          sortColumnIdx = columnIndex;
-                          isAscending = ascending;
-                          vendas.sort((a, b) => isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
-                        }),
-                    ),
-                    
-                    DataColumn(
-                      label: const Text('Valor'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          sortColumnIdx = columnIndex;
-                          isAscending = ascending;
-                          vendas.sort((a, b) => isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
-                        }),
-                    ),
-                    DataColumn(
-                      label: const Text('Data'),
-                      onSort: (columnIndex, ascending) => 
-                        setState(() {
-                          sortColumnIdx = columnIndex;
-                          isAscending = ascending;
-                          vendas.sort((a, b) => isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
-                        }),
-                    ),
-                    const DataColumn(
-                      label: Text('Ações'),
-                    ),
-                  ],
-                  rows: vendas.asMap().entries.map((entry) {
-                    final key = entry.key;
-                    final venda = entry.value;
-                    return DataRow(
-                      selected: selection[entry.key],
-                      onSelectChanged: (value) {
-                        setState(() {
-                          selection[key] = value!;
-                        });
-                      },
-                      cells: [
-                        DataCell(Text(venda.numero.toString())),
-                        DataCell(Text(venda.produto)),
-                        DataCell(Text(venda.nome)),
-                        DataCell(Text(venda.responsavel)),
-                        DataCell(Text(venda.categoria)),
-                        DataCell(Text("R\$ ${venda.valor.toString()}")),
-                        DataCell(Text(venda.data)),
-                        DataCell(
-                          PopupMenuButton(
-                              icon: const Icon(Icons.more_vert),
-                              itemBuilder: (context) {
-                                return [
-                                  PopupMenuItem(
-                                    value: 'edit',
-                                    onTap: () {
-                                      Venda newVenda = _editFn(context, venda);
-                                      setState(() {
-                                        vendas[key] = newVenda;
-                                      });
-                                    },
-                                    child: Center(child: Icon(Icons.edit))
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'delete',
-                                    onTap: () {
-                                      setState((){
-                                        selection = selection.map((item) => false).toList();
-                                      });
-                                      _deletePopup(context, () {
-                                        vendas = _deleteFn(context, vendas, key);
-                                        setState(() {});
-                                      }, venda.produto);
-                                    },
-                                    child: Center(child: Icon(Icons.delete)),
-                                  )
-                                ];
-                              },
-                            ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minWidth: maxWidth),
+                child: DataTable(
+                      sortColumnIndex: sortColumnIdx,
+                      sortAscending: isAscending,
+                      showCheckboxColumn: true,
+                      columns: [
+                        DataColumn(
+                          label: const Text('N°'),
+                          onSort: (columnIndex, ascending) => 
+                            setState(() {
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              vendas.sort((a, b) => isAscending ? a.numero.compareTo(b.numero) : b.numero.compareTo(a.numero));
+                            }),
+                        ),
+                        DataColumn(
+                          label: const Text('Produto'),
+                          onSort: (columnIndex, ascending) => 
+                            setState(() {
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              vendas.sort((a, b) => isAscending ? a.produto.compareTo(b.produto) : b.produto.compareTo(a.produto));
+                            }),
+                        ),
+                        DataColumn(
+                          label: const Text('Cliente'),
+                          onSort: (columnIndex, ascending) => 
+                            setState(() {
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              vendas.sort((a, b) => isAscending ? a.nome.compareTo(b.nome) : b.nome.compareTo(a.nome));
+                            }),
+                        ),
+                        DataColumn(
+                          label: const Text('Responsável'),
+                          onSort: (columnIndex, ascending) => 
+                            setState(() {
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              vendas.sort((a, b) => isAscending ? a.responsavel.compareTo(b.responsavel) : b.responsavel.compareTo(a.responsavel));
+                            }),
+                        ),
+                        DataColumn(
+                          label: const Text('Categoria'),
+                          onSort: (columnIndex, ascending) => 
+                            setState(() {
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              vendas.sort((a, b) => isAscending ? a.categoria.compareTo(b.categoria) : b.categoria.compareTo(a.categoria));
+                            }),
+                        ),
+                        
+                        DataColumn(
+                          label: const Text('Valor'),
+                          onSort: (columnIndex, ascending) => 
+                            setState(() {
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              vendas.sort((a, b) => isAscending ? a.valor.compareTo(b.valor) : b.valor.compareTo(a.valor));
+                            }),
+                        ),
+                        DataColumn(
+                          label: const Text('Data'),
+                          onSort: (columnIndex, ascending) => 
+                            setState(() {
+                              sortColumnIdx = columnIndex;
+                              isAscending = ascending;
+                              vendas.sort((a, b) => isAscending ? a.data.compareTo(b.data) : b.data.compareTo(a.data));
+                            }),
+                        ),
+                        const DataColumn(
+                          label: Text('Ações'),
                         ),
                       ],
-                    );
-                  }).toList(),
-                ),
+                      rows: vendas.asMap().entries.map((entry) {
+                        final key = entry.key;
+                        final venda = entry.value;
+                        return DataRow(
+                          selected: selection[entry.key],
+                          onSelectChanged: (value) {
+                            setState(() {
+                              selection[key] = value!;
+                            });
+                          },
+                          cells: [
+                            DataCell(Text(venda.numero.toString())),
+                            DataCell(Text(venda.produto)),
+                            DataCell(Text(venda.nome)),
+                            DataCell(Text(venda.responsavel)),
+                            DataCell(Text(venda.categoria)),
+                            DataCell(Text("R\$ ${venda.valor.toString()}")),
+                            DataCell(Text(venda.data)),
+                            DataCell(
+                              PopupMenuButton(
+                                  icon: const Icon(Icons.more_vert),
+                                  itemBuilder: (context) {
+                                    return [
+                                      PopupMenuItem(
+                                        value: 'edit',
+                                        onTap: () {
+                                          Venda newVenda = _editFn(context, venda);
+                                          setState(() {
+                                            vendas[key] = newVenda;
+                                          });
+                                        },
+                                        child: Center(child: Icon(Icons.edit))
+                                      ),
+                                      PopupMenuItem(
+                                        value: 'delete',
+                                        onTap: () {
+                                          setState((){
+                                            selection = selection.map((item) => false).toList();
+                                          });
+                                          _deletePopup(context, () {
+                                            vendas = _deleteFn(context, vendas, key);
+                                            setState(() {});
+                                          }, venda.produto);
+                                        },
+                                        child: Center(child: Icon(Icons.delete)),
+                                      )
+                                    ];
+                                  },
+                                ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+              ),
+              ),
             ),
-          ),
         ],
       );
     }
