@@ -140,11 +140,10 @@ Widget _vendasTable(double maxWidth) {
             replacement: Center(
               child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
             ),
-            child: _isFitedBoxOrNot(
-              context,
-              
-              child: SizedBox(
-                child: DataTable(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: DataTable(
                   sortColumnIndex: sortColumnIdx,
                   sortAscending: isAscending,
                   showCheckboxColumn: true,
@@ -271,7 +270,6 @@ Widget _vendasTable(double maxWidth) {
                     );
                   }).toList(),
                 ),
-              ),
             ),
           ),
         ],
