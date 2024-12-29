@@ -19,6 +19,7 @@ class VendasTable extends StatelessWidget {
       return StatefulBuilder(
         builder: (context, setState) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
