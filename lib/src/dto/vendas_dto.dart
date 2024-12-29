@@ -1,26 +1,45 @@
-class Venda {
-  int id;
-  String nome;
-  String produto;
-  String categoria;
-  String responsavel;
-  double valor;
-  String data;
-  int numero;
+import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
+import 'package:racoon_tech_panel/src/dto/colaborator_dto.dart';
+import 'package:racoon_tech_panel/src/dto/product_dto.dart';
 
-  Venda({required this.id, required this.nome, required this.produto, required this.categoria, required this.responsavel, required this.valor, required this.data, this.numero = 0});
+class Venda {
+  final String? serial;
+  final Cliente? client;
+  final Colaborator? colaborator;
+  final Produto? product;
+  final String? description;
+  final double? total;
+
+  Venda({
+    this.serial,
+    this.client,
+    this.colaborator,
+    this.product,
+    this.description,
+    this.total,
+  });
+
+  factory Venda.fromJson(Map<String, dynamic> json) {
+    return Venda(
+      serial: json['serial'] as String?,
+      client: json['client'] != null ? Cliente.fromJson(json['client']) : null,
+      colaborator: json['colaborator'] != null
+          ? Colaborator.fromJson(json['colaborator'])
+          : null,
+      product: json['product'] != null ? Produto.fromJson(json['product']) : null,
+      description: json['description'] as String?,
+      total: (json['total'] as num?)?.toDouble(),
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'nome': nome,
-      'produto': produto,
-      'categoria': categoria,
-      'responsavel': responsavel,
-      'valor': valor,
-      'data': data,
-      'numero': numero,
+      'serial': serial,
+      'client': client?.toJson(),
+      'colaborator': colaborator?.toJson(),
+      'product': product,
+      'description': description,
+      'total': total,
     };
   }
 }
-

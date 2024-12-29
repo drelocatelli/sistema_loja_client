@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/routes.dart';
 import 'package:racoon_tech_panel/src/dto/app_mode.dart';
+import 'package:racoon_tech_panel/src/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 import 'package:url_strategy/url_strategy.dart';
-
-
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,14 @@ Future main() async {
     await dotenv.load(fileName: ".env.dev");
   }
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SalesProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

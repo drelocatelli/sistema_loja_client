@@ -40,7 +40,7 @@ List<Widget> _userDetailsGrid(BuildContext context, Cliente cliente) {
   String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
   
   return [
-    _detailTile(context, "Nome completo:", cliente.name),
+    _detailTile(context, "Nome completo:", cliente.name!),
     if (cliente.rg != null) _detailTile(context, "RG:", cliente.rg!),
     if (cliente.email != null && cliente.email!.isNotEmpty) _detailTile(context, "E-mail:", cliente.email!),
     if (cliente.cpf != null) _detailTile(context, "CPF:", cliente.cpf!),

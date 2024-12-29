@@ -11,7 +11,7 @@ import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, required Function refreshFn, required Widget search}) {
 
   // sort by name
-  clientes.sort((a, b) => a.name.compareTo(b.name));
+  clientes.sort((a, b) => a.name!.compareTo(b.name!));
 
   // get clients that doesnt deleted
   clientes = clientes.where((item) => item.deletedAt == null).toList();
@@ -113,7 +113,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                     _isDeletingLoad = true;
                                   });
                                   await Future.delayed(Duration(milliseconds: 2000));
-                                  await _deleteClientes(context, clientes, selectedClients.map((item) => item!.id).toList(), refreshFn);
+                                  await _deleteClientes(context, clientes, selectedClients.map((item) => item!.id!).toList(), refreshFn);
                                   Navigator.of(context).pop();
                                 },
                               ),
@@ -169,7 +169,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                             setState(() {
                               sortColumnIdx = columnIndex;
                               isAscending = ascending;
-                              clientes.sort((a, b) => isAscending ? a.name.compareTo(b.name) : b.name.compareTo(a.name));
+                              clientes.sort((a, b) => isAscending ? a.name!.compareTo(b.name!) : b.name!.compareTo(a.name!));
                             });
                           }
                         ),
@@ -188,7 +188,7 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                             setState(() {});
                           },
                           cells: [
-                          DataCell(Text(cliente.name)),
+                          DataCell(Text(cliente.name!)),
                           DataCell(Row(
                             children: [
                               Visibility(
@@ -210,10 +210,10 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                             selected = selected.map((item) => false).toList();
                                           });
                                           _deletePopup(context, () async {
-                                          final availableClientes = await _deleteClientes(context, clientes, [cliente.id], refreshFn);
+                                          final availableClientes = await _deleteClientes(context, clientes, [cliente.id!], refreshFn);
                                           clientes = availableClientes.whereType<Cliente>().toList();
                                           setState(() {});
-                                        }, clientes, cliente.name, cliente.id, refreshFn);
+                                        }, clientes, cliente.name, cliente.id!, refreshFn);
                                           print('delete cliente ${cliente.name}');
                                         }
                                       ),
@@ -242,10 +242,10 @@ clientsTable(List<Cliente> clientes, maxWidth, {required bool isReloading, requi
                                             selected = selected.map((item) => false).toList();
                                           });
                                         _deletePopup(context, () async {
-                                          final availableClientes = await _deleteClientes(context, clientes, [cliente.id], refreshFn);
+                                          final availableClientes = await _deleteClientes(context, clientes, [cliente.id!], refreshFn);
                                           clientes = availableClientes.whereType<Cliente>().toList();
                                           setState(() {});
-                                        }, clientes, cliente.name, cliente.id, refreshFn);
+                                        }, clientes, cliente.name, cliente!.id!, refreshFn);
                                         print('delete cliente ${cliente.name}');
                                       },
                                     ),
@@ -346,8 +346,8 @@ _createClients(BuildContext context, Function refreshFn, Cliente? cliente) {
   };
 
   if(cliente != null) {
-    controllers['id']?.text = cliente.id;
-    controllers['name']?.text = cliente.name;
+    controllers['id']?.text = cliente!.id!;
+    controllers['name']?.text = cliente!.name!;
     controllers['email']?.text = cliente.email ?? '';
     controllers['rg']?.text = cliente.rg ?? '';
     controllers['cpf']?.text = cliente.cpf ?? '';

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:racoon_tech_panel/src/dto/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/dto/clientes_response_dto.dart';
+import 'package:racoon_tech_panel/src/dto/payload_dto.dart';
 import 'package:racoon_tech_panel/src/dto/response_dto.dart';
 import 'package:racoon_tech_panel/src/repository/BaseRepository.dart';
 import 'package:racoon_tech_panel/src/repository/LoginRepository.dart';
@@ -22,11 +23,7 @@ class ClientRepository {
       payload['searchTerm'] = searchTerm;
     }
 
-    String payloadStr = payload
-      .entries
-      .map((entry) => (entry.value != '') ? '${entry.key}: ${(entry.value is String) ? '"${entry.value}"' : '${entry.value}'}' : null)
-      .where((entry) => entry != null)
-      .join(', ');
+    String payloadStr = PayloadDTO(payload);
 
     final String query = '''
       query GetClients {
