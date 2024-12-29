@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/providers/SalesProvider.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class VendasTable extends StatelessWidget {
   VendasTable({super.key});
@@ -24,7 +25,7 @@ class VendasTable extends StatelessWidget {
                 spacing: 5,
                 children: [
                   Visibility(
-                    visible: model.selectedSales.isNotEmpty,
+                    visible: model.selected.isNotEmpty,
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color.fromRGBO(220, 64, 38, 1)),
@@ -83,87 +84,93 @@ class VendasTable extends StatelessWidget {
                   child: ConstrainedBox(
                     constraints: BoxConstraints(minWidth: maxWidth),
                     child: DataTable(
-                          sortColumnIndex: model.sortColumnIdx,
-                          sortAscending: model.isAscending,
-                          showCheckboxColumn: true,
-                          columns: [
-                            DataColumn(
-                              label: const Text('Serial'),
-                              onSort: (columnIndex, ascending) {
-                                model.sortSales(columnIndex, ascending);
-                              } 
-                            ),
-                            DataColumn(
-                              label: const Text('Produto'),
-                              onSort: (columnIndex, ascending) {
-                                model.sortSales(columnIndex, ascending);
-                              } 
-                            ),
-                            DataColumn(
-                              label: const Text('Cliente'),
-                              onSort: (columnIndex, ascending) {
-                               model.sortSales(columnIndex, ascending);
-                              },
-                            ),
-                            DataColumn(
-                              label: const Text('Responsável'),
-                              onSort: (columnIndex, ascending) {
-                                model.sortSales(columnIndex, ascending);
-                              }
-                            ),
-                            DataColumn(
-                              label: const Text('Descrição'),
-                              onSort: (columnIndex, ascending) {
-                                model.sortSales(columnIndex, ascending);
-                              }
-                            ),
-                            DataColumn(
-                              label: const Text('Total'),
-                              onSort: (columnIndex, ascending) {
-                                model.sortSales(columnIndex, ascending);
-                              }
-                            ),
-                            const DataColumn(
-                              label: Text('Ações'),
-                            ),
-                          ],
-                          rows: model.sales.asMap().entries.map((entry) {
-                            final key = entry.key;
-                            final sale = entry.value;
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(sale.serial ?? '-')),
-                                DataCell(Text(sale.product?.name ?? '-')),
-                                DataCell(Text(sale.client?.name ?? '-')),
-                                DataCell(Text(sale.colaborator?.name ?? '-')),
-                                DataCell(Text(sale.description ?? '-')),
-                                DataCell(Text("R\$ ${sale.total.toString()}")),
-                                DataCell(
-                                  PopupMenuButton(
-                                      icon: const Icon(Icons.more_vert),
-                                      itemBuilder: (context) {
-                                        return [
-                                          PopupMenuItem(
-                                            value: 'edit',
-                                            onTap: () {
-                                              
-                                            },
-                                            child: Center(child: Icon(Icons.edit))
-                                          ),
-                                          PopupMenuItem(
-                                            value: 'delete',
-                                            onTap: () {
-                                            },
-                                            child: Center(child: Icon(Icons.delete)),
-                                          )
-                                        ];
-                                      },
-                                    ),
-                                ),
-                              ],
-                            );
-                          }).toList(),
-                        ),
+    sortColumnIndex: model.sortColumnIdx,
+    sortAscending: model.isAscending,
+    showCheckboxColumn: true,
+    columns: [
+      DataColumn(
+        label: const Text('Serial'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        } 
+      ),
+      DataColumn(
+        label: const Text('Produto'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        } 
+      ),
+      DataColumn(
+        label: const Text('Cliente'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        },
+      ),
+      DataColumn(
+        label: const Text('Responsável'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      DataColumn(
+        label: const Text('Descrição'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      DataColumn(
+        label: const Text('Total'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      const DataColumn(
+        label: Text('Ações'),
+      ),
+    ],
+    rows: model.sales.asMap().entries.map((entry) {
+      final key = entry.key;
+      final sale = entry.value;
+      return DataRow(
+        selected: model.selected.contains(key),
+        onSelectChanged: (bool? selected) {
+          if(selected != null) {
+            model.toggleSelection(key);
+          }
+        },
+        cells: [
+          DataCell(Text(sale.serial ?? '-')),
+          DataCell(Text(sale.product?.name ?? '-')),
+          DataCell(Text(sale.client?.name ?? '-')),
+          DataCell(Text(sale.colaborator?.name ?? '-')),
+          DataCell(Text(sale.description ?? '-')),
+          DataCell(Text("R\$ ${sale.total.toString()}")),
+          DataCell(
+            PopupMenuButton(
+                icon: const Icon(Icons.more_vert),
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'edit',
+                      onTap: () {
+                        
+                      },
+                      child: Center(child: Icon(Icons.edit))
+                    ),
+                    PopupMenuItem(
+                      value: 'delete',
+                      onTap: () {
+                      },
+                      child: Center(child: Icon(Icons.delete)),
+                    )
+                  ];
+                },
+              ),
+          ),
+        ],
+      );
+    }).toList(),
+  )
                   ),
                   ),
                 ),

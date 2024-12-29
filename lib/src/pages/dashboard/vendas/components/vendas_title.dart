@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
+import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class VendasTitle extends StatelessWidget {
   const VendasTitle({super.key});

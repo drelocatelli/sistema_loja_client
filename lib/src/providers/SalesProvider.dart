@@ -4,18 +4,19 @@ import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 class SalesProvider extends ChangeNotifier {
   int _sortColumnIdx = 0;
   bool _isAscending = true;
-  Set<String> _selectedSales = {};
   
   bool _isLoading = true;
   bool _isReloadingLoading = false;
   List<Venda> _sales = [];
+  List<int> _selectedIdx = [];
 
   bool get isLoading => _isLoading;
   bool get isReloadingLoading => _isReloadingLoading;
   List<Venda> get sales => _sales;
-  Set<String> get selectedSales => _selectedSales;
   int get sortColumnIdx => _sortColumnIdx;
   bool get isAscending => _isAscending;
+  List<int> get selected => _selectedIdx;
+
 
   void setIsLoading(bool isLoading) {
     _isLoading = isLoading;
@@ -32,25 +33,23 @@ class SalesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleSelection(String serial) {
-    if (_selectedSales.contains(serial)) {
-      _selectedSales.remove(serial);
+  void toggleSelection(int index) {
+    if (_selectedIdx.contains(index)) {
+      _selectedIdx.remove(index); // Se o index já estiver selecionado, remove
     } else {
-      _selectedSales.add(serial);
+      _selectedIdx.add(index); // Se não estiver, adiciona
     }
-    notifyListeners();
+    notifyListeners(); // Notifica para atualizar a UI
   }
 
   void selectAll() {
-  _selectedSales = _sales
-      .map((sale) => sale.serial ?? '')  
-      .toSet();
-  notifyListeners();
-}
+    _selectedIdx = List<int>.generate(_sales.length, (int index) => index); // All selected
+    notifyListeners();
+  }
 
   // Deselect all sales
   void deselectAll() {
-    _selectedSales.clear();
+    _selectedIdx = List<int>.generate(_sales.length, (int index) => index); // All deselected
     notifyListeners();
   }
 
@@ -72,11 +71,5 @@ class SalesProvider extends ChangeNotifier {
   // Notify listeners to rebuild the UI
   notifyListeners();
 }
-
-  void clearSelection() {
-    _sortColumnIdx = 0;
-    _isAscending = true;  
-    notifyListeners();
-  }
 
 }

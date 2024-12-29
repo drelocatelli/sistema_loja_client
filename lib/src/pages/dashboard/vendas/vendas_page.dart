@@ -105,11 +105,11 @@ class _VenddasState extends State<VendasPage> {
       child: SelectionArea(
         child: Column(
           children: [
+            VendasTitle(),
+            VendasSearch(),
             Helpers.rowOrWrap(
               wrap: !SharedTheme.isLargeScreen(context),
               children: [
-                VendasTitle(),
-                VendasSearch(),
                 VendasTable(),
               ]
             )
