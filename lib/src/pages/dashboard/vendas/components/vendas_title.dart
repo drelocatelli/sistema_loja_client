@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/vendas/components/vendas_search.dart';
-import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class VendasTitle extends StatelessWidget {
   const VendasTitle({super.key});
@@ -15,6 +13,7 @@ class VendasTitle extends StatelessWidget {
     return 
         Row(
         spacing: 10,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text('Gerenciar vendas', style: Theme.of(context).textTheme.headlineMedium),
           ElevatedButton(

@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 import 'package:racoon_tech_panel/src/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/pages/dashboard/vendas/components/vendas_search.dart';
