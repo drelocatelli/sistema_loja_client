@@ -181,8 +181,6 @@ class ClientRepository {
         )
       );
 
-      debugPrint(jsonEncode(response.data['data']));
-
       if(response.data != null) {
         final clientsData = response.data['data']['deleteClients'] as List;
         List<Cliente> clients = clientsData.map((client) => Cliente.fromJson(client)).toList();

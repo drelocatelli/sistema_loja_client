@@ -186,39 +186,3 @@ class VendasTable extends StatelessWidget {
   );
   }
 }
-
-_deletePopup(BuildContext context, deleteCb, titulo) {
-  showDialog(
-    context: context, 
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Deseja realmente excluir o $titulo?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            }, 
-            child: const Text('Cancelar')
-          ),
-          TextButton(
-            onPressed: () {
-                deleteCb();
-                Navigator.of(context).pop();
-            }, 
-            child: const Text('Excluir')
-          ),
-        ]
-      );
-    }
-  );
-}
-
-List<Venda> _deleteFn(BuildContext context, List<Venda> vendas, int indexToRemove) {
-  vendas.removeAt(indexToRemove);
-  return vendas;
-}
-
-Venda _editFn(BuildContext context, Venda item) {
-  return item;
-}
-
