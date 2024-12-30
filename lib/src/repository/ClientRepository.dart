@@ -123,9 +123,6 @@ class ClientRepository {
       ''';
       }
 
-
-    debugPrint(query);
-    
     return await BaseRepository.graphQlRequest(
       query: query, 
       authentication: true, 
@@ -170,7 +167,7 @@ class ClientRepository {
       ''';
 
       final dio = requestInterceptor();
-      final response =await dio.post(
+      final response = await dio.post(
         endpoint,
         data: {
           'query': deleteClientsQuery

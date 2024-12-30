@@ -29,6 +29,7 @@ class SaleRepository {
                   pageSize
               }
               sales {
+                  id
                   serial
                   client {
                       name
@@ -53,13 +54,38 @@ class SaleRepository {
         final data = response.data['data']['getSales'];
 
         final dto = SalesResponseDTO.fromJson(data);
-        debugPrint('data :');
-        debugPrint(jsonEncode(dto));
 
         return ResponseDTO<SalesResponseDTO>(status: 200, data: dto);
       }, 
       cbNull: (response) {
         return ResponseDTO<SalesResponseDTO>(status: 401, data: SalesResponseDTO(sales: [], pagination: null));
+      }
+    );
+  }
+
+  static Future delete({required List<String> ids}) async {
+     final payload = 
+        ids
+        .asMap()
+        .entries
+        .map((entry) => "\"${entry.value}\"")
+        .where((entry) => entry != null)
+        .join(', ');
+
+    final String query = '''
+      mutation DeleteSales {
+          deleteSales(ids: [$payload]) 
+      }
+    ''';
+
+    await BaseRepository.graphQlRequest(
+      query: query, 
+      authentication: true, 
+      cbData: (response) {
+        return ResponseDTO(status: 200);
+      }, 
+      cbNull: (response) {
+        return ResponseDTO(status: 401);
       }
     );
   }

@@ -1,10 +1,11 @@
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
+import 'package:racoon_tech_panel/src/pages/dashboard/vendas/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/providers/SalesProvider.dart';
-import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
 
 class VendasTable extends StatelessWidget {
   VendasTable({super.key});
@@ -15,7 +16,6 @@ class VendasTable extends StatelessWidget {
   
   return Consumer<SalesProvider>(
     builder: (context, model, child) {
-      debugPrint(jsonEncode(model.sales.first.client));
       return StatefulBuilder(
         builder: (context, setState) {
           return Column(
@@ -26,50 +26,49 @@ class VendasTable extends StatelessWidget {
                 spacing: 5,
                 children: [
                   Visibility(
-                    visible: model.selected.isNotEmpty,
+                    visible: model.selectedIds.isNotEmpty,
                     child: OutlinedButton(
+                      child: const Text("Excluir selecionados"),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color.fromRGBO(220, 64, 38, 1)),
                         backgroundColor: (const Color.fromRGBO(250, 242, 241, 1)),
                         foregroundColor: (const Color.fromRGBO(220, 64, 38, 1))
                       ),
-                      onPressed: () {
-                        // get all selections ids
-                        List<int> selectionIdxs = List<int>.generate(model.sales.length, (index) => index);
-                    
-                        // get selected vendas
-                        List selectedVendas = List.generate(model.sales.length, (index) => 
-                          selectionIdxs.contains(index) ? model.sales[index] : null).where((item) => item != null).toList();
-                        
-                        List filteredProdutosTitle = selectedVendas.map((item) => item.produto).toList();
-                  
+                      onPressed: () async {
+                        model.setIsReloading(false);
+
                         showDialog(
                           context: context, 
                           builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text("Excluir selecionados"),
-                              content: const Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  }, 
-                                  child: const Text("Cancelar")
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                    });
-                                    Navigator.of(context).pop();
-                                  }, 
-                                  child: const Text("Confirmar")
-                                ),
-                              ],
+                            return StatefulBuilder(
+                              builder: (context, setState) {
+                                return AlertDialog(
+                                  title: const Text("Excluir selecionados"),
+                                  content: const Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      }, 
+                                      child: const Text("Cancelar")
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        model.setIsReloading(true);
+                                        setState(() {});
+                                        final selectedIds = model.selectedIds;
+                                        await deleteVendas(context, selectedIds);
+                                        Navigator.of(context).pop();
+                                      }, 
+                                      child: Text(model.isReloading ? 'Aguarde...' : "Confirmar")
+                                    ),
+                                  ],
+                                );
+                              }
                             );
                           }
                         );
                       }, 
-                      child: const Text("Excluir selecionados")
                     ),
                   ),
                 ],
@@ -77,7 +76,10 @@ class VendasTable extends StatelessWidget {
               Visibility(
                 visible: model.sales.isNotEmpty,
                 replacement: Center(
-                  child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 30),
+                    child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
+                  ),
                 ),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -132,11 +134,12 @@ class VendasTable extends StatelessWidget {
     rows: model.sales.asMap().entries.map((entry) {
       final key = entry.key;
       final sale = entry.value;
+
       return DataRow(
-        selected: model.selected.contains(key),
+        selected: model.selectedIds.contains(sale.id),
         onSelectChanged: (bool? selected) {
           if(selected != null) {
-            model.toggleSelection(key);
+            model.toggleSelection(sale.id!);
           }
         },
         cells: [

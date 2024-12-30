@@ -3,6 +3,7 @@ import 'package:racoon_tech_panel/src/dto/colaborator_dto.dart';
 import 'package:racoon_tech_panel/src/dto/product_dto.dart';
 
 class Venda {
+  final String? id;
   final String? serial;
   final Cliente? client;
   final Colaborator? colaborator;
@@ -11,6 +12,7 @@ class Venda {
   final double? total;
 
   Venda({
+    this.id,
     this.serial,
     this.client,
     this.colaborator,
@@ -21,6 +23,7 @@ class Venda {
 
   factory Venda.fromJson(Map<String, dynamic> json) {
     return Venda(
+      id: json['id'] as String?,
       serial: json['serial'] as String?,
       client: json['client'] != null ? Cliente.fromJson(json['client']) : null,
       colaborator: json['colaborator'] != null
@@ -34,6 +37,7 @@ class Venda {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'serial': serial,
       'client': client?.toJson(),
       'colaborator': colaborator?.toJson(),

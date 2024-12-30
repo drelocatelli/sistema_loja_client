@@ -6,16 +6,16 @@ class SalesProvider extends ChangeNotifier {
   bool _isAscending = true;
   
   bool _isLoading = true;
-  bool _isReloadingLoading = false;
+  bool _isReloading = false;
   List<Venda> _sales = [];
-  List<int> _selectedIdx = [];
+  List<String> _selectedIds = [];
 
   bool get isLoading => _isLoading;
-  bool get isReloadingLoading => _isReloadingLoading;
+  bool get isReloading => _isReloading;
   List<Venda> get sales => _sales;
   int get sortColumnIdx => _sortColumnIdx;
   bool get isAscending => _isAscending;
-  List<int> get selected => _selectedIdx;
+  List<String> get selectedIds => _selectedIds;
 
 
   void setIsLoading(bool isLoading) {
@@ -28,28 +28,29 @@ class SalesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setIsReloadingLoading(bool isLoading) {
-    _isReloadingLoading = isLoading;
+  void setIsReloading(bool isLoading) {
+    _isReloading = isLoading;
+    debugPrint('isReloading!');
     notifyListeners();
   }
 
-  void toggleSelection(int index) {
-    if (_selectedIdx.contains(index)) {
-      _selectedIdx.remove(index); // Se o index já estiver selecionado, remove
+  void toggleSelection(String id) {
+    if (_selectedIds.contains(id)) {
+      _selectedIds.remove(id); // Se o index já estiver selecionado, remove
     } else {
-      _selectedIdx.add(index); // Se não estiver, adiciona
+      _selectedIds.add(id); // Se não estiver, adiciona
     }
     notifyListeners(); // Notifica para atualizar a UI
   }
 
   void selectAll() {
-    _selectedIdx = List<int>.generate(_sales.length, (int index) => index); // All selected
+    _selectedIds = List<String>.generate(_sales.length, (int index) => _sales[index].id!);
     notifyListeners();
   }
 
   // Deselect all sales
   void deselectAll() {
-    _selectedIdx = List<int>.generate(_sales.length, (int index) => index); // All deselected
+    _selectedIds = [];
     notifyListeners();
   }
 
