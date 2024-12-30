@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -20,17 +21,34 @@ class _VendasFormState extends State<VendasForm> {
     "valor": TextEditingController(),
   };
 
+  final categories = [
+    {
+      "id": "1",
+      "name": "categoria 1"
+    },
+    {
+      "id": "2",
+      "name": "categoria 2"
+    },
+    {
+      "id": "3",
+      "name": "categoria 3"
+    }
+  ];
+
+  String selectedCategoryId = "1";
+
+  @override
+  void dispose() {
+    super.dispose();
+    controllers.forEach((key, value) {
+      value.dispose();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;
-
-    String selectedCategoryId = "";
-
-    final categories = [
-      {"id": "1", "name": "Categoria 1"},
-      {"id": "2", "name": "Categoria 2"},
-      {"id": "3", "name": "Categoria 3"},
-    ];
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -50,32 +68,25 @@ class _VendasFormState extends State<VendasForm> {
                       decoration: const InputDecoration(labelText: 'Produto'),
                     ),
                   ),
-                  TextFormField(
-                    controller: controllers["category"],
-                    decoration: const InputDecoration(labelText: 'Categoria'),
-                    readOnly: true,
-                    onTap: () {
-                      showSelectableModal(
-                        context: context,
-                        mappedItems: categories,
-                        keyName: 'id',
-                        labelName: 'name',
-                        searchBody: TextFormField(
-                          decoration: const InputDecoration(
-                            labelText: 'Buscar por:',
-                            border: OutlineInputBorder(), 
-                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 5),
-                            isDense: true
-                          ),
-                        ),
-                        selectCategoryCb: (String categorySelectedId) {
-                            controllers["category"]!.text = categories.firstWhere((element) => element['id'] == categorySelectedId)['name'].toString();
-
-                            selectedCategoryId = categorySelectedId;
-                            setState(() {});
-                        }
-                      );
-                    }
+                  DropdownSearch<Map<String, String>>(
+                    popupProps: PopupProps.menu(
+                      showSearchBox: true,
+                      showSelectedItems: true,
+                      disabledItemFn: (Map<String, String> item) => item["name"]!.startsWith('I'),
+                    ),
+                    selectedItem: categories.firstWhere(
+                      (category) => category["id"] == selectedCategoryId,
+                      orElse: () => categories[0],
+                    ),
+                    items: (filter, infiniteScrollProps) => categories,
+                    itemAsString: (Map<String, String> category) => category["name"]!,
+                    compareFn: (item1, item2) => item1["id"] == item2["id"], // Add this line for comparison
+                    decoratorProps: const DropDownDecoratorProps(
+                      decoration: InputDecoration(
+                        labelText: 'Categoria ',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
                   )
                 ],
               ),

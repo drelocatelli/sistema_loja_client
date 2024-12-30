@@ -57,6 +57,7 @@ dependencies:
   shared_preferences: ^2.3.4
   number_paginator: ^0.4.1
   provider: ^6.1.2
+  dropdown_search: ^6.0.1
 
 dev_dependencies:
   flutter_test:
