@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 

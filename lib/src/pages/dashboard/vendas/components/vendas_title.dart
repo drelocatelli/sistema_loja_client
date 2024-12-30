@@ -8,7 +8,7 @@ import 'package:racoon_tech_panel/src/dto/response_dto.dart';
 import 'package:racoon_tech_panel/src/dto/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/vendas/functions/vendas_functions.dart';
+import 'package:racoon_tech_panel/src/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/repository/SaleRepository.dart';
 import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';

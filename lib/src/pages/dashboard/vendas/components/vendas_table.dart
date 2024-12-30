@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/dto/vendas_dto.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/vendas/functions/vendas_functions.dart';
+import 'package:racoon_tech_panel/src/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/providers/SalesProvider.dart';
 
 class VendasTable extends StatelessWidget {
