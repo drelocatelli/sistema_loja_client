@@ -32,6 +32,7 @@ deleteVendas(BuildContext context, List<String> ids) async {
   model.setIsReloading(true);
   await SaleRepository.delete(ids: ids);
   await loadVendas(context);
+  model.deselectAll();
   model.setIsReloading(false);
 }
 
