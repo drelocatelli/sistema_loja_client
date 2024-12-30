@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:racoon_tech_panel/src/components/selectable_items.dart';
 import 'package:racoon_tech_panel/src/helpers.dart';
 
 class VendasForm extends StatefulWidget {
@@ -49,13 +50,33 @@ class _VendasFormState extends State<VendasForm> {
                       decoration: const InputDecoration(labelText: 'Produto'),
                     ),
                   ),
-                  _selectCategory(context, controllers["category"]!, categories, (String categorySelectedId) {
-                    controllers["category"]!.text = categories.firstWhere((element) => element['id'] == categorySelectedId)['name'].toString();
-                    selectedCategoryId = categorySelectedId;
-                    
-                    debugPrint(selectedCategoryId);
-                    setState(() {});
-                  }),
+                  TextFormField(
+                    controller: controllers["category"],
+                    decoration: const InputDecoration(labelText: 'Categoria'),
+                    readOnly: true,
+                    onTap: () {
+                      showSelectableModal(
+                        context: context,
+                        mappedItems: categories,
+                        keyName: 'id',
+                        labelName: 'name',
+                        searchBody: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Buscar por:',
+                            border: OutlineInputBorder(), 
+                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+                            isDense: true
+                          ),
+                        ),
+                        selectCategoryCb: (String categorySelectedId) {
+                            controllers["category"]!.text = categories.firstWhere((element) => element['id'] == categorySelectedId)['name'].toString();
+
+                            selectedCategoryId = categorySelectedId;
+                            setState(() {});
+                        }
+                      );
+                    }
+                  )
                 ],
               ),
               TextFormField(
@@ -104,35 +125,4 @@ class _VendasFormState extends State<VendasForm> {
   }
 }
 
-_selectCategory(BuildContext context, TextEditingController controller, categories, Function selectCategoryCb) {
-  
-  return StatefulBuilder(
-    builder: (context, setState) {
-      return TextFormField(
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return ListView.builder(
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(categories[index]["name"].toString()),
-                    onTap: () {
-                      // Update the text controller and selectedId
-                      selectCategoryCb(categories[index]["id"].toString());
-                      context.pop(categories[index]["id"]);  // Close the bottom sheet
-                    },
-                  );
-                },
-              );
-            }
-          );
-        },
-        readOnly: true,
-        controller: controller,
-        decoration: const InputDecoration(labelText: 'Categoria'),
-      );
-    }
-  );
-}
+
