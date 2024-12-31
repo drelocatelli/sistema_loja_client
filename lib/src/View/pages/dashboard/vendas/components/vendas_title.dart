@@ -3,18 +3,44 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:racoon_tech_panel/src/Model/category_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/refresh_component.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 
-class VendasTitle extends StatelessWidget {
+class VendasTitle extends StatefulWidget {
   const VendasTitle({super.key});
+
+  @override
+  State<VendasTitle> createState() => _VendasTitleState();
+}
+
+class _VendasTitleState extends State<VendasTitle> {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _fetchObjects();
+    });
+  }
+
+  _fetchObjects() async {
+      // load categories
+      await fetchCategories(context);
+
+      // load colaborators
+      await fetchColaborators(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +64,7 @@ class VendasTitle extends StatelessWidget {
                 }
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   novaVendaDialog(context);
                 }, 
                 child: const Text('Adicionar nova venda')

@@ -10,6 +10,7 @@ import 'package:racoon_tech_panel/src/View/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_search.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_table.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_title.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';

@@ -65,22 +65,26 @@ Widget previsaoFluxo(
             height: 40,
             child: Container(
                 color: color,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  child: InkWell(
-                      onTap: fn,
-                      child: Row(
-                        children: [
-                          Text(isShowing ? "Ocultar detalhes" : "Ver detalhes",
-                              style: TextStyle(color: Colors.white)),
-                          Icon(
-                              isShowing
-                                  ? Icons.arrow_drop_up
-                                  : Icons.arrow_drop_down,
-                              color: Colors.white),
-                        ],
-                      )),
+                child: Material(
+                  color: Colors.transparent,
+                  type: MaterialType.button,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    child: InkWell(
+                        onTap: fn,
+                        child: Row(
+                          children: [
+                            Text(isShowing ? "Ocultar detalhes" : "Ver detalhes",
+                                style: TextStyle(color: Colors.white)),
+                            Icon(
+                                isShowing
+                                    ? Icons.arrow_drop_up
+                                    : Icons.arrow_drop_down,
+                                color: Colors.white),
+                          ],
+                        )),
+                  ),
                 )),
           )
         ],

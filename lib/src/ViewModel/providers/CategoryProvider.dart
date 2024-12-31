@@ -16,4 +16,10 @@ class CategoryProvider extends ChangeNotifier {
     _isLoading = isLoading;
     notifyListeners();
   }
+
+  void clearCategories() {
+    _categories = [];
+    notifyListeners();
+  }
+  
 }
