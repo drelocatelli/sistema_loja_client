@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
-import 'package:racoon_tech_panel/src/dto/nfe_dto.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/clients/clients_page.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/estoque/estoque_page.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/home/home_page.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/notas_fiscais/nfe_generated.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/notas_fiscais/notas_fiscais_page.dart';
-import 'package:racoon_tech_panel/src/pages/dashboard/vendas/vendas_page.dart';
-import 'package:racoon_tech_panel/src/pages/login/login_page.dart';
+import 'package:racoon_tech_panel/src/Model/nfe_dto.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/clients/clients_page.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/estoque_page.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/home/home_page.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/notas_fiscais/nfe_generated.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/notas_fiscais/notas_fiscais_page.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/vendas_page.dart';
+import 'package:racoon_tech_panel/src/View/pages/login/login_page.dart';
 
 _fadeRoute(Widget page) {
   return CustomTransitionPage(

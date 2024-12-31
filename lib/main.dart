@@ -3,10 +3,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/routes.dart';
-import 'package:racoon_tech_panel/src/dto/app_mode.dart';
-import 'package:racoon_tech_panel/src/providers/CategoryProvider.dart';
-import 'package:racoon_tech_panel/src/providers/SalesProvider.dart';
-import 'package:racoon_tech_panel/src/shared/SharedTheme.dart';
+import 'package:racoon_tech_panel/src/Model/app_mode.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 Future main() async {
