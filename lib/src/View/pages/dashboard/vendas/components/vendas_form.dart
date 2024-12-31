@@ -21,8 +21,10 @@ class _VendasFormState extends State<VendasForm> {
   Map<String, TextEditingController> controllers = {
     "category": TextEditingController(),
     "produto": TextEditingController(),
+    "serial": TextEditingController(),
     "responsavel": TextEditingController(),
     "valor": TextEditingController(),
+    "descricao": TextEditingController(),
   };
 
   @override
@@ -36,105 +38,136 @@ class _VendasFormState extends State<VendasForm> {
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 20,
-      children: [
-        Form(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Helpers.rowOrWrap(
-                wrap: maxWidth < 800,
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: controllers["produto"],
-                      decoration: const InputDecoration(labelText: 'Produto'),
-                    ),
-                  ),
-                  Consumer<CategoryProvider>(
-                    builder: (context, model, child) {
-                      return DropdownSearch<Category>(
-                        enabled: !model.isLoading,
-                        popupProps: PopupProps.menu(
-                          showSearchBox: true,
-                          showSelectedItems: true,
-                        ),
-                        selectedItem: model.categories.firstWhere(
-                          (category) => category.id == 1,
-                          orElse: () => Category(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
-                        ),
-                        items: (filter, infiniteScrollProps) => model.categories,
-                        itemAsString: (Category category) => category.name!,
-                        compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
-                        decoratorProps: const DropDownDecoratorProps(
-                          decoration: InputDecoration(
-                            labelText: 'Categoria ',
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                      );
-                    }
-                  )
-                ],
-              ),
-              TextFormField(
-                controller: controllers["valor"]!,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: const InputDecoration(labelText: 'Valor', prefixText: 'R\$ '),
-              ),
-              const Gap(20),
-              Consumer<ColaboratorProvider>(
-                builder: (context, model, child) {
-                  return DropdownSearch<Colaborator>(
-                    enabled: !model.isLoading,
-                    popupProps: PopupProps.menu(
-                      showSearchBox: true,
-                      showSelectedItems: true,
-                    ),
-                    selectedItem: model.colaborators.firstWhere(
-                      (category) => category.id == 1,
-                      orElse: () => Colaborator(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
-                    ),
-                    items: (filter, infiniteScrollProps) => model.colaborators,
-                    itemAsString: (Colaborator colaborator) => colaborator.name!,
-                    compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
-                    decoratorProps: const DropDownDecoratorProps(
-                      decoration: InputDecoration(
-                        labelText: 'Colaborador ',
-                        border: OutlineInputBorder(),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 20,
+        children: [
+          Form(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Helpers.rowOrWrap(
+                  wrap: maxWidth < 800,
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: controllers["serial"],
+                        decoration: const InputDecoration(labelText: 'N° Série'),
                       ),
                     ),
-                  );
-                }
-              ),
-              const Gap(30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                spacing: 10,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      context.pop();
-                    }, 
-                    child: 
-                    const Text("Cancelar")
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.pop();
-                    }, 
-                    child: 
-                    const Text("Salvar venda")
-                  )
-                ],
-              ),
-            ],
-          ),
-        )
-      ],
+                    TextFormField(
+                      controller: controllers["descricao"]!,
+                      decoration: const InputDecoration(labelText: 'Descrição'),
+                    ),
+                    Consumer<ColaboratorProvider>(
+                  builder: (context, model, child) {
+                    return DropdownSearch<Colaborator>(
+                      enabled: !model.isLoading,
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        showSelectedItems: true,
+                      ),
+                      selectedItem: model.colaborators.firstWhere(
+                        (category) => category.id == 1,
+                        orElse: () => Colaborator(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
+                      ),
+                      items: (filter, infiniteScrollProps) => model.colaborators,
+                      itemAsString: (Colaborator colaborator) => colaborator.name!,
+                      compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
+                      decoratorProps: const DropDownDecoratorProps(
+                        decoration: InputDecoration(
+                          labelText: 'Colaborador ',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    );
+                  }
+                ),
+                    Consumer<CategoryProvider>(
+                      builder: (context, model, child) {
+                        return DropdownSearch<Category>(
+                          enabled: !model.isLoading,
+                          popupProps: PopupProps.menu(
+                            showSearchBox: true,
+                            showSelectedItems: true,
+                          ),
+                          selectedItem: model.categories.firstWhere(
+                            (category) => category.id == 1,
+                            orElse: () => Category(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
+                          ),
+                          items: (filter, infiniteScrollProps) => model.categories,
+                          itemAsString: (Category category) => category.name!,
+                          compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
+                          decoratorProps: const DropDownDecoratorProps(
+                            decoration: InputDecoration(
+                              labelText: 'Categoria ',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        );
+                      }
+                    )
+                  ],
+                ),
+                const Gap(20),
+                Consumer<ColaboratorProvider>(
+                  builder: (context, model, child) {
+                    return DropdownSearch<Colaborator>(
+                      enabled: !model.isLoading,
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        showSelectedItems: true,
+                      ),
+                      selectedItem: model.colaborators.firstWhere(
+                        (category) => category.id == 1,
+                        orElse: () => Colaborator(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
+                      ),
+                      items: (filter, infiniteScrollProps) => model.colaborators,
+                      itemAsString: (Colaborator colaborator) => colaborator.name!,
+                      compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
+                      decoratorProps: const DropDownDecoratorProps(
+                        decoration: InputDecoration(
+                          labelText: 'Colaborador ',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    );
+                  }
+                ),
+                TextFormField(
+                  controller: controllers["valor"]!,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(labelText: 'Total', prefixText: 'R\$ '),
+                ),
+                
+                const Gap(30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  spacing: 10,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        context.pop();
+                      }, 
+                      child: 
+                      const Text("Cancelar")
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.pop();
+                      }, 
+                      child: 
+                      const Text("Salvar venda")
+                    )
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
