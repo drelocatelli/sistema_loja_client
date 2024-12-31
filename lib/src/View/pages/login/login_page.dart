@@ -57,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                     Text("Login", style: TextStyle(color: SharedTheme.secondaryColor, fontSize: 30, fontWeight: FontWeight.bold)),
                     const Gap(18),
                     TextFormField(
+                      autofocus: true,
                       obscureText: true,
                       controller: _passwordController,
                       onFieldSubmitted: (value) async {

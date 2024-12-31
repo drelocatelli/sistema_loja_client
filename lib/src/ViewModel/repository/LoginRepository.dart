@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/Model/login_dto.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
@@ -40,6 +44,9 @@ class LoginRepository {
       }, 
       cbNull: (request) {
         return ResponseDTO<String>(status: 401, message: 'Ocorreu um erro inesperado');
+      },
+      onErrorCb: (err) {
+        Logger().e(err);
       }
     );
   }

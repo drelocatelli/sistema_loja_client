@@ -7,7 +7,7 @@ import 'package:racoon_tech_panel/src/ViewModel/utils/request.dart';
 
 class BaseRepository {
 
-  static Future<ResponseDTO<T>> graphQlRequest<T>({required String query, required bool authentication ,required Function cbData, required Function cbNull}) async {
+  static Future<ResponseDTO<T>> graphQlRequest<T>({required String query, required bool authentication ,required Function cbData, required Function cbNull, Function? onErrorCb}) async {
     try {
       final  endpoint = '${dotenv.env['SERVER_URL']!}:${dotenv.env['SERVER_PORT']!}';
 
@@ -42,6 +42,9 @@ class BaseRepository {
 
     }  on DioException catch(err) {
       debugPrint(err.toString());
+      if(onErrorCb != null) {
+        onErrorCb(err);
+      }
 
       String? message;
       if(err.type == DioExceptionType.connectionError) {
