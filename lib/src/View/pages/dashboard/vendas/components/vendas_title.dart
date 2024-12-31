@@ -17,6 +17,8 @@ import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 
+import '../../../../../ViewModel/functions/clientes_functions.dart';
+
 class VendasTitle extends StatefulWidget {
   const VendasTitle({super.key});
 
@@ -40,6 +42,9 @@ class _VendasTitleState extends State<VendasTitle> {
 
       // load colaborators
       await fetchColaborators(context);
+
+      // load clients
+      await fetchClientes(context);
   }
 
   @override
