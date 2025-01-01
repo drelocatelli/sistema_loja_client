@@ -2,11 +2,14 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/category_dto.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/debouncer_function.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ClientProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
@@ -19,6 +22,7 @@ class VendasForm extends StatefulWidget {
 }
 
 class _VendasFormState extends State<VendasForm> {
+  final _debouncer = Debouncer(milliseconds: 800);
 
   Map<String, TextEditingController> controllers = {
     "category": TextEditingController(),
@@ -67,8 +71,35 @@ class _VendasFormState extends State<VendasForm> {
                   builder: (context, model, child) {
                     return DropdownSearch<Colaborator>(
                       enabled: !model.isLoading,
-                      popupProps: PopupProps.menu(
-                        showSearchBox: true,
+                      popupProps: PopupProps.bottomSheet(
+                        cacheItems: false,
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+                          child: Column(
+                            spacing: 10,
+                            children: [
+                              Text("Listando os 7 primeiros colaboradores", style: Theme.of(context).textTheme.bodyLarge),
+                              TextFormField(
+                                autofocus: true,
+                                onChanged: (value) async {
+                                  if(value == null || value.isEmpty) {
+                                    model.setColaborators(model.colaboratorsBkp);
+                                    return;
+                                  }
+                                  model.setIsLoading(true);
+                                  _debouncer.run(() async {
+                                    await fetchColaborators(context, searchTerm: value);
+                                    model.setIsLoading(false);
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                  labelText: 'buscar por nome',
+                                  border: OutlineInputBorder(),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                         showSelectedItems: true,
                       ),
                       selectedItem: model.colaborators.firstWhere(

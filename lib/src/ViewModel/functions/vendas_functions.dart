@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_form.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 
@@ -31,6 +34,17 @@ deleteVendas(BuildContext context, List<String> ids) async {
   await loadVendas(context);
   model.deselectAll();
   model.setIsReloading(false);
+}
+
+loadAllSalesProps(BuildContext context) async {
+  // load categories
+  await fetchCategories(context);
+
+  // load colaborators
+  await fetchColaborators(context);
+
+  // load clients
+  await fetchClientes(context);
 }
 
 novaVendaDialog(BuildContext context) {

@@ -32,19 +32,8 @@ class _VendasTitleState extends State<VendasTitle> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _fetchObjects();
+      await loadAllSalesProps(context);
     });
-  }
-
-  _fetchObjects() async {
-      // load categories
-      await fetchCategories(context);
-
-      // load colaborators
-      await fetchColaborators(context);
-
-      // load clients
-      await fetchClientes(context);
   }
 
   @override
@@ -64,6 +53,7 @@ class _VendasTitleState extends State<VendasTitle> {
                     visible: !SharedTheme.isLargeScreen(context),
                     child: InkWell(onTap: () async {
                       await reloadVendas(context);
+                      await loadAllSalesProps(context);
                     }, child: RefreshComponent(isLoading: model.isReloading))
                   );
                 }
