@@ -21,5 +21,9 @@ class CategoryProvider extends ChangeNotifier {
     _categories = [];
     notifyListeners();
   }
+
+  void reset() {
+    // to do
+  }
   
 }

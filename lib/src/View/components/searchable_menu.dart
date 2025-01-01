@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/debouncer_function.dart';
 
 enum ProviderType {
@@ -27,6 +28,14 @@ class SearchableMenu<T> extends StatefulWidget {
 
 class _SearchableMenuState extends State<SearchableMenu> {
   // Recebe o tipo do model
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.model.reset();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

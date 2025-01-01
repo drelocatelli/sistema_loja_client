@@ -29,5 +29,10 @@ class ColaboratorProvider extends ChangeNotifier {
     _colaborators = [];
     notifyListeners();
   }
+
+  void reset() {
+    _colaborators = _colaboratorsBkp;
+    notifyListeners();
+  }
   
 }

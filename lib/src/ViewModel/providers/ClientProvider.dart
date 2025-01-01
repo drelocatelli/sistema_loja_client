@@ -8,11 +8,17 @@ class ClientProvider extends ChangeNotifier {
   List<Cliente> _clientes = [];
   List<Cliente> get clientes => _clientes;
 
+  List<Cliente> _clientesBkp = [];
+  List<Cliente> get clientesBkp => _clientesBkp;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
   
   void setClientes(List<Cliente> clientes) {
     _clientes = clientes;
+    if(_clientesBkp.isEmpty) {
+      _clientesBkp = clientes;
+    }
     notifyListeners();
   }
 
@@ -23,6 +29,11 @@ class ClientProvider extends ChangeNotifier {
 
   void clearClientes() {
     _clientes = [];
+    notifyListeners();
+  }
+
+  void reset() {
+    _clientes = _clientesBkp;
     notifyListeners();
   }
 }

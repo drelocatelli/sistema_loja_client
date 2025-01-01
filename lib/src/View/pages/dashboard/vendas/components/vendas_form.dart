@@ -9,6 +9,7 @@ import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/debouncer_function.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
@@ -48,6 +49,7 @@ class _VendasFormState extends State<VendasForm> {
   Widget build(BuildContext context) {
 
   final colaboratorModel = Provider.of<ColaboratorProvider>(context, listen: true);
+  final clientrModel = Provider.of<ClientProvider>(context, listen: true);
 
 
     final maxWidth = MediaQuery.of(context).size.width;
@@ -83,6 +85,10 @@ class _VendasFormState extends State<VendasForm> {
                       decoration: const InputDecoration(labelText: 'Descrição'),
                     ),
                     TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Responsável',
+                        border: OutlineInputBorder(),
+                      ),
                       readOnly: true,
                       controller: TextEditingController(text: colaborator?.name ?? "Selecione"),
                       onTap: () {
@@ -106,30 +112,57 @@ class _VendasFormState extends State<VendasForm> {
                       }
                     ),
                 const Gap(20),
-                Consumer<ClientProvider>(
-                  builder: (context, model, child) {
-                    return DropdownSearch<Cliente>(
-                      enabled: !model.isLoading,
-                      popupProps: PopupProps.menu(
-                        showSearchBox: true,
-                        showSelectedItems: true,
-                      ),
-                      selectedItem: model.clientes.firstWhere(
-                        (category) => category.id == 1,
-                        orElse: () => Cliente(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
-                      ),
-                      items: (filter, infiniteScrollProps) => model.clientes,
-                      itemAsString: (Cliente clientes) => clientes.name!,
-                      compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
-                      decoratorProps: const DropDownDecoratorProps(
-                        decoration: InputDecoration(
-                          labelText: 'Cliente ',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
+                // Consumer<ClientProvider>(
+                //   builder: (context, model, child) {
+                //     return DropdownSearch<Cliente>(
+                //       enabled: !model.isLoading,
+                //       popupProps: PopupProps.menu(
+                //         showSearchBox: true,
+                //         showSelectedItems: true,
+                //       ),
+                //       selectedItem: model.clientes.firstWhere(
+                //         (category) => category.id == 1,
+                //         orElse: () => Cliente(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
+                //       ),
+                //       items: (filter, infiniteScrollProps) => model.clientes,
+                //       itemAsString: (Cliente clientes) => clientes.name!,
+                //       compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
+                //       decoratorProps: const DropDownDecoratorProps(
+                //         decoration: InputDecoration(
+                //           labelText: 'Cliente ',
+                //           border: OutlineInputBorder(),
+                //         ),
+                //       ),
+                //     );
+                //   }
+                // ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Cliente',
+                    border: OutlineInputBorder(),
+                  ),
+                  readOnly: true,
+                  controller: TextEditingController(text: cliente?.name ?? "Selecione"),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return SearchableMenu(
+                          model: Provider.of<ClientProvider>(context, listen: true), 
+                          items: clientrModel.clientes,
+                          selectCb: (Cliente cliente) {
+                            setState(() {
+                              this.cliente = cliente;
+                            });
+                          },
+                          fetchCb: (String? searchTerm) async {
+                            await fetchClientes(context, searchTerm: searchTerm);
+                          }
+                        );
+                      },
                     );
                   }
-                ),
+                    ),
                     Consumer<CategoryProvider>(
                       builder: (context, model, child) {
                         return DropdownSearch<Category>(
