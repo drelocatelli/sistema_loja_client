@@ -36,38 +36,8 @@ class VendasTable extends StatelessWidget {
                       ),
                       onPressed: () async {
                         model.setIsReloading(false);
-
-                        showDialog(
-                          context: context, 
-                          builder: (BuildContext context) {
-                            return StatefulBuilder(
-                              builder: (context, setState) {
-                                return AlertDialog(
-                                  title: const Text("Excluir selecionados"),
-                                  content: const Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      }, 
-                                      child: const Text("Cancelar")
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        model.setIsReloading(true);
-                                        setState(() {});
-                                        final selectedIds = model.selectedIds;
-                                        await deleteVendas(context, selectedIds);
-                                        Navigator.of(context).pop();
-                                      }, 
-                                      child: Text(model.isReloading ? 'Aguarde...' : "Confirmar")
-                                    ),
-                                  ],
-                                );
-                              }
-                            );
-                          }
-                        );
+                        _deleteModal(context, model.selectedIds);
+                        
                       }, 
                     ),
                   ),
@@ -163,7 +133,8 @@ class VendasTable extends StatelessWidget {
                     ),
                     PopupMenuItem(
                       value: 'delete',
-                      onTap: () {
+                      onTap: () async {
+                        _deleteModal(context, [sale.id!]);
                       },
                       child: Center(child: Icon(Icons.delete)),
                     )
@@ -185,4 +156,39 @@ class VendasTable extends StatelessWidget {
     }
   );
   }
+}
+
+_deleteModal(BuildContext context, List<String> ids) {
+  final model = Provider.of<SalesProvider>(context, listen: false);
+  
+  showDialog(
+    context: context, 
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text("Excluir selecionados"),
+            content: const Text("Você tem certeza que deseja excluir as vendas selecionadas?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }, 
+                child: const Text("Cancelar")
+              ),
+              TextButton(
+                onPressed: () async {
+                  model.setIsReloading(true);
+                  setState(() {});
+                  await deleteVendas(context, ids);
+                  Navigator.of(context).pop();
+                }, 
+                child: Text(model.isReloading ? 'Aguarde...' : "Confirmar")
+              ),
+            ],
+          );
+        }
+      );
+    }
+  );
 }
