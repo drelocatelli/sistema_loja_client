@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/category_dto.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
+import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/debouncer_function.dart';
@@ -22,16 +23,18 @@ class VendasForm extends StatefulWidget {
 }
 
 class _VendasFormState extends State<VendasForm> {
-  final _debouncer = Debouncer(milliseconds: 800);
 
   Map<String, TextEditingController> controllers = {
-    "category": TextEditingController(),
     "produto": TextEditingController(),
-    "serial": TextEditingController(),
-    "responsavel": TextEditingController(),
-    "valor": TextEditingController(),
-    "descricao": TextEditingController(),
   };
+
+  Colaborator? colaborator;
+  Category? category;
+  Cliente? cliente;
+  String? serial;
+  String? descricao;
+  double? valor;
+
 
   @override
   void dispose() {
@@ -43,6 +46,10 @@ class _VendasFormState extends State<VendasForm> {
 
   @override
   Widget build(BuildContext context) {
+
+  final colaboratorModel = Provider.of<ColaboratorProvider>(context, listen: true);
+
+
     final maxWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
@@ -59,65 +66,45 @@ class _VendasFormState extends State<VendasForm> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        controller: controllers["serial"],
+                        onChanged: (value) {
+                        setState(() {
+                          serial = value;
+                        });
+                      },
                         decoration: const InputDecoration(labelText: 'N° Série'),
                       ),
                     ),
                     TextFormField(
-                      controller: controllers["descricao"]!,
+                      onChanged: (value) {
+                        setState(() {
+                          descricao = value;
+                        });
+                      },
                       decoration: const InputDecoration(labelText: 'Descrição'),
                     ),
-                    Consumer<ColaboratorProvider>(
-                  builder: (context, model, child) {
-                    return DropdownSearch<Colaborator>(
-                      enabled: !model.isLoading,
-                      popupProps: PopupProps.bottomSheet(
-                        cacheItems: false,
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
-                          child: Column(
-                            spacing: 10,
-                            children: [
-                              Text("Listando os 7 primeiros colaboradores", style: Theme.of(context).textTheme.bodyLarge),
-                              TextFormField(
-                                autofocus: true,
-                                onChanged: (value) async {
-                                  if(value == null || value.isEmpty) {
-                                    model.setColaborators(model.colaboratorsBkp);
-                                    return;
-                                  }
-                                  model.setIsLoading(true);
-                                  _debouncer.run(() async {
-                                    await fetchColaborators(context, searchTerm: value);
-                                    model.setIsLoading(false);
-                                  });
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: 'buscar por nome',
-                                  border: OutlineInputBorder(),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        showSelectedItems: true,
-                      ),
-                      selectedItem: model.colaborators.firstWhere(
-                        (category) => category.id == 1,
-                        orElse: () => Colaborator(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
-                      ),
-                      items: (filter, infiniteScrollProps) => model.colaborators,
-                      itemAsString: (Colaborator colaborator) => colaborator.name!,
-                      compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
-                      decoratorProps: const DropDownDecoratorProps(
-                        decoration: InputDecoration(
-                          labelText: 'Colaborador ',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    );
-                  }
-                ),
+                    TextFormField(
+                      readOnly: true,
+                      controller: TextEditingController(text: colaborator?.name ?? "Selecione"),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SearchableMenu(
+                              model: Provider.of<ColaboratorProvider>(context, listen: true), 
+                              items: colaboratorModel.colaborators,
+                              selectCb: (Colaborator colaborator) {
+                                setState(() {
+                                  this.colaborator = colaborator;
+                                });
+                              },
+                              fetchCb: (String? searchTerm) async {
+                                await fetchColaborators(context, searchTerm: searchTerm);
+                              }
+                            );
+                          },
+                        );
+                      }
+                    ),
                 const Gap(20),
                 Consumer<ClientProvider>(
                   builder: (context, model, child) {
@@ -171,7 +158,11 @@ class _VendasFormState extends State<VendasForm> {
                 ),
                 
                 TextFormField(
-                  controller: controllers["valor"]!,
+                  onChanged: (value) {
+                    setState(() {
+                      valor = double.tryParse(value) ?? 0.0;
+                    });
+                  },
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(labelText: 'Total', prefixText: 'R\$ '),
                 ),
@@ -207,3 +198,74 @@ class _VendasFormState extends State<VendasForm> {
 }
 
 
+// _showModal(BuildContext context, {required debouncer, required Function cb}) async {
+  
+//   return showDialog(
+//     context: context, 
+//     builder: (context) {
+//       return StatefulBuilder(
+//         builder: (context, setState) {
+//         final model = Provider.of<ColaboratorProvider>(context, listen: true);
+
+//           return AlertDialog(
+//             contentPadding: const EdgeInsets.all(0),
+//             content: SizedBox(
+//             width: MediaQuery.of(context).size.width,
+          
+//               child: Column(
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   Padding(
+//                     padding: const EdgeInsets.all(8.0),
+//                     child: TextField(
+//                       autofocus: true,
+//                       decoration: const InputDecoration(
+//                         labelText: 'Pesquisar',
+//                         hintText: 'Buscar por nome',
+//                         border: OutlineInputBorder(),
+//                       ),
+//                       onChanged: (value) async {
+//                         model.setIsLoading(true);
+//                         debouncer.run(() async {
+//                           await fetchColaborators(context, searchTerm: value);
+//                           model.setIsLoading(false);
+//                         });
+//                       },
+//                     )
+//                   ),
+//                   Container(
+//                     width: double.infinity,
+//                     height: 300,
+//                     child: Material(
+//                       child: Scrollbar(
+//                         trackVisibility: true,
+//                         thumbVisibility: true,
+//                         child: Visibility(
+//                           visible: !model.isLoading,
+//                           replacement: const Center(child: Text("Buscando dados...")),
+//                           child: ListView.builder(
+//                             shrinkWrap: true,
+//                             itemCount: model.colaborators.length,
+//                             itemBuilder: (context, index) {
+//                               return ListTile(
+//                                 title: Text("${model.colaborators[index].name}", style: Theme.of(context).textTheme.bodyLarge),
+//                                 onTap: () {
+//                                   cb(model.colaborators[index]);
+//                                   Navigator.of(context).pop();
+//                                 },
+//                               );
+//                             },
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           );
+//         }
+//       );
+//     }
+//   );
+// }
