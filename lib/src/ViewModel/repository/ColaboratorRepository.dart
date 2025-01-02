@@ -54,6 +54,7 @@ class ColaboratorRepository {
       cbData: (response) {
         final data = response.data['data']['getColaborators'];
         final dto = ColaboratorResponseDTO.fromJson(data);
+        
         return ResponseDTO<ColaboratorResponseDTO>(status: 200, data: dto);
       },
       cbNull: (response) {

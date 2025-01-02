@@ -1,6 +1,5 @@
-import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/Model/payload_dto.dart';
-import 'package:racoon_tech_panel/src/Model/produtos_response_dto.dart';
+import 'package:racoon_tech_panel/src/Model/produtos_response_dto%20copy.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 

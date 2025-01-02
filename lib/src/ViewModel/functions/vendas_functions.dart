@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_form.dart';
-import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
@@ -18,6 +17,11 @@ Future reloadVendas(BuildContext context) async {
   model.setSales(newData);
   await Future.delayed(Duration(milliseconds: 1500));
   model.setIsReloading(false);
+}
+
+Future saveVendas(BuildContext context) async {
+
+
 }
 
 Future loadVendas(BuildContext context) async {
@@ -67,3 +71,4 @@ novaVendaDialog(BuildContext context) {
     }
   );
 }
+

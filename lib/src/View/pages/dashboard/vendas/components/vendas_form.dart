@@ -1,4 +1,3 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -9,17 +8,17 @@ import 'package:racoon_tech_panel/src/Model/category_dto.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
 import 'package:racoon_tech_panel/src/Model/product_dto.dart';
+import 'package:racoon_tech_panel/src/Model/sales_controller_dto.dart';
+import 'package:racoon_tech_panel/src/Model/save_sales_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
-import 'package:racoon_tech_panel/src/ViewModel/functions/debouncer_function.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
-import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ClientProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider%20copy.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
-import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 
 class VendasForm extends StatefulWidget {
   const VendasForm({super.key});
@@ -31,15 +30,13 @@ class VendasForm extends StatefulWidget {
 class _VendasFormState extends State<VendasForm> {
 
   final _formKey = GlobalKey<FormState>();
+  final SalesController _controller = SalesController();
 
-  Produto? produto;
-  Colaborator? colaborator;
-  Category? category;
-  Cliente? cliente;
-  String? serial;
-  String? descricao;
-  double? valor;
-
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,42 +61,24 @@ class _VendasFormState extends State<VendasForm> {
                   wrap: true,
                   children: [
                     TextFormField(
-                      onChanged: (value) {
-                      setState(() {
-                        serial = value;
-                      });
-                    },
+                      controller: _controller.serialController,
+                      autofocus: true,
                       decoration: const InputDecoration(labelText: 'N° Série'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo obrigatório';
-                        }
-                        return null;
-                      },
+                      validator: _controller.validateSerial,
                     ),
                     TextFormField(
-                      onChanged: (value) {
-                        setState(() {
-                          descricao = value;
-                        });
-                      },
+                      controller: _controller.descricaoController,
                       decoration: const InputDecoration(labelText: 'Descrição'),
-                      
+                      validator: _controller.validateDescricao,
                     ),
-
                     TextFormField(
                       decoration: InputDecoration(
+                        suffixIcon: const Icon(Icons.expand_more),
                         labelText: 'Produto',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo obrigatório';
-                        }
-                        return null;
-                      },
                       readOnly: true,
-                      controller: TextEditingController(text: produto?.name),
+                      controller: TextEditingController(text: _controller.produto?.name),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -109,7 +88,7 @@ class _VendasFormState extends State<VendasForm> {
                               items: produtoModel.produtos,
                               selectCb: (Produto produto) {
                                 setState(() {
-                                  this.produto = produto;
+                                  _controller.produto = produto;
                                 });
                               },
                               fetchCb: (String? searchTerm) async {
@@ -123,6 +102,7 @@ class _VendasFormState extends State<VendasForm> {
                     
                     TextFormField(
                       decoration: InputDecoration(
+                        suffixIcon: const Icon(Icons.expand_more),
                         labelText: 'Responsável',
                         border: OutlineInputBorder(),
                       ),
@@ -133,7 +113,7 @@ class _VendasFormState extends State<VendasForm> {
                         return null;
                       },
                       readOnly: true,
-                      controller: TextEditingController(text: colaborator?.name),
+                      controller: TextEditingController(text: _controller.colaborator?.name),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -143,7 +123,7 @@ class _VendasFormState extends State<VendasForm> {
                               items: colaboratorModel.colaborators,
                               selectCb: (Colaborator colaborator) {
                                 setState(() {
-                                  this.colaborator = colaborator;
+                                  _controller.colaborator = colaborator;
                                 });
                               },
                               fetchCb: (String? searchTerm) async {
@@ -157,6 +137,7 @@ class _VendasFormState extends State<VendasForm> {
                 const Gap(20),
                 TextFormField(
                   decoration: InputDecoration(
+                    suffixIcon: const Icon(Icons.expand_more),
                     labelText: 'Cliente',
                     border: OutlineInputBorder(),
                   ),
@@ -167,7 +148,7 @@ class _VendasFormState extends State<VendasForm> {
                     return null;
                   },
                   readOnly: true,
-                  controller: TextEditingController(text: cliente?.name),
+                  controller: TextEditingController(text: _controller.cliente?.name),
                   onTap: () {
                     showDialog(
                       context: context,
@@ -177,7 +158,7 @@ class _VendasFormState extends State<VendasForm> {
                           items: clientrModel.clientes,
                           selectCb: (Cliente cliente) {
                             setState(() {
-                              this.cliente = cliente;
+                              _controller.cliente = cliente;
                             });
                           },
                           fetchCb: (String? searchTerm) async {
@@ -191,26 +172,13 @@ class _VendasFormState extends State<VendasForm> {
                   ],
                 ),
                 TextFormField(
-                  onChanged: (value) {
-                    setState(() {
-                      valor = double.tryParse(value) ?? 0.0;
-                    });
-                  },
+                  controller: _controller.quantityController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                   ],
-                  decoration: const InputDecoration(labelText: 'Total', prefixText: 'R\$ '),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Campo obrigatório';
-                    }
-                    final doubleValue = double.tryParse(value);
-                    if (doubleValue == null) {
-                      return 'Por favor insira um valor decimal';
-                    }
-                    return null;
-                  },
+                  decoration: const InputDecoration(labelText: 'Quantidade', prefixText: 'R\$ '),
+                  validator: _controller.validateQuantity,
                 ),
                 const Gap(30),
                 Row(
@@ -225,10 +193,10 @@ class _VendasFormState extends State<VendasForm> {
                       const Text("Cancelar")
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if(_formKey.currentState!.validate()) {
-
-                          
+                          _formKey.currentState!.save();
+                          await SaleRepository.create(_controller);
                           Logger().i("Venda salva com sucesso");
                           context.pop();
                         }

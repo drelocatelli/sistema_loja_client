@@ -16,7 +16,10 @@ Future fetchColaborators(BuildContext context, {bool onlyOnce = false, String? s
   model.setIsLoading(true);
 
   if(response.status == 200) {  
+    model.setError(false);
     model.setColaborators(response.data?.colaborators ?? []);
+  } else {
+    model.setError(true);
   }
 
   Logger().i('Colaborators loaded ${model.colaborators.length}');

@@ -17,7 +17,11 @@ Future fetchClientes(BuildContext context, {bool onlyOnce = false, String? searc
   ResponseDTO<ClientesResponseDTO> clientesList = await ClientRepository.get(page: page, searchTerm: searchTerm);
 
   if(clientesList.status == 200) {
+    model.setError(false);
+
     model.setClientes(clientesList.data?.clientes ?? []);
+  } else {
+    model.setError(true);
   }
 
   Logger().i('Clientes loaded ${model.clientes.length}');

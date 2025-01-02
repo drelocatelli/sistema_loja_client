@@ -6,6 +6,9 @@ class CategoryProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   List<Category> _categories = [];
   List<Category> get categories => _categories;
+
+  bool _hasError = false;
+  bool get hasError => _hasError;
   
   void setCategories(List<Category> categories) {
     _categories = categories;
@@ -24,6 +27,11 @@ class CategoryProvider extends ChangeNotifier {
 
   void reset() {
     // to do
+  }
+
+  void setError(bool hasError) {
+    _hasError = hasError;
+    notifyListeners();
   }
   
 }

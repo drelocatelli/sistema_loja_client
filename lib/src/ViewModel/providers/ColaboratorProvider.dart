@@ -11,6 +11,9 @@ class ColaboratorProvider extends ChangeNotifier {
   List<Colaborator> _colaborators = [];
   List<Colaborator> get colaborators => _colaborators;
 
+  bool _hasError = false;
+  bool get hasError => _hasError;
+
 
   void setColaborators(List<Colaborator> colaborators) {
     _colaborators = colaborators;
@@ -32,6 +35,11 @@ class ColaboratorProvider extends ChangeNotifier {
 
   void reset() {
     _colaborators = _colaboratorsBkp;
+    notifyListeners();
+  }
+
+  void setError(bool hasError) {
+    _hasError = hasError;
     notifyListeners();
   }
   

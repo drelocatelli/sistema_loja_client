@@ -13,6 +13,9 @@ class ClientProvider extends ChangeNotifier {
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
+
+  bool _hasError = false;
+  bool get hasError => _hasError;
   
   void setClientes(List<Cliente> clientes) {
     _clientes = clientes;
@@ -34,6 +37,11 @@ class ClientProvider extends ChangeNotifier {
 
   void reset() {
     _clientes = _clientesBkp;
+    notifyListeners();
+  }
+
+  void setError(bool hasError) {
+    _hasError = hasError;
     notifyListeners();
   }
 }

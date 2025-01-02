@@ -18,6 +18,9 @@ class SalesProvider extends ChangeNotifier {
   bool get isAscending => _isAscending;
   List<String> get selectedIds => _selectedIds;
 
+  bool _hasError = false;
+  bool get hasError => _hasError;
+
 
   void setIsLoading(bool isLoading) {
     _isLoading = isLoading;
@@ -73,5 +76,10 @@ class SalesProvider extends ChangeNotifier {
   // Notify listeners to rebuild the UI
   notifyListeners();
 }
+
+  void setError(bool hasError) {
+    _hasError = hasError;
+    notifyListeners();
+  }
 
 }

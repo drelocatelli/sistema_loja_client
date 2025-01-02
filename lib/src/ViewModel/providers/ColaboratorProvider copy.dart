@@ -12,6 +12,9 @@ class ProdutoProvider extends ChangeNotifier {
   List<Produto> _produtos = [];
   List<Produto> get produtos => _produtos;
 
+  bool _hasError = false;
+  bool get hasError => _hasError;
+
 
   void setProdutos(List<Produto> produto) {
     _produtos = produto;
@@ -33,6 +36,11 @@ class ProdutoProvider extends ChangeNotifier {
 
   void reset() {
     _produtos = _produtosBkp;
+    notifyListeners();
+  }
+
+  void setError(bool hasError) {
+    _hasError = hasError;
     notifyListeners();
   }
   

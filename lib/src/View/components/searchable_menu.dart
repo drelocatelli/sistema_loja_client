@@ -20,7 +20,7 @@ class SearchableMenu<T> extends StatefulWidget {
     required this.selectCb,
     required this.model,
     required this.fetchCb,
-    required this.items
+    required this.items,
   });
 
   @override
@@ -78,19 +78,23 @@ class _SearchableMenuState extends State<SearchableMenu> {
                       thumbVisibility: true,
                       child: Visibility(
                         visible: !model.isLoading,
-                        replacement: const Center(child: Text("Buscando dados...")),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: widget.items.length, // Dependendo do Provider, você terá uma lista diferente
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text("${widget.items[index].name}", style: Theme.of(context).textTheme.bodyLarge),
-                              onTap: () {
-                                widget.selectCb(widget.items[index]);
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
+                        replacement: Center(child: Text("Buscando dados...")),
+                        child: Visibility(
+                          visible: !model.hasError,
+                          replacement: Center(child: Text("Ocorreu um erro, tente novamente")),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: widget.items.length, // Dependendo do Provider, você terá uma lista diferente
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text("${widget.items[index].name}", style: Theme.of(context).textTheme.bodyLarge),
+                                onTap: () {
+                                  widget.selectCb(widget.items[index]);
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),

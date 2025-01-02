@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/Model/payload_dto.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
+import 'package:racoon_tech_panel/src/Model/sales_controller_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 
@@ -90,8 +92,21 @@ class SaleRepository {
     );
   }
 
-  // static Future create() {
+  static Future create(SalesController controller) async {
 
-  // }
+    final payload = {
+      'input': {
+        'serial': controller.serialController.text,
+        'product_id': controller.produto?.id,
+        'description': controller.descricaoController.text,
+        'colaborator_id': controller.colaborator?.id,
+        'client_id': controller.cliente?.id,
+        'quantity': controller.quantityController.text,
+        'total': controller.valorController.text,
+      }
+    };
+
+    Logger().i(payload);
+  }
   
 }

@@ -16,7 +16,10 @@ Future fetchProdutos(BuildContext context, {bool onlyOnce = false, String? searc
   model.setIsLoading(true);
 
   if(response.status == 200) {  
+    model.setError(false);
     model.setProdutos(response.data?.produtos ?? []);
+  } else {
+    model.setError(true);
   }
 
   Logger().i('Produtos loaded ${model.produtos.length}');
