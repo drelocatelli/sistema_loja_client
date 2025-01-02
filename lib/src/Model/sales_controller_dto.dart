@@ -9,7 +9,6 @@ class SalesController {
   final serialController = TextEditingController();
   final descricaoController = TextEditingController();
   final valorController = TextEditingController();
-  final produtoController = TextEditingController();
   final quantityController = TextEditingController();
   Produto? produto;
   Colaborator? colaborator;

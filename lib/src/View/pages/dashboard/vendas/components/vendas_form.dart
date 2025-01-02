@@ -31,11 +31,33 @@ class _VendasFormState extends State<VendasForm> {
 
   final _formKey = GlobalKey<FormState>();
   final SalesController _controller = SalesController();
+  double _total = 0.0;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.quantityController.addListener(() {
+      updateTotal();
+    });
+  }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+
+  void updateTotal() {
+    int quantity = int.tryParse(_controller.quantityController.text) ?? 0;
+    double price = _controller.produto?.price ?? 0;
+    if(_controller.produto != null && quantity > 0) {
+      _total = price * quantity;
+    } else {
+      _total = 0.0;
+    }
+    setState(() {});
   }
 
   @override
@@ -85,11 +107,12 @@ class _VendasFormState extends State<VendasForm> {
                           builder: (context) {
                             return SearchableMenu(
                               model: Provider.of<ProdutoProvider>(context, listen: true), 
-                              items: produtoModel.produtos,
+                              items: produtoModel.produtos.where((p) => (p.quantity ?? 0) > 0).toList(),
                               selectCb: (Produto produto) {
                                 setState(() {
                                   _controller.produto = produto;
                                 });
+                                  updateTotal();
                               },
                               fetchCb: (String? searchTerm) async {
                                 await fetchProdutos(context, searchTerm: searchTerm);
@@ -99,7 +122,6 @@ class _VendasFormState extends State<VendasForm> {
                         );
                       }
                     ),
-                    
                     TextFormField(
                       decoration: InputDecoration(
                         suffixIcon: const Icon(Icons.expand_more),
@@ -172,15 +194,37 @@ class _VendasFormState extends State<VendasForm> {
                   ],
                 ),
                 TextFormField(
+                  maxLength: 6,
+                  onChanged: (value) {
+                    updateTotal();
+                  },  
                   controller: _controller.quantityController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                    FilteringTextInputFormatter.digitsOnly, // Só números
+                    LengthLimitingTextInputFormatter(10), // Limitar a quantidade de caracteres, se necessário
+                    _NoLeadingZeroFormatter(), // Impedir número com zero à esquerda
                   ],
-                  decoration: const InputDecoration(labelText: 'Quantidade', prefixText: 'R\$ '),
+                  decoration: const InputDecoration(labelText: 'Quantidade', counterText: ''),
                   validator: _controller.validateQuantity,
                 ),
-                const Gap(30),
+                Visibility(
+                  visible: _controller.produto != null,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: SelectionArea(
+                      child: Column(
+                        spacing: 4,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text("Estoque qtd.: ${_controller.produto?.quantity}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
+                          Text("Valor unitário: R\$ ${_controller.produto?.price?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
+                          Text("Total: R\$ ${_total.toStringAsFixed(2)}", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold), softWrap: true, overflow: TextOverflow.ellipsis),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   spacing: 10,
@@ -212,5 +256,16 @@ class _VendasFormState extends State<VendasForm> {
         ],
       ),
     );
+  }
+}
+
+class _NoLeadingZeroFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    // Impede que o número comece com zero, mas permite números como '0' isolado
+    if (newValue.text.isNotEmpty && newValue.text[0] == '0' && newValue.text.length > 1) {
+      return oldValue;
+    }
+    return newValue;
   }
 }
