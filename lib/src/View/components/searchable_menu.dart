@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/debouncer_function.dart';
+import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 
 enum ProviderType {
   colaborator,
@@ -47,7 +48,7 @@ class _SearchableMenuState extends State<SearchableMenu> {
         return AlertDialog(
           contentPadding: const EdgeInsets.all(0),
           content: SizedBox(
-            width: MediaQuery.of(context).size.width,
+            width: MediaQuery.of(context).size.width / (SharedTheme.isLargeScreen(context) ? 3 : 1),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -70,7 +71,6 @@ class _SearchableMenuState extends State<SearchableMenu> {
                   ),
                 ),
                 Container(
-                  width: double.infinity,
                   height: 300,
                   child: Material(
                     child: Scrollbar(

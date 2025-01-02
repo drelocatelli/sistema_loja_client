@@ -15,6 +15,7 @@ import 'package:racoon_tech_panel/src/ViewModel/functions/debouncer_function.dar
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ClientProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 
 class VendasForm extends StatefulWidget {
   const VendasForm({super.key});
@@ -52,7 +53,6 @@ class _VendasFormState extends State<VendasForm> {
   final clientrModel = Provider.of<ClientProvider>(context, listen: true);
 
 
-    final maxWidth = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -64,17 +64,15 @@ class _VendasFormState extends State<VendasForm> {
             crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Helpers.rowOrWrap(
-                  wrap: maxWidth < 800,
+                  wrap: true,
                   children: [
-                    Expanded(
-                      child: TextFormField(
-                        onChanged: (value) {
-                        setState(() {
-                          serial = value;
-                        });
-                      },
-                        decoration: const InputDecoration(labelText: 'N° Série'),
-                      ),
+                    TextFormField(
+                      onChanged: (value) {
+                      setState(() {
+                        serial = value;
+                      });
+                    },
+                      decoration: const InputDecoration(labelText: 'N° Série'),
                     ),
                     TextFormField(
                       onChanged: (value) {
@@ -84,6 +82,7 @@ class _VendasFormState extends State<VendasForm> {
                       },
                       decoration: const InputDecoration(labelText: 'Descrição'),
                     ),
+                    
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Responsável',
@@ -112,30 +111,6 @@ class _VendasFormState extends State<VendasForm> {
                       }
                     ),
                 const Gap(20),
-                // Consumer<ClientProvider>(
-                //   builder: (context, model, child) {
-                //     return DropdownSearch<Cliente>(
-                //       enabled: !model.isLoading,
-                //       popupProps: PopupProps.menu(
-                //         showSearchBox: true,
-                //         showSelectedItems: true,
-                //       ),
-                //       selectedItem: model.clientes.firstWhere(
-                //         (category) => category.id == 1,
-                //         orElse: () => Cliente(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
-                //       ),
-                //       items: (filter, infiniteScrollProps) => model.clientes,
-                //       itemAsString: (Cliente clientes) => clientes.name!,
-                //       compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
-                //       decoratorProps: const DropDownDecoratorProps(
-                //         decoration: InputDecoration(
-                //           labelText: 'Cliente ',
-                //           border: OutlineInputBorder(),
-                //         ),
-                //       ),
-                //     );
-                //   }
-                // ),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: 'Cliente',
