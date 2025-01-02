@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/web.dart';
@@ -25,6 +26,8 @@ class VendasForm extends StatefulWidget {
 }
 
 class _VendasFormState extends State<VendasForm> {
+
+  final _formKey = GlobalKey<FormState>();
 
   Map<String, TextEditingController> controllers = {
     "produto": TextEditingController(),
@@ -59,6 +62,7 @@ class _VendasFormState extends State<VendasForm> {
         spacing: 20,
         children: [
           Form(
+            key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -73,6 +77,12 @@ class _VendasFormState extends State<VendasForm> {
                       });
                     },
                       decoration: const InputDecoration(labelText: 'N° Série'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
                     ),
                     TextFormField(
                       onChanged: (value) {
@@ -81,6 +91,7 @@ class _VendasFormState extends State<VendasForm> {
                         });
                       },
                       decoration: const InputDecoration(labelText: 'Descrição'),
+                      
                     ),
                     
                     TextFormField(
@@ -88,8 +99,14 @@ class _VendasFormState extends State<VendasForm> {
                         labelText: 'Responsável',
                         border: OutlineInputBorder(),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
                       readOnly: true,
-                      controller: TextEditingController(text: colaborator?.name ?? "Selecione"),
+                      controller: TextEditingController(text: colaborator?.name),
                       onTap: () {
                         showDialog(
                           context: context,
@@ -116,8 +133,14 @@ class _VendasFormState extends State<VendasForm> {
                     labelText: 'Cliente',
                     border: OutlineInputBorder(),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo obrigatório';
+                    }
+                    return null;
+                  },
                   readOnly: true,
-                  controller: TextEditingController(text: cliente?.name ?? "Selecione"),
+                  controller: TextEditingController(text: cliente?.name),
                   onTap: () {
                     showDialog(
                       context: context,
@@ -138,33 +161,8 @@ class _VendasFormState extends State<VendasForm> {
                     );
                   }
                     ),
-                    Consumer<CategoryProvider>(
-                      builder: (context, model, child) {
-                        return DropdownSearch<Category>(
-                          enabled: !model.isLoading,
-                          popupProps: PopupProps.menu(
-                            showSearchBox: true,
-                            showSelectedItems: true,
-                          ),
-                          selectedItem: model.categories.firstWhere(
-                            (category) => category.id == 1,
-                            orElse: () => Category(id: "-1", name: model.isLoading ? "Aguarde..." : "Selecione"),
-                          ),
-                          items: (filter, infiniteScrollProps) => model.categories,
-                          itemAsString: (Category category) => category.name!,
-                          compareFn: (item1, item2) => item1.id == item2.id, // Add this line for comparison
-                          decoratorProps: const DropDownDecoratorProps(
-                            decoration: InputDecoration(
-                              labelText: 'Categoria ',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        );
-                      }
-                    )
                   ],
                 ),
-                
                 TextFormField(
                   onChanged: (value) {
                     setState(() {
@@ -172,9 +170,21 @@ class _VendasFormState extends State<VendasForm> {
                     });
                   },
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                  ],
                   decoration: const InputDecoration(labelText: 'Total', prefixText: 'R\$ '),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Campo obrigatório';
+                    }
+                    final doubleValue = double.tryParse(value);
+                    if (doubleValue == null) {
+                      return 'Por favor insira um valor decimal';
+                    }
+                    return null;
+                  },
                 ),
-                
                 const Gap(30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -189,7 +199,10 @@ class _VendasFormState extends State<VendasForm> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        context.pop();
+                        if(_formKey.currentState!.validate()) {
+                          Logger().i("Venda salva com sucesso");
+                          context.pop();
+                        }
                       }, 
                       child: 
                       const Text("Salvar venda")
@@ -204,76 +217,3 @@ class _VendasFormState extends State<VendasForm> {
     );
   }
 }
-
-
-// _showModal(BuildContext context, {required debouncer, required Function cb}) async {
-  
-//   return showDialog(
-//     context: context, 
-//     builder: (context) {
-//       return StatefulBuilder(
-//         builder: (context, setState) {
-//         final model = Provider.of<ColaboratorProvider>(context, listen: true);
-
-//           return AlertDialog(
-//             contentPadding: const EdgeInsets.all(0),
-//             content: SizedBox(
-//             width: MediaQuery.of(context).size.width,
-          
-//               child: Column(
-//                 mainAxisSize: MainAxisSize.min,
-//                 children: [
-//                   Padding(
-//                     padding: const EdgeInsets.all(8.0),
-//                     child: TextField(
-//                       autofocus: true,
-//                       decoration: const InputDecoration(
-//                         labelText: 'Pesquisar',
-//                         hintText: 'Buscar por nome',
-//                         border: OutlineInputBorder(),
-//                       ),
-//                       onChanged: (value) async {
-//                         model.setIsLoading(true);
-//                         debouncer.run(() async {
-//                           await fetchColaborators(context, searchTerm: value);
-//                           model.setIsLoading(false);
-//                         });
-//                       },
-//                     )
-//                   ),
-//                   Container(
-//                     width: double.infinity,
-//                     height: 300,
-//                     child: Material(
-//                       child: Scrollbar(
-//                         trackVisibility: true,
-//                         thumbVisibility: true,
-//                         child: Visibility(
-//                           visible: !model.isLoading,
-//                           replacement: const Center(child: Text("Buscando dados...")),
-//                           child: ListView.builder(
-//                             shrinkWrap: true,
-//                             itemCount: model.colaborators.length,
-//                             itemBuilder: (context, index) {
-//                               return ListTile(
-//                                 title: Text("${model.colaborators[index].name}", style: Theme.of(context).textTheme.bodyLarge),
-//                                 onTap: () {
-//                                   cb(model.colaborators[index]);
-//                                   Navigator.of(context).pop();
-//                                 },
-//                               );
-//                             },
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           );
-//         }
-//       );
-//     }
-//   );
-// }
