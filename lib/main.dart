@@ -6,6 +6,7 @@ import 'package:racoon_tech_panel/routes.dart';
 import 'package:racoon_tech_panel/src/Model/app_mode.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ClientProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider%20copy.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
@@ -29,6 +30,7 @@ Future main() async {
         ChangeNotifierProvider(create: (_) => SalesProvider()),
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => ColaboratorProvider()),
+        ChangeNotifierProvider(create: (_) => ProdutoProvider()),
         ChangeNotifierProvider(create: (_) => ClientProvider()),
       ],
       child: const MyApp(),

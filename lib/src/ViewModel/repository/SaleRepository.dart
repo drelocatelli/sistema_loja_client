@@ -89,5 +89,9 @@ class SaleRepository {
       }
     );
   }
+
+  // static Future create() {
+
+  // }
   
 }

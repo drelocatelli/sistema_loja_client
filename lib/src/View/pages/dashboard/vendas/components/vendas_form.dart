@@ -8,13 +8,16 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/category_dto.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
+import 'package:racoon_tech_panel/src/Model/product_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/debouncer_function.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ClientProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider%20copy.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 
@@ -29,10 +32,7 @@ class _VendasFormState extends State<VendasForm> {
 
   final _formKey = GlobalKey<FormState>();
 
-  Map<String, TextEditingController> controllers = {
-    "produto": TextEditingController(),
-  };
-
+  Produto? produto;
   Colaborator? colaborator;
   Category? category;
   Cliente? cliente;
@@ -42,17 +42,10 @@ class _VendasFormState extends State<VendasForm> {
 
 
   @override
-  void dispose() {
-    super.dispose();
-    controllers.forEach((key, value) {
-      value.dispose();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
 
   final colaboratorModel = Provider.of<ColaboratorProvider>(context, listen: true);
+  final produtoModel = Provider.of<ProdutoProvider>(context, listen: true);
   final clientrModel = Provider.of<ClientProvider>(context, listen: true);
 
 
@@ -92,6 +85,40 @@ class _VendasFormState extends State<VendasForm> {
                       },
                       decoration: const InputDecoration(labelText: 'Descrição'),
                       
+                    ),
+
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Produto',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Campo obrigatório';
+                        }
+                        return null;
+                      },
+                      readOnly: true,
+                      controller: TextEditingController(text: produto?.name),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return SearchableMenu(
+                              model: Provider.of<ProdutoProvider>(context, listen: true), 
+                              items: produtoModel.produtos,
+                              selectCb: (Produto produto) {
+                                setState(() {
+                                  this.produto = produto;
+                                });
+                              },
+                              fetchCb: (String? searchTerm) async {
+                                await fetchProdutos(context, searchTerm: searchTerm);
+                              }
+                            );
+                          },
+                        );
+                      }
                     ),
                     
                     TextFormField(
@@ -200,6 +227,8 @@ class _VendasFormState extends State<VendasForm> {
                     ElevatedButton(
                       onPressed: () {
                         if(_formKey.currentState!.validate()) {
+
+                          
                           Logger().i("Venda salva com sucesso");
                           context.pop();
                         }

@@ -1,15 +1,15 @@
 class Category {
-  final String id;
-  final String name;
+  final String? id;
+  final String? name;
 
   // Constructor
-  Category({required this.id, required this.name});
+  Category({this.id, this.name});
 
   // Factory method to create a Category from a JSON object
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] as String?,
+      name: json['name'] as String?,
     );
   }
 

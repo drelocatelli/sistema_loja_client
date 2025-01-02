@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/clientes_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
@@ -18,6 +19,8 @@ Future fetchClientes(BuildContext context, {bool onlyOnce = false, String? searc
   if(clientesList.status == 200) {
     model.setClientes(clientesList.data?.clientes ?? []);
   }
+
+  Logger().i('Clientes loaded ${model.clientes.length}');
 
   model.setIsLoading(false);
 }

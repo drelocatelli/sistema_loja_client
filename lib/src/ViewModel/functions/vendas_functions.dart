@@ -6,6 +6,7 @@ import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/ven
 import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 
@@ -38,13 +39,16 @@ deleteVendas(BuildContext context, List<String> ids) async {
 
 loadAllSalesProps(BuildContext context) async {
   // load categories
-  await fetchCategories(context);
+  // await fetchCategories(context);
 
   // load colaborators
   await fetchColaborators(context);
 
   // load clients
   await fetchClientes(context);
+
+  // produtos
+  await fetchProdutos(context);
 }
 
 novaVendaDialog(BuildContext context) {
