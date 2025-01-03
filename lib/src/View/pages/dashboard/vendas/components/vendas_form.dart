@@ -91,7 +91,7 @@ class _VendasFormState extends State<VendasForm> {
                     TextFormField(
                       controller: _controller.descricaoController,
                       decoration: const InputDecoration(labelText: 'Descrição'),
-                      validator: _controller.validateDescricao,
+                      // validator: _controller.validateDescricao,
                     ),
                     TextFormField(
                       decoration: InputDecoration(
@@ -99,6 +99,7 @@ class _VendasFormState extends State<VendasForm> {
                         labelText: 'Produto',
                         border: OutlineInputBorder(),
                       ),
+                      validator: _controller.validateProduto,
                       style: const TextStyle(fontSize: 13),
                       readOnly: true,
                       controller: TextEditingController(text: _controller.produto?.name),

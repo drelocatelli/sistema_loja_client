@@ -34,6 +34,13 @@ class SalesController {
     return null;
   }
 
+  String? validateProduto(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Produto é obrigatorio';
+    }
+    return null;
+  }
+
   String? validateDescricao(String? value) {
     if (value == null || value.isEmpty) {
       return 'Descrição é obrigatorio';

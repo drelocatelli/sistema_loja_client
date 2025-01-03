@@ -82,18 +82,22 @@ class _SearchableMenuState extends State<SearchableMenu> {
                         child: Visibility(
                           visible: !model.hasError,
                           replacement: Center(child: Text("Ocorreu um erro, tente novamente")),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: widget.items.length, // Dependendo do Provider, você terá uma lista diferente
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text("${widget.items[index].name}", style: Theme.of(context).textTheme.bodyLarge),
-                                onTap: () {
-                                  widget.selectCb(widget.items[index]);
-                                  Navigator.of(context).pop();
-                                },
-                              );
-                            },
+                          child: Visibility(
+                            visible: widget.items.isNotEmpty,
+                            replacement: Center(child: Text("Nenhum dado encontrado")),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: widget.items.length, // Dependendo do Provider, você terá uma lista diferente
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text("${widget.items[index].name}", style: Theme.of(context).textTheme.bodyLarge),
+                                  onTap: () {
+                                    widget.selectCb(widget.items[index]);
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
