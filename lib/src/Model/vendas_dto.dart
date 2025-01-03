@@ -10,6 +10,7 @@ class Venda {
   final Produto? product;
   final String? description;
   final int? total;
+  final String? date;
 
   Venda({
     this.id,
@@ -19,6 +20,7 @@ class Venda {
     this.product,
     this.description,
     this.total,
+    this.date,
   });
 
   factory Venda.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class Venda {
       product: json['product'] != null ? Produto.fromJson(json['product']) : null,
       description: json['description'] as String?,
       total: (json['total'] as num?)?.toInt(),
+      date: json['date'] as String?,
     );
   }
 
@@ -44,6 +47,7 @@ class Venda {
       'product': product,
       'description': description,
       'total': total,
+      'date': date,
     };
   }
 }

@@ -45,6 +45,7 @@ class SaleRepository {
                   }
                   description
                   total
+                  date
               }
           }
       }

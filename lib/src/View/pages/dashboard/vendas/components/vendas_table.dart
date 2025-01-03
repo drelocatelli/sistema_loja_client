@@ -86,6 +86,12 @@ class VendasTable extends StatelessWidget {
         }
       ),
       DataColumn(
+        label: const Text('Data da venda'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      DataColumn(
         label: const Text('Descrição'),
         onSort: (columnIndex, ascending) {
           model.sortSales(columnIndex, ascending);
@@ -129,6 +135,7 @@ class VendasTable extends StatelessWidget {
           DataCell(Text(sale.product?.name ?? '-')),
           DataCell(Text(sale.client?.name ?? '-')),
           DataCell(Text(sale.colaborator?.name ?? '-')),
+          DataCell(Text(sale.date ?? '-')),
           DataCell(Text(sale.description ?? '-')),
           DataCell(Text("${sale.total.toString() ?? 0}")),
           DataCell(
