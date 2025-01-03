@@ -200,7 +200,7 @@ class _VendasFormState extends State<VendasForm> {
                   ],
                 ),
                 TextFormField(
-                  readOnly: _controller.quantityController.text.length == 0 || _controller.produto?.quantity == 0,
+                  readOnly: _controller.produto?.quantity == 0,
                   maxLength: 6,
                   onChanged: (value) {
                     // put max of values
