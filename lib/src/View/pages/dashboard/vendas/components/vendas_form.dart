@@ -200,7 +200,7 @@ class _VendasFormState extends State<VendasForm> {
                   ],
                 ),
                 TextFormField(
-                  readOnly: _controller.produto?.quantity == 0,
+                  readOnly: _controller.quantityController.text.length == 0 || _controller.produto?.quantity == 0,
                   maxLength: 6,
                   onChanged: (value) {
                     // put max of values
@@ -221,7 +221,7 @@ class _VendasFormState extends State<VendasForm> {
                     _NoLeadingZeroFormatter(), // Impedir número com zero à esquerda
                   ],
                   style: const TextStyle(fontSize: 13),
-                  decoration: InputDecoration(labelText: 'Quantidade', counterText: '', hintText: _controller.produto?.quantity == 0 ? 'Estoque indisponível' : ''),
+                  decoration: InputDecoration(labelText: 'Quantidade', counterText: '', hintText: _controller.quantityController.text.length == 0 ? 'Selecione um produto' : ''),
                   validator: _controller.validateQuantity,
                 ),
                 Visibility(
