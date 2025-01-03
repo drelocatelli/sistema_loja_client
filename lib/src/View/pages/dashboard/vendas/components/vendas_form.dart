@@ -15,9 +15,11 @@ import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ClientProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider%20copy.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 
 class VendasForm extends StatefulWidget {
@@ -66,6 +68,17 @@ class _VendasFormState extends State<VendasForm> {
   final colaboratorModel = Provider.of<ColaboratorProvider>(context, listen: true);
   final produtoModel = Provider.of<ProdutoProvider>(context, listen: true);
   final clientrModel = Provider.of<ClientProvider>(context, listen: true);
+  final salesModel = Provider.of<SalesProvider>(context, listen: true);
+
+  _newSale() async {
+    salesModel.setIsReloading(true);
+    await SaleRepository.create(_controller);
+    await Future.delayed(const Duration(milliseconds: 1500));
+    await loadAllSalesProps(context);
+    await  reloadVendas(context);
+    salesModel.setIsReloading(false);
+    context.pop();
+  }
 
 
     return SingleChildScrollView(
@@ -263,15 +276,15 @@ class _VendasFormState extends State<VendasForm> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        if(_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          await SaleRepository.create(_controller);
-                          Logger().i("Venda salva com sucesso");
-                          context.pop();
+                        if(!salesModel.isReloading) {
+                          if(_formKey.currentState!.validate()) {
+                            _formKey.currentState!.save();
+                              await _newSale();
+                          }
                         }
                       }, 
                       child: 
-                      const Text("Salvar venda")
+                      Text(salesModel.isReloading ? 'Aguarde...' : "Salvar venda")
                     )
                   ],
                 ),
@@ -294,3 +307,4 @@ class _NoLeadingZeroFormatter extends TextInputFormatter {
     return newValue;
   }
 }
+

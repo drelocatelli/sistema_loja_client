@@ -1,3 +1,5 @@
+import 'package:logger/web.dart';
+
 String PayloadDTO(Map<String, dynamic> payload) {
   String payloadStr = payload
       .entries
@@ -6,4 +8,12 @@ String PayloadDTO(Map<String, dynamic> payload) {
       .join(', ');
 
   return payloadStr;
+}
+
+String payloadInput(Map<String, dynamic> payload) {
+  return payload.entries
+      .map((entry) {
+       
+      })
+      .join(', ');
 }

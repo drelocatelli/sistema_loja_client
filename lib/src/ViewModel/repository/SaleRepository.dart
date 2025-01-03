@@ -103,12 +103,44 @@ class SaleRepository {
         'description': controller.descricaoController.text,
         'colaborator_id': controller.colaborator?.id,
         'client_id': controller.cliente?.id,
-        'quantity': controller.quantityController.text,
-        'total': controller.valorController.text,
+        'total': int.parse(controller.quantityController.text),
       }
     };
 
-    Logger().i(payload);
+    String payloadStr = PayloadDTO(payload['input']!);
+
+    final String query = '''
+      mutation CreateSale {
+        createSale(input: {$payloadStr}) {
+            id
+            serial
+            total
+            colaborator {
+                name
+            }
+            description
+            client {
+                name
+            }
+            product {
+                name
+            }
+        }
+    }
+    ''';
+
+    return await BaseRepository.graphQlRequest(
+      query: query,
+      authentication: true,
+      cbData: (response) {
+        return ResponseDTO(status: 200);
+      },
+      cbNull: (response) {
+        return ResponseDTO<SalesResponseDTO>(status: 401, data: SalesResponseDTO(sales: [], pagination: null));
+      }
+    );
+
   }
+
   
 }
