@@ -9,7 +9,7 @@ class Venda {
   final Colaborator? colaborator;
   final Produto? product;
   final String? description;
-  final double? total;
+  final int? total;
 
   Venda({
     this.id,
@@ -31,7 +31,7 @@ class Venda {
           : null,
       product: json['product'] != null ? Produto.fromJson(json['product']) : null,
       description: json['description'] as String?,
-      total: (json['total'] as num?)?.toDouble(),
+      total: (json['total'] as num?)?.toInt(),
     );
   }
 

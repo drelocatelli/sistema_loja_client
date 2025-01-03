@@ -92,6 +92,18 @@ class VendasTable extends StatelessWidget {
         }
       ),
       DataColumn(
+        label: const Text('Quantidade'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      DataColumn(
+        label: const Text('Preço unitário'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      DataColumn(
         label: const Text('Total'),
         onSort: (columnIndex, ascending) {
           model.sortSales(columnIndex, ascending);
@@ -118,7 +130,22 @@ class VendasTable extends StatelessWidget {
           DataCell(Text(sale.client?.name ?? '-')),
           DataCell(Text(sale.colaborator?.name ?? '-')),
           DataCell(Text(sale.description ?? '-')),
-          DataCell(Text("R\$ ${sale.total.toString()}")),
+          DataCell(Text("${sale.total.toString() ?? 0}")),
+          DataCell(
+            Text(
+              (sale.product?.price != null && sale.product!.price!.isNaN) 
+                ? "Erro" 
+                : "R\$ ${(sale.product?.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}",
+            ),
+          ),
+          DataCell(
+            Text(
+              (sale.total != null && sale.product?.price != null &&
+                      (sale.total!.isNaN || sale.product!.price!.isNaN))
+                  ? "Erro"
+                  : "R\$ ${(sale.total! * sale.product!.price!).toStringAsFixed(2).replaceAll('.', ',')}",
+            ),
+          ),
           DataCell(
             PopupMenuButton(
                 icon: const Icon(Icons.more_vert),

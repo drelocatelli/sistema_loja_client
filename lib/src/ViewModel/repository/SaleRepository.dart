@@ -41,6 +41,7 @@ class SaleRepository {
                   }
                   product {
                       name
+                      price
                   }
                   description
                   total
