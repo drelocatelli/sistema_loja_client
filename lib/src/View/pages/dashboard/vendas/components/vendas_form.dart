@@ -99,6 +99,7 @@ class _VendasFormState extends State<VendasForm> {
                         labelText: 'Produto',
                         border: OutlineInputBorder(),
                       ),
+                      style: const TextStyle(fontSize: 13),
                       readOnly: true,
                       controller: TextEditingController(text: _controller.produto?.name),
                       onTap: () {
@@ -107,7 +108,7 @@ class _VendasFormState extends State<VendasForm> {
                           builder: (context) {
                             return SearchableMenu(
                               model: Provider.of<ProdutoProvider>(context, listen: true), 
-                              items: produtoModel.produtos.where((p) => (p.quantity ?? 0) > 0).toList(),
+                              items: produtoModel.produtos,
                               selectCb: (Produto produto) {
                                 setState(() {
                                   _controller.produto = produto;
@@ -128,6 +129,8 @@ class _VendasFormState extends State<VendasForm> {
                         labelText: 'Responsável',
                         border: OutlineInputBorder(),
                       ),
+                      style: const TextStyle(fontSize: 13),
+
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Campo obrigatório';
@@ -163,6 +166,7 @@ class _VendasFormState extends State<VendasForm> {
                     labelText: 'Cliente',
                     border: OutlineInputBorder(),
                   ),
+                  style: const TextStyle(fontSize: 13),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Campo obrigatório';
@@ -194,33 +198,43 @@ class _VendasFormState extends State<VendasForm> {
                   ],
                 ),
                 TextFormField(
+                  readOnly: _controller.produto?.quantity == 0,
                   maxLength: 6,
                   onChanged: (value) {
                     updateTotal();
                   },  
-                  controller: _controller.quantityController,
+                  controller: _controller.produto?.quantity != 0 ? _controller.quantityController : TextEditingController(text: ''),
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.digitsOnly, // Só números
                     LengthLimitingTextInputFormatter(10), // Limitar a quantidade de caracteres, se necessário
                     _NoLeadingZeroFormatter(), // Impedir número com zero à esquerda
                   ],
-                  decoration: const InputDecoration(labelText: 'Quantidade', counterText: ''),
+                  style: const TextStyle(fontSize: 13),
+                  decoration: InputDecoration(labelText: 'Quantidade', counterText: '', hintText: _controller.produto?.quantity == 0 ? 'Estoque indisponível' : ''),
                   validator: _controller.validateQuantity,
                 ),
                 Visibility(
-                  visible: _controller.produto != null,
-                  child: Padding(
+                  visible: _controller.produto?.quantity != 0,
+                  replacement: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: SelectionArea(
-                      child: Column(
-                        spacing: 4,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text("Estoque qtd.: ${_controller.produto?.quantity}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
-                          Text("Valor unitário: R\$ ${_controller.produto?.price?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
-                          Text("Total: R\$ ${_total.toStringAsFixed(2)}", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold), softWrap: true, overflow: TextOverflow.ellipsis),
-                        ],
+                    child: Text("Estoque indisponível", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 230, 29, 29)),
+                    ),
+                  ),
+                  child: Visibility(
+                    visible: _controller.produto != null,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: SelectionArea(
+                        child: Column(
+                          spacing: 4,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text("Estoque qtd.: ${_controller.produto?.quantity}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
+                            Text("Valor unitário: R\$ ${_controller.produto?.price?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
+                            Text("Total: R\$ ${_total.toStringAsFixed(2)}", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold), softWrap: true, overflow: TextOverflow.ellipsis),
+                          ],
+                        ),
                       ),
                     ),
                   ),

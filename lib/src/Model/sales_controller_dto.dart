@@ -42,7 +42,7 @@ class SalesController {
   }
 
   String? validateQuantity(String? value) {
-    if (value == null || value.isEmpty) {
+    if (value == null || value.isEmpty || value == '0') {
       return 'Quantidade é obrigatorio';
     }
     if (int.tryParse(value) == null) {
