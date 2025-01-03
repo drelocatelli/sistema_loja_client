@@ -105,6 +105,7 @@ class _VendasFormState extends State<VendasForm> {
                       readOnly: true,
                       controller: TextEditingController(text: _controller.produto?.name),
                       onTap: () {
+                        _controller.quantityController.text = '';
                         showDialog(
                           context: context,
                           builder: (context) {
