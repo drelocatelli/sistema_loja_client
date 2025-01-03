@@ -12,6 +12,7 @@ Future fetchProdutos(BuildContext context, {bool onlyOnce = false, String? searc
   }
 
   final response = await ProdutosRepository.get(searchTerm: searchTerm, page: page);
+
   await Future.delayed(Duration(milliseconds: 1500));
   model.setIsLoading(true);
 

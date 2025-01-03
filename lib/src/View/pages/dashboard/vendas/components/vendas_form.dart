@@ -202,6 +202,14 @@ class _VendasFormState extends State<VendasForm> {
                   readOnly: _controller.produto?.quantity == 0,
                   maxLength: 6,
                   onChanged: (value) {
+                    // put max of values
+                    if(_controller.produto?.quantity != null) {
+                      if (int.parse(_controller.quantityController.text) >= _controller.produto!.quantity!) {
+                        setState(() {
+                          _controller.quantityController.text = _controller.produto!.quantity!.toString();
+                        });
+                      }
+                    }
                     updateTotal();
                   },  
                   controller: _controller.produto?.quantity != 0 ? _controller.quantityController : TextEditingController(text: ''),
@@ -231,7 +239,7 @@ class _VendasFormState extends State<VendasForm> {
                           spacing: 4,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text("Estoque qtd.: ${_controller.produto?.quantity}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
+                            Text("Em estoque.: ${_controller.produto?.quantity}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
                             Text("Valor unitário: R\$ ${_controller.produto?.price?.toStringAsFixed(2)}", style: const TextStyle(fontSize: 13, color: Color.fromARGB(255, 105, 105, 105))),
                             Text("Total: R\$ ${_total.toStringAsFixed(2)}", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold), softWrap: true, overflow: TextOverflow.ellipsis),
                           ],

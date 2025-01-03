@@ -34,8 +34,12 @@ class ProdutoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void reset() {
-    _produtos = _produtosBkp;
+  void reset({bool removeAll = true}) {
+    if(removeAll) {
+      _produtos = [];
+    } else {
+      _produtos = _produtosBkp;
+    }
     notifyListeners();
   }
 

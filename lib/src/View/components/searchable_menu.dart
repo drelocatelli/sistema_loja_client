@@ -30,13 +30,13 @@ class SearchableMenu<T> extends StatefulWidget {
 class _SearchableMenuState extends State<SearchableMenu> {
   // Recebe o tipo do model
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      widget.model.reset();
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // WidgetsBinding.instance.addPostFrameCallback((_) {
+  //   //   widget.model.reset(removeAll: true);
+  //   // });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,7 @@ class _SearchableMenuState extends State<SearchableMenu> {
                           visible: !model.hasError,
                           replacement: Center(child: Text("Ocorreu um erro, tente novamente")),
                           child: Visibility(
-                            visible: widget.items.isNotEmpty,
+                            visible: widget.items.length != 0,
                             replacement: Center(child: Text("Nenhum dado encontrado")),
                             child: ListView.builder(
                               shrinkWrap: true,
