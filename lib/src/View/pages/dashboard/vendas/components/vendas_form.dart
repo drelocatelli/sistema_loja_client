@@ -109,7 +109,7 @@ class _VendasFormState extends State<VendasForm> {
                           builder: (context) {
                             return SearchableMenu(
                               model: Provider.of<ProdutoProvider>(context, listen: true), 
-                              items: produtoModel.produtos,
+                              items: produtoModel.produtos.where((produto) => produto.quantity! > 0).toList(),
                               selectCb: (Produto produto) {
                                 setState(() {
                                   _controller.produto = produto;
@@ -204,7 +204,7 @@ class _VendasFormState extends State<VendasForm> {
                   onChanged: (value) {
                     // put max of values
                     if(_controller.produto?.quantity != null) {
-                      if (int.parse(_controller.quantityController.text) >= _controller.produto!.quantity!) {
+                      if (int.parse(_controller.quantityController.text) >= _controller.produto!.quantity! || _controller.quantityController.text == '0') {
                         setState(() {
                           _controller.quantityController.text = _controller.produto!.quantity!.toString();
                         });
