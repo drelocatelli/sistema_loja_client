@@ -86,6 +86,7 @@ class _VendasFormState extends State<VendasForm> {
                       controller: _controller.serialController,
                       autofocus: true,
                       decoration: const InputDecoration(labelText: 'N° Série'),
+                      keyboardType: TextInputType.number,
                       validator: _controller.validateSerial,
                     ),
                     TextFormField(
