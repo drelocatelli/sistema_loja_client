@@ -68,8 +68,8 @@ final GoRouter routes = GoRouter(
             pageBuilder: (context, state) => _noTransitionRoute(const VendasPage()),
           ),
           GoRoute(
-            path: 'estoque',
-            pageBuilder: (context, state) => _noTransitionRoute(const EstoquePage()),
+            path: 'produtos',
+            pageBuilder: (context, state) => _noTransitionRoute(const ProdutosPage()),
           ),
         ],
     ),

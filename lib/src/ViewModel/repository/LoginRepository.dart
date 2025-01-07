@@ -33,7 +33,9 @@ class LoginRepository {
       query: query, 
       authentication: false, 
       cbData: (request) {
+        Logger().i(request);
         final loginData = request.data['data']['login']; 
+        Logger().i(loginData);
         final response = LoginDTO.fromJson(loginData);
 
          if(!response.error) {

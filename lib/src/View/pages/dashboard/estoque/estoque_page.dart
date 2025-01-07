@@ -5,14 +5,14 @@ import 'package:racoon_tech_panel/src/View/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
-class EstoquePage extends StatefulWidget {
-  const EstoquePage({super.key});
+class ProdutosPage extends StatefulWidget {
+  const ProdutosPage({super.key});
 
   @override
-  State<EstoquePage> createState() => _VenddasState();
+  State<ProdutosPage> createState() => _VenddasState();
 }
 
-class _VenddasState extends State<EstoquePage> {
+class _VenddasState extends State<ProdutosPage> {
   @override
   Widget build(BuildContext context) {
     final maxWidth = MediaQuery.of(context).size.width;

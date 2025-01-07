@@ -16,7 +16,7 @@ Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
       ]
     ),
     // new MainMenuDTO(label: "Notas Fiscais", fn: () => Get.offNamed('/dashboard/nfe')),
-    MainMenuDTO(label: "Estoque", fn: () => context.go('/dashboard/estoque')),
+    MainMenuDTO(label: "Produtos", fn: () => context.go('/dashboard/produtos')),
     MainMenuDTO(label: "Clientes", fn: () => context.go('/dashboard/clientes')),
     MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
     MainMenuDTO(label: "Sair", fn: () async {
