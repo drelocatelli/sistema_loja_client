@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
@@ -96,7 +99,16 @@ Widget _estoquesTable(double maxWidth) {
                           }
                         },
                         cells: [
-                          DataCell(WidgetZoom(heroAnimationTag: 'tag', zoomWidget: Image.network('https://dummyimage.com/600x400/000/fff&text=Sem+imagem', width: 80))),
+                          DataCell(
+                            WidgetZoom(
+                              heroAnimationTag: 'tag',
+                              zoomWidget: Image.network("${BaseRepository.baseUrl}${product.photos!.first}", width: 80, 
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Center(child: Icon(Icons.image));
+                                }
+                              ),
+                            )
+                          ),
                           DataCell(Text(product.name ?? '-')),
                           DataCell(Text(Helpers.truncateText(text: product.description ?? '-'))),
                           DataCell(Text(product.category?.name ?? '-')),

@@ -28,6 +28,7 @@ class ProdutosRepository {
                 price
                 quantity
                 is_published
+                photos
             }
             pagination {
                 totalRecords

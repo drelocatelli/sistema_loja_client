@@ -8,6 +8,7 @@ class Produto {
   double? price;
   int? quantity;
   bool? isPublished;
+  List<String>? photos = [];
 
   Produto({
     this.name,
@@ -17,6 +18,7 @@ class Produto {
     this.price,
     this.quantity,
     this.isPublished,
+    this.photos,
   });
 
   // Factory constructor para criar um objeto Produto a partir de um JSON
@@ -31,6 +33,7 @@ class Produto {
       price: (json['price'] as num?)?.toDouble(),
       quantity: json['quantity'] as int?,
       isPublished: json['is_published'] as bool?,
+    photos: List<String>.from(json['photos'].map((item) => item.toString())),
     );
   }
 
@@ -44,6 +47,7 @@ class Produto {
       'price': price,
       'quantity': quantity,
       'is_published': isPublished,
+      'photos': photos,
     };
   }
 }
