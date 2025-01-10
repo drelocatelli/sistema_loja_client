@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/vendas_dto.dart';
+import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 
@@ -136,7 +137,7 @@ class VendasTable extends StatelessWidget {
           DataCell(Text(sale.client?.name ?? '-')),
           DataCell(Text(sale.colaborator?.name ?? '-')),
           DataCell(Text(sale.date ?? '-')),
-          DataCell(Text(sale.description ?? '-')),
+          DataCell(Text(Helpers.truncateText(text: sale.description ?? ''))),
           DataCell(Text("${sale.total.toString() ?? 0}")),
           DataCell(
             Text(

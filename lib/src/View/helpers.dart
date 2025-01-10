@@ -51,4 +51,12 @@ class Helpers {
     
   }
 
+  static String truncateText({required String text, int length = 5}) {
+    if (text.length <= length) {
+      return text;
+    }
+    return '${text.substring(0, length)}...';
+  }
+
+
 }

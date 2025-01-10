@@ -17,7 +17,7 @@ import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions
 import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ClientProvider.dart';
-import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider%20copy.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';

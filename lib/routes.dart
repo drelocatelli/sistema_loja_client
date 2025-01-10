@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/Model/nfe_dto.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/clients/clients_page.dart';
-import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/estoque_page.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/product_page.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/home/home_page.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/notas_fiscais/nfe_generated.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/notas_fiscais/notas_fiscais_page.dart';
@@ -69,7 +69,7 @@ final GoRouter routes = GoRouter(
           ),
           GoRoute(
             path: 'produtos',
-            pageBuilder: (context, state) => _noTransitionRoute(const ProdutosPage()),
+            pageBuilder: (context, state) => _noTransitionRoute(const ProductPage()),
           ),
         ],
     ),

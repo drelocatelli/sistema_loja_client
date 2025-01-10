@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
-import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider%20copy.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
 
 Future fetchProdutos(BuildContext context, {bool onlyOnce = false, String? searchTerm, int? page = 1}) async {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:logger/web.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/clientes_response_dto.dart';
@@ -75,6 +76,8 @@ class _ClientsPageState extends State<ClientsPage> {
 
     debugPrint("Clientes fetched: ${newClientes.length}");
 
+    Logger().w(_totalPages);
+
     return newClientes;
   }
 
@@ -91,7 +94,7 @@ class _ClientsPageState extends State<ClientsPage> {
         color: Colors.white,
         padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
         child: Visibility(
-          visible: _totalPages > 1,
+          visible: _totalPages != 0,
           child: NumberPaginator(
             config: NumberPaginatorUIConfig(
               buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
