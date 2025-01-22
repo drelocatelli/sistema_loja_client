@@ -9,6 +9,7 @@ import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/pr
 import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/product_title.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
+import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -43,7 +44,8 @@ final NumberPaginatorController _controller = NumberPaginatorController();
     final model = Provider.of<ProdutoProvider>(context, listen: false);
     
     model.setIsLoading(true);
-    ResponseDTO<ProdutosResponseDTO> productsList = await ProdutosRepository.get(page: page, searchTerm: searchTerm);
+
+    ResponseDTO<ProdutosResponseDTO> productsList = await ProdutosRepository.get(pageNum: page, searchTerm: searchTerm);
     final newProducts = productsList.data?.produtos ?? [];
 
     if(productsList.status != 200) {
@@ -80,6 +82,30 @@ final NumberPaginatorController _controller = NumberPaginatorController();
   @override
   Widget build(BuildContext context) {
     return MainLayout(
+      floatingActionButton: Container(
+        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
+        child: Visibility(
+          visible: _totalPages != 0,
+          child: NumberPaginator(
+            config: NumberPaginatorUIConfig(
+              buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+            ),
+            numberPages: _totalPages,
+            initialPage: currentIdx,
+            controller: _controller,
+            onPageChange: (int index) async {
+              setState(() {
+                currentIdx = index;
+                currentPage = index + 1;
+              });
+              Logger().i('Current page: $currentPage');
+              await Future.delayed(const Duration(seconds: 1));
+              await fetchData(page: currentPage);
+            },
+          )
+        )
+      ),
       child: SelectionArea(
         child: Column(
           children: [

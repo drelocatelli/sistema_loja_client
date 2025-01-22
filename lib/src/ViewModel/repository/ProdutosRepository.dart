@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/Model/payload_dto.dart';
 import 'package:racoon_tech_panel/src/Model/produtos_response_dto%20copy.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 
 class ProdutosRepository {
-   static Future<ResponseDTO<ProdutosResponseDTO>> get({int ? pageNum = 1, String? searchTerm, int? page}) async {
+   static Future<ResponseDTO<ProdutosResponseDTO>> get({int? pageNum = 1, String? searchTerm}) async {
     Map<String, dynamic> payload = {
       'page': pageNum
     };
