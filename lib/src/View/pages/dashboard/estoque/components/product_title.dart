@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
 
 class ProductTitle extends StatelessWidget {
   const ProductTitle({super.key});
@@ -18,6 +19,7 @@ class ProductTitle extends StatelessWidget {
             Text('Gerenciar produtos', style: Theme.of(context).textTheme.headlineMedium),
             ElevatedButton(
               onPressed: () {
+                novoProdutoDialog(context);
               }, 
               child: const Text('Adicionar produto')
             ),

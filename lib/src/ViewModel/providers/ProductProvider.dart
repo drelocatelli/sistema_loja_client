@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
 import 'package:racoon_tech_panel/src/Model/product_dto.dart';
@@ -29,6 +31,9 @@ class ProdutoProvider extends ChangeNotifier {
 
   bool _isAscending = true;
   bool get isAscending => _isAscending;
+
+  List<File>? _selectedImages = [];
+  List<File>? get selectedImages => _selectedImages;
 
   void setProdutos(List<Produto> produto) {
     _produtos = produto;
@@ -102,6 +107,11 @@ class ProdutoProvider extends ChangeNotifier {
     _isAscending = ascending;
 
     // Notify listeners to rebuild the UI
+    notifyListeners();
+  }
+
+  void setImages(List<File> images) {
+    _selectedImages = images;
     notifyListeners();
   }
   

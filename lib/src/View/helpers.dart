@@ -35,9 +35,9 @@ class Helpers {
 
     final wrapWidgets = children.map((widget) {
       if (widget is Flexible) {
-        return widget.child; // Return the child of the `Expanded` widget
+        return widget.child;
       }
-      return widget; // Return the widget as-is if it's not `Expanded`
+      return widget;
     }).toList();
     
     return wrap ? Wrap(

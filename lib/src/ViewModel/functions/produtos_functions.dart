@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/product_form.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
 
@@ -26,4 +27,21 @@ Future fetchProdutos(BuildContext context, {bool onlyOnce = false, String? searc
   Logger().i('Produtos loaded ${model.produtos.length}');
   
   model.setIsLoading(false);
+}
+
+novoProdutoDialog(BuildContext context) {
+  final maxWidth = MediaQuery.of(context).size.width;
+
+  showDialog(
+    context: context, 
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Novo produto'),
+        content: SizedBox(
+          width: maxWidth / 3,
+          child: ProductForm()
+        ),
+      );
+    }
+  );
 }

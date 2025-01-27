@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final bool _storePassword = true;
+  bool _isLoginLoading = false;
 
   final TextEditingController _passwordController = TextEditingController();
 
@@ -96,13 +97,18 @@ class _LoginPageState extends State<LoginPage> {
                           minimumSize: const Size.fromHeight(50)
                         ),
                         onPressed: () async  {
+                          _isLoginLoading = true;
+                          setState(() {});
                           // Validate will return true if the form is valid, or false if
                           // the form is invalid.
                           if (_formKey.currentState?.validate() ?? false) {
                             await _loginRequest(context, _passwordController.text);
                           }
+                          _isLoginLoading = false;
+                          setState(() {});
+
                         },
-                        child: const Row(
+                        child: _isLoginLoading ? Text("Aguarde...") : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Continuar'),

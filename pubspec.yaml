@@ -59,6 +59,7 @@ dependencies:
   provider: ^6.1.2
   dropdown_search: ^6.0.1
   logger: ^2.5.0
+  file_picker: ^8.1.7
 
 dev_dependencies:
   flutter_test:
