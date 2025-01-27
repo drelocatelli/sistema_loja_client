@@ -152,7 +152,14 @@ class _ProductFormState extends State<ProductForm> {
                           TextFormField(
                             decoration: const InputDecoration(
                               labelText: "Nome do produto"
-                            )
+                            ),
+                            controller: TextEditingController(text: _productController.name),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
+                            }
                           ),
                           TextFormField(
                             readOnly: true,
@@ -179,11 +186,65 @@ class _ProductFormState extends State<ProductForm> {
                                         setState(() {});
                                     }, 
                                     fetchCb: (String? searchTerm) async {
-                                      await fetchCategories(context);
+                                      await fetchCategories(context, searchTerm: searchTerm);
                                     }, 
                                   );
                                 }
                               );
+                            }
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: "Preço",
+                              prefixText: 'R\$ '
+                            ),
+                            keyboardType: TextInputType.number,
+                            controller: TextEditingController(text: (_productController.price ?? 0).toString()),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
+                            }
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: "Quantidade",
+                            ),
+                            keyboardType: TextInputType.number,
+                            controller: TextEditingController(text: (_productController.quantity ?? 0).toString()),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
+                            }
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: (_productController.isPublished ?? false),
+                                onChanged: (value) {
+                                  _productController.isPublished = value!;
+                                  setState(() {});
+                                },
+                              ),
+                              GestureDetector(onTap: () {
+                                _productController.isPublished = !(_productController.isPublished ?? false);
+                                setState(() {});
+                              }, child: Text("Público"))
+                            ],
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: "Descrição"
+                            ),
+                            controller: TextEditingController(text: _productController.description),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campo obrigatório';
+                              }
+                              return null;
                             }
                           ),
                           Row(

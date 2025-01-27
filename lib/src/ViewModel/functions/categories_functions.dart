@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/CategoryRepository.dart';
 
-Future fetchCategories(BuildContext context, {bool onlyOnce = false}) async {
+Future fetchCategories(BuildContext context, {bool onlyOnce = false, String? searchTerm}) async {
   final model = Provider.of<CategoryProvider>(context, listen: false);
 
   if(onlyOnce && model.categories.isNotEmpty) {
