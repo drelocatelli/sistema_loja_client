@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/product_form.dart';
@@ -39,7 +40,7 @@ novoProdutoDialog(BuildContext context) {
         title: const Text('Novo produto'),
         content: SizedBox(
           width: maxWidth / 3,
-          child: ProductForm()
+          child: ProductForm(popFn: () => Navigator.pop(context))
         ),
       );
     }

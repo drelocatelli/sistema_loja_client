@@ -16,13 +16,13 @@ import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.d
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
-import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
-import '../../../../../Model/sales_controller_dto.dart';
 
 class ProductForm extends StatefulWidget {
-  const ProductForm({super.key});
+  const ProductForm({super.key, required this.popFn});
+
+  final Function popFn;
 
   @override
   State<ProductForm> createState() => _ProductFormState();
@@ -67,11 +67,10 @@ class _ProductFormState extends State<ProductForm> {
 
       }
 
-
       await Future.delayed(const Duration(milliseconds: 1500));
+
       productModel.setIsLoading(false);
       productModel.setImages([]);
-      context.pop();
     }
 
     Future<void> _pickImages(newState) async {
@@ -362,25 +361,31 @@ class _ProductFormState extends State<ProductForm> {
                                 }, child: Icon(Icons.arrow_back_ios_new, size: 15)
                               ),
                               
-                              StatefulBuilder(
-                                builder: (context, setState) {
-                                  return ElevatedButton(onPressed: () {
-                                      formStep = 2;
-                                      setState(() async {
-                                        if (_formKey.currentState?.validate() ?? false) {
-                                          setState(() {
-                                            _isSubmitting = true;
-                                          });
-                                          await _newSale();
-
-                                          setState(() {
-                                            _isSubmitting = false;
-                                          });
-                                        }
+                              ElevatedButton(
+                                
+                                onPressed: () {
+                                  formStep = 2;
+                                  setState(() async {
+                                    if (_formKey.currentState?.validate() ?? false) {
+                                      setState(() {
+                                        _isSubmitting = true;
                                       });
-                                    }, child: Text(_isSubmitting ? "Publicando..."  : "Publicar")
-                                  );
-                                }
+
+                                      if(_isSubmitting) {
+                                        await _newSale();
+                                      }
+                                      widget.popFn();
+                              
+                                      setState(() {
+                                        _isSubmitting = false;
+                                      });
+                                    }
+                                  });
+                                }, child: StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return Text(_isSubmitting ? "Publicando..."  : "Publicar");
+                                  }
+                                )
                               ),
                             ],
                           ),
