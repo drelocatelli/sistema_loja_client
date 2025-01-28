@@ -2,6 +2,8 @@ fazer pagina de categorias e de clientes no adicionar nova venda
 fazer pesquisa pro colaborador ao adicionar venda
 fazer pesquisa em vendas
 
+verificar porque quando clica em publico ao criar um produto ele reseta o formulario
+
 make search term to categorias
 
 refatorar "total" pra "quantidade"

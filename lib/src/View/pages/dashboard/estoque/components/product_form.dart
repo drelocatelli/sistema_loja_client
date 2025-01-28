@@ -1,20 +1,25 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/category_dto.dart' as category_dto;
+import 'package:racoon_tech_panel/src/Model/product_controller.dart';
 import 'package:racoon_tech_panel/src/Model/product_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 import 'package:widget_zoom/widget_zoom.dart';
+
+import '../../../../../Model/sales_controller_dto.dart';
 
 class ProductForm extends StatefulWidget {
   const ProductForm({super.key});
@@ -29,6 +34,7 @@ class _ProductFormState extends State<ProductForm> {
   final _productController = Produto();
   bool _isUploadingImages = false;
   int formStep = 1;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -43,8 +49,25 @@ class _ProductFormState extends State<ProductForm> {
     final productModel = Provider.of<ProdutoProvider>(context, listen: true);
     final categoryModel = Provider.of<CategoryProvider>(context, listen: true);
 
+    ProductController? _formController = ProductController();
+
     _newSale() async {
       productModel.setIsReloading(true);
+
+      // send request
+      final request = await ProdutosRepository.create(_formController);
+
+      // upload photos if request is ok
+      if(request.status == 200) {
+        showDialog(context: context, builder: (context) {
+          return AlertDialog(
+            title: const Text('Sucesso'),
+          );
+        });
+
+      }
+
+
       await Future.delayed(const Duration(milliseconds: 1500));
       productModel.setIsLoading(false);
       productModel.setImages([]);
@@ -79,11 +102,6 @@ class _ProductFormState extends State<ProductForm> {
   Future<void> _pickImagesMobile(newState) async {
       newState(() {
           _isUploadingImages = true;
-          
-          // _selectedImages = result.paths
-              // .where((path) => path != null)
-              // .map((path) => File(path!))
-              // .toList();
         });
 
        final result = await FilePicker.platform.pickFiles(
@@ -104,7 +122,6 @@ class _ProductFormState extends State<ProductForm> {
 
     }
   }
-
 
     return SingleChildScrollView(
       child: Column(
@@ -127,7 +144,6 @@ class _ProductFormState extends State<ProductForm> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Fotos do produto", style: TextStyle(fontWeight: FontWeight.bold)),
-                          
                           Column(
                           children: [
                             Visibility(
@@ -218,7 +234,7 @@ class _ProductFormState extends State<ProductForm> {
                             decoration: const InputDecoration(
                               labelText: "Nome do produto"
                             ),
-                            controller: TextEditingController(text: _productController.name),
+                            controller: _formController.name,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Campo obrigatório';
@@ -231,7 +247,7 @@ class _ProductFormState extends State<ProductForm> {
                             child: TextFormField(
                               enableInteractiveSelection: true,
                               readOnly: true,
-                              controller: TextEditingController(text: _productController.category?.name),
+                              controller: TextEditingController(text: _formController.category?.name),
                               validator: (value) {
                               if (value == null || value.isEmpty) {
                                   return 'Campo obrigatório';
@@ -250,7 +266,7 @@ class _ProductFormState extends State<ProductForm> {
                                       model: Provider.of<CategoryProvider>(context, listen: true), 
                                       items: categoryModel.categories,
                                       selectCb: (category_dto.Category category) {
-                                          _productController.category = category;
+                                          _formController.category = category;
                                           setState(() {});
                                       }, 
                                       fetchCb: (String? searchTerm) async {
@@ -268,10 +284,14 @@ class _ProductFormState extends State<ProductForm> {
                               prefixText: 'R\$ '
                             ),
                             keyboardType: TextInputType.number,
-                            controller: TextEditingController(text: (_productController.price ?? 0).toString()),
+                            controller: _formController.price,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Campo obrigatório';
+                              }
+
+                              if (double.tryParse(value) == null) {
+                                return 'Precisa ser valor numérico';
                               }
                               return null;
                             }
@@ -281,7 +301,7 @@ class _ProductFormState extends State<ProductForm> {
                               labelText: "Quantidade",
                             ),
                             keyboardType: TextInputType.number,
-                            controller: TextEditingController(text: (_productController.quantity ?? 0).toString()),
+                            controller: _formController.quantity,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Campo obrigatório';
@@ -290,18 +310,27 @@ class _ProductFormState extends State<ProductForm> {
                               if(value == '0') {
                                 return 'Quantidade deve ser maior que 0';
                               }
+
+                              if (int.tryParse(value) == null) {
+                                return 'Precisa ser valor numérico';
+                              }
+
                               return null;
                               
                             }
                           ),
                           Row(
                             children: [
-                              Checkbox(
-                                value: (_productController.isPublished ?? false),
-                                onChanged: (value) {
-                                  _productController.isPublished = value!;
-                                  setState(() {});
-                                },
+                              StatefulBuilder(
+                                builder: (context, setState) {
+                                  return Checkbox(
+                                    value: (_productController.isPublished ?? false),
+                                    onChanged: (value) {
+                                      _productController.isPublished = value;
+                                      setState((){});
+                                    },
+                                  );
+                                }
                               ),
                               GestureDetector(onTap: () {
                                 _productController.isPublished = !(_productController.isPublished ?? false);
@@ -316,7 +345,7 @@ class _ProductFormState extends State<ProductForm> {
                             decoration: const InputDecoration(
                               labelText: "Descrição"
                             ),
-                            controller: TextEditingController(text: _productController.description),
+                            controller: _formController.description,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Campo obrigatório';
@@ -333,14 +362,25 @@ class _ProductFormState extends State<ProductForm> {
                                 }, child: Icon(Icons.arrow_back_ios_new, size: 15)
                               ),
                               
-                              ElevatedButton(onPressed: () {
-                                  formStep = 2;
-                                  setState(() {
-                                    if (_formKey.currentState?.validate() ?? false) {
-                                      _newSale();
-                                    }
-                                  });
-                                }, child: Text("Publicar")
+                              StatefulBuilder(
+                                builder: (context, setState) {
+                                  return ElevatedButton(onPressed: () {
+                                      formStep = 2;
+                                      setState(() async {
+                                        if (_formKey.currentState?.validate() ?? false) {
+                                          setState(() {
+                                            _isSubmitting = true;
+                                          });
+                                          await _newSale();
+
+                                          setState(() {
+                                            _isSubmitting = false;
+                                          });
+                                        }
+                                      });
+                                    }, child: Text(_isSubmitting ? "Publicando..."  : "Publicar")
+                                  );
+                                }
                               ),
                             ],
                           ),

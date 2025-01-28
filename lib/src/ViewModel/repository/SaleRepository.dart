@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/web.dart';
+import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/payload_dto.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_controller_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 
 class SaleRepository {
@@ -141,6 +144,7 @@ class SaleRepository {
     );
 
   }
+
 
   
 }
