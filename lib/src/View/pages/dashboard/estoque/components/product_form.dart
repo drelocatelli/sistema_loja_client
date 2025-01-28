@@ -3,10 +3,11 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:racoon_tech_panel/src/Model/category_dto.dart';
+import 'package:racoon_tech_panel/src/Model/category_dto.dart' as category_dto;
 import 'package:racoon_tech_panel/src/Model/product_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
@@ -75,6 +76,35 @@ class _ProductFormState extends State<ProductForm> {
     }
   }
 
+  Future<void> _pickImagesMobile(newState) async {
+      newState(() {
+          _isUploadingImages = true;
+          
+          // _selectedImages = result.paths
+              // .where((path) => path != null)
+              // .map((path) => File(path!))
+              // .toList();
+        });
+
+       final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: true,
+      );
+      if (result != null) {
+        productModel.setImages(
+          result.paths
+          .where((path) => path != null)
+          .map((path) => File(path!))
+          .toList()
+        );
+
+        newState(() {
+          _isUploadingImages = false;
+        });
+
+    }
+  }
+
 
     return SingleChildScrollView(
       child: Column(
@@ -118,14 +148,24 @@ class _ProductFormState extends State<ProductForm> {
                                         child: Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: List.generate(
-                                                (productModel.imagesBytes.length),
-                                                (int index) => MouseRegion(
-                                                  cursor: SystemMouseCursors.click,
-                                                  child: WidgetZoom(
-                                                    heroAnimationTag: 'tag',
-                                                    zoomWidget: Image.memory(productModel.imagesBytes[index], fit: BoxFit.cover, width: 100, height: 100)
-                                                  ),
-                                                ),
+                                                ((kIsWeb) ? productModel.imagesBytes.length : productModel.selectedImages!.length),
+                                                (int index) {
+                                                    dynamic imageUrl = (kIsWeb) 
+                                                      ? productModel.imagesBytes[index] 
+                                                      : productModel.selectedImages![index];
+
+                                                    Widget imageWidget = (kIsWeb) 
+                                                      ? Image.memory(imageUrl, fit: BoxFit.cover, width: 100, height: 100) 
+                                                      : Image.file(imageUrl, width: 100, height: 100);
+                                                  
+                                                    return MouseRegion(
+                                                      cursor: SystemMouseCursors.click,
+                                                      child: WidgetZoom(
+                                                        heroAnimationTag: 'tag',
+                                                        zoomWidget: imageWidget
+                                                      ),
+                                                    );
+                                                }
                                               ),
                                           ),
                                       ),
@@ -138,7 +178,12 @@ class _ProductFormState extends State<ProductForm> {
                           ],
                         ),
                         ElevatedButton(onPressed: () {
+                          if(!kIsWeb) {
+                            _pickImagesMobile(setState);
+                          } else {
                             _pickImages(setState);
+
+                          }
                             setState(() {});
                           }, child: Visibility(
                             visible: !_isUploadingImages,
@@ -204,7 +249,7 @@ class _ProductFormState extends State<ProductForm> {
                                     return SearchableMenu(
                                       model: Provider.of<CategoryProvider>(context, listen: true), 
                                       items: categoryModel.categories,
-                                      selectCb: (Category category) {
+                                      selectCb: (category_dto.Category category) {
                                           _productController.category = category;
                                           setState(() {});
                                       }, 

@@ -91,6 +91,8 @@ Widget _estoquesTable(double maxWidth) {
                     final key = entry.key;
                     final product = entry.value;
 
+                    String productThumbnail = (product.photos != null && product.photos!.length != 0) ? "${BaseRepository.baseStaticUrl}/${product.photos![0]}" : '';
+
                     return DataRow(
                         selected: model.selectedIds.contains(key),
                         onSelectChanged: (bool? selected) {
@@ -102,7 +104,7 @@ Widget _estoquesTable(double maxWidth) {
                           DataCell(
                             WidgetZoom(
                               heroAnimationTag: 'tag',
-                              zoomWidget: Image.network("${BaseRepository.baseUrl}${product.photos!.first}", width: 80, 
+                              zoomWidget: Image.network(productThumbnail, width: 80, 
                                 errorBuilder: (context, error, stackTrace) {
                                   return Center(child: Icon(Icons.image));
                                 }

@@ -9,7 +9,7 @@ import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginRepository {
-  static final endpoint = '${dotenv.env['SERVER_URL']!}:${dotenv.env['SERVER_PORT']!}';
+  static final endpoint = '${dotenv.env['SERVER_URL']!}:${dotenv.env['SERVER_PORT']!}/graphql';
 
   static Future<String?> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

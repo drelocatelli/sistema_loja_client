@@ -7,7 +7,8 @@ import 'package:racoon_tech_panel/src/ViewModel/utils/request.dart';
 
 class BaseRepository {
 
-  static String baseUrl = "${dotenv.env['SERVER_URL']}:${dotenv.env['SERVER_PORT']}";
+  static String baseUrl = "${dotenv.env['SERVER_URL']}:${dotenv.env['SERVER_PORT']}/graphql";
+  static String baseStaticUrl = "${dotenv.env['SERVER_URL']}:${dotenv.env['SERVER_PORT']}";
 
   static Future<ResponseDTO<T>> graphQlRequest<T>({required String query, required bool authentication ,required Function cbData, required Function cbNull, Function? onErrorCb}) async {
     try {
