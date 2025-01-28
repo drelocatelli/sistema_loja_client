@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
@@ -34,6 +35,9 @@ class ProdutoProvider extends ChangeNotifier {
 
   List<File>? _selectedImages = [];
   List<File>? get selectedImages => _selectedImages;
+
+  List<Uint8List> _imagesBytes = [];
+  List<Uint8List> get imagesBytes => _imagesBytes;
 
   void setProdutos(List<Produto> produto) {
     _produtos = produto;
