@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -109,7 +110,7 @@ class ProdutosRepository {
         final productId = response.data['data']['createProduct']['id'];
         
         // upload photos
-        final uploadedPhotos = await uploadPhotos(context, productId, model);
+        final uploadedPhotos = await uploadImageByDevice(context, productId, model);
 
         if(uploadedPhotos.status != 200) {
           return ResponseDTO(status: 401);
@@ -126,16 +127,30 @@ class ProdutosRepository {
   }
 }
 
-Future<ResponseDTO> uploadPhotos(BuildContext context, String filename, model) async {
+Future uploadImageByDevice(BuildContext context, String filename, model) async {
+
+  // not web
+   if ((Platform.isAndroid || Platform.isIOS || Platform.isWindows || Platform.isMacOS || Platform.isLinux) && model.selectedImages != null && model.selectedImages!.isNotEmpty) {
+      model.selectedImages.asMap().forEach((index, image) async {
+          String name  = index == 0 ? filename : "${filename}_${index}";
+          await uploadPhotos(context, filename, name, model);
+      });
+   } else if (kIsWeb) {
+     model.imagesBytes.asMap().forEach((index, image) async {
+          String name  = index == 0 ? filename : "${filename}_${index}";
+          await uploadPhotos(context, filename, name, model);
+     });
+   }
+}
+
+Future<ResponseDTO> uploadPhotos(BuildContext context, String folderPath, String filename, model) async {
   try {
     String uploadUrl = "${BaseRepository.baseStaticUrl}/upload";
-    FormData formData = await FileuploadRepository.getFormDataOfImages(context, filename, model);
+    FormData formData = await FileuploadRepository.getFormDataOfImages(context, folderPath, filename, model);
 
     Dio dio = Dio();
     final token = await LoginRepository.getToken();
 
-    Logger().i(token);
-    
     final response = await dio.post(uploadUrl, data: formData, options: Options(
       headers: {
         'Authorization': 'Bearer ${token}'

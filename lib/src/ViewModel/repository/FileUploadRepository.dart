@@ -7,10 +7,10 @@ import 'package:logger/web.dart';
 
 class FileuploadRepository {
 
-  static Future<FormData> getFormDataOfImages(BuildContext context, String fileName, imagesModel) async {
+  static Future<FormData> getFormDataOfImages(BuildContext context, String folderPath, String fileName, imagesModel) async {
     // ✅ Initialize FormData
     FormData formData = FormData.fromMap({
-      "path": "imgs/products/$fileName",  // ✅ Correctly add the path field
+      "path": "imgs/products/$folderPath",  // ✅ Correctly add the path field
     });
 
     // ✅ Web Upload
@@ -28,7 +28,6 @@ class FileuploadRepository {
     }
     // ✅ Mobile Upload (Android/iOS)
     else if ((Platform.isAndroid || Platform.isIOS || Platform.isWindows || Platform.isMacOS || Platform.isLinux) && imagesModel.selectedImages != null && imagesModel.selectedImages!.isNotEmpty) {
-      Logger().i('not web system');
       
       List<int> fileBytes = await imagesModel.selectedImages![0].readAsBytes();
 
