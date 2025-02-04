@@ -55,13 +55,22 @@ class _ProductFormState extends State<ProductForm> {
       productModel.setIsReloading(true);
 
       // send request
-      final request = await ProdutosRepository.create(_formController);
+      final request = await ProdutosRepository.create(context, _formController, productModel);
 
       // upload photos if request is ok
       if(request.status == 200) {
         showDialog(context: context, builder: (context) {
           return AlertDialog(
             title: const Text('Sucesso'),
+            content: const Text('Produto criado com sucesso!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  widget.popFn();
+                }, 
+                child: const Text('Fechar')
+              ),
+            ],
           );
         });
 
@@ -363,9 +372,8 @@ class _ProductFormState extends State<ProductForm> {
                               
                               ElevatedButton(
                                 
-                                onPressed: () {
+                                onPressed: () async {
                                   formStep = 2;
-                                  setState(() async {
                                     if (_formKey.currentState?.validate() ?? false) {
                                       setState(() {
                                         _isSubmitting = true;
@@ -380,7 +388,6 @@ class _ProductFormState extends State<ProductForm> {
                                         _isSubmitting = false;
                                       });
                                     }
-                                  });
                                 }, child: StatefulBuilder(
                                   builder: (context, setState) {
                                     return Text(_isSubmitting ? "Publicando..."  : "Publicar");

@@ -25,9 +25,14 @@ class LoginLayout extends StatelessWidget {
         ),
       ),
       body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: const AssetImage('assets/img/bg-render.png'),
+            fit: BoxFit.fill
+          )
+        ),
         width: double.infinity,
         height: double.infinity,
-        color: SharedTheme.thirdColor,
         child: child
       )
     );

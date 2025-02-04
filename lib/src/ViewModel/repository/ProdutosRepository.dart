@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/payload_dto.dart';
@@ -11,6 +12,8 @@ import 'package:racoon_tech_panel/src/Model/produtos_response_dto%20copy.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/FileUploadRepository.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/LoginRepository.dart';
 
 class ProdutosRepository {
    static Future<ResponseDTO<ProdutosResponseDTO>> get({int? pageNum = 1, String? searchTerm}) async {
@@ -65,7 +68,7 @@ class ProdutosRepository {
     );
   }
 
-  static Future<ResponseDTO> create(ProductController controller) async {
+  static Future<ResponseDTO> create(BuildContext context, ProductController controller, model) async {
 
     final payload = {
       'input': {
@@ -96,14 +99,24 @@ class ProdutosRepository {
       }
     ''';
 
+    
 
-    Logger().w(payloadStr);
-
+    // record product
     return await BaseRepository.graphQlRequest(
       query: query, 
       authentication: true,
-      cbData: (response) {
-        return ResponseDTO(status: 200);
+      cbData: (response) async {
+        final productId = response.data['data']['createProduct']['id'];
+        
+        // upload photos
+        final uploadedPhotos = await uploadPhotos(context, productId, model);
+
+        if(uploadedPhotos.status != 200) {
+          return ResponseDTO(status: 401);
+        } else {
+          return ResponseDTO(status: 401, message: 'Não foi possível fazer upload da imagem');
+        }
+
       }, 
       cbNull: (response) {
         return ResponseDTO(status: 401);
@@ -111,15 +124,23 @@ class ProdutosRepository {
     );
 
   }
+}
 
-  static Future uploadPhotos(BuildContext context) async {
-    final model = Provider.of<ProdutoProvider>(context, listen: true);
+Future<ResponseDTO> uploadPhotos(BuildContext context, String filename, model) async {
+  try {
+    String uploadUrl = "${BaseRepository.baseStaticUrl}/upload";
+    FormData formData = await FileuploadRepository.getFormDataOfImages(context, filename, model);
 
-    dynamic images = (kIsWeb) 
-      ? model.imagesBytes.map((e) => base64Encode(e)).toList()
-      : model.selectedImages;
-
-    Logger().w(images);
+    Dio dio = Dio();
+    final response = await dio.post(uploadUrl, data: formData, options: Options(
+      headers: {
+        'Authorization': 'Bearer ${await LoginRepository.getToken()}'
+      }
+    ));
+    return ResponseDTO(status: 200, message: response.data['message']);
     
+  } catch(e) {
+    Logger().w(e);
   }
+  return ResponseDTO(status: 401);
 }
