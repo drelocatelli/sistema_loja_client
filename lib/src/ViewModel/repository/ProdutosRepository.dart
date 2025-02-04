@@ -153,7 +153,9 @@ Future<ResponseDTO> uploadPhotos(BuildContext context, int index, String folderP
 
     final response = await dio.post(uploadUrl, data: formData, options: Options(
       headers: {
-        'Authorization': 'Bearer ${token}'
+        'Authorization': 'Bearer ${token}',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       }
     ));
     return ResponseDTO(status: 200, message: response.data['message']);
