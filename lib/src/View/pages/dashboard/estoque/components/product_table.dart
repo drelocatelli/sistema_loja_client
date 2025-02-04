@@ -8,6 +8,8 @@ import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
+import '../../../../../Model/product_dto.dart';
+
 
 class ProductTable extends StatefulWidget {
   const ProductTable({super.key});
@@ -141,6 +143,12 @@ Widget _estoquesTable(double maxWidth) {
                               itemBuilder: (context) {
                                 return [
                                   PopupMenuItem(
+                                    onTap: () {
+                                      _readMore(context, product);
+                                    },
+                                    child: Center(child: Icon(Icons.info_outline)),
+                                  ),
+                                  PopupMenuItem(
                                       value: 'edit',
                                       onTap: () {},
                                       child: Center(child: Icon(Icons.edit))),
@@ -150,7 +158,8 @@ Widget _estoquesTable(double maxWidth) {
                                       _deleteModal(context, [product.id!]);
                                     },
                                     child: Center(child: Icon(Icons.delete)),
-                                  )
+                                  ),
+                                  
                                 ];
                               },
                             ),
@@ -199,4 +208,47 @@ _deleteModal(BuildContext context, List<String> ids) {
       );
     }
   );
+}
+
+_readMore(BuildContext context, Produto product) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: SelectableText(product.name!),
+        content: StatefulBuilder(
+          builder: (context, StateSetter setState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 10,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SelectableText.rich(
+                  TextSpan(
+                    style: DefaultTextStyle.of(context).style,
+                    children: [
+                      const TextSpan(text: 'Descricao: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: product.description!.toLowerCase() + '\n'),
+                      const TextSpan(text: 'Categoria: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: product.category!.name!.toLowerCase() + '\n'),
+                      const TextSpan(text: 'Preço: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: "R\$ ${(product.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}\n"),
+                    ]
+                  )
+                ),
+               Divider(),
+                product.photos!.length == 0 ? const Text('Sem imagens') : SizedBox(
+                  width: 300,
+                  child: Wrap(
+                    children: List.generate(product.photos!.length, (index) => MouseRegion(cursor: SystemMouseCursors.click, child: WidgetZoom(heroAnimationTag: 'tag', zoomWidget: Image.network('${BaseRepository.baseStaticUrl}/${product.photos![index]}', height: 100, width: 100))))
+                  ),
+                )
+              ],
+            );
+          }
+        ),
+      );
+    }
+  );
+
 }

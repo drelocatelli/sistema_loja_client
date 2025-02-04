@@ -133,20 +133,20 @@ Future uploadImageByDevice(BuildContext context, String filename, model) async {
    if ((Platform.isAndroid || Platform.isIOS || Platform.isWindows || Platform.isMacOS || Platform.isLinux) && model.selectedImages != null && model.selectedImages!.isNotEmpty) {
       model.selectedImages.asMap().forEach((index, image) async {
           String name  = index == 0 ? filename : "${filename}_${index}";
-          await uploadPhotos(context, filename, name, model);
+          await uploadPhotos(context, index, filename, name, model);
       });
    } else if (kIsWeb) {
      model.imagesBytes.asMap().forEach((index, image) async {
           String name  = index == 0 ? filename : "${filename}_${index}";
-          await uploadPhotos(context, filename, name, model);
+          await uploadPhotos(context, index, filename, name, model);
      });
    }
 }
 
-Future<ResponseDTO> uploadPhotos(BuildContext context, String folderPath, String filename, model) async {
+Future<ResponseDTO> uploadPhotos(BuildContext context, int index, String folderPath, String filename, model) async {
   try {
     String uploadUrl = "${BaseRepository.baseStaticUrl}/upload";
-    FormData formData = await FileuploadRepository.getFormDataOfImages(context, folderPath, filename, model);
+    FormData formData = await FileuploadRepository.getFormDataOfImages(context, index, folderPath, filename, model);
 
     Dio dio = Dio();
     final token = await LoginRepository.getToken();
