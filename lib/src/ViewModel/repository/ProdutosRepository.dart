@@ -132,9 +132,13 @@ Future<ResponseDTO> uploadPhotos(BuildContext context, String filename, model) a
     FormData formData = await FileuploadRepository.getFormDataOfImages(context, filename, model);
 
     Dio dio = Dio();
+    final token = await LoginRepository.getToken();
+
+    Logger().i(token);
+    
     final response = await dio.post(uploadUrl, data: formData, options: Options(
       headers: {
-        'Authorization': 'Bearer ${await LoginRepository.getToken()}'
+        'Authorization': 'Bearer ${token}'
       }
     ));
     return ResponseDTO(status: 200, message: response.data['message']);
