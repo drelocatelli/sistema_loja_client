@@ -138,5 +138,10 @@ class ProdutoProvider extends ChangeNotifier {
     currentIdx = value;
     notifyListeners();
   }
+
+  void setImagesBytes(List<Uint8List> imagesBytes) {
+    _imagesBytes = imagesBytes;
+    notifyListeners();
+  }
   
 }

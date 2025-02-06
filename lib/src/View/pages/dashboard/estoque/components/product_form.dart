@@ -84,6 +84,7 @@ class _ProductFormState extends State<ProductForm> {
 
       productModel.setIsLoading(false);
       productModel.setImages([]);
+      productModel.setImagesBytes([]);
       productModel.setIsReloading(false);
 
     }
