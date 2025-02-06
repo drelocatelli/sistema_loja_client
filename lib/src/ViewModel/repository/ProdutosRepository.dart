@@ -100,8 +100,6 @@ class ProdutosRepository {
       }
     ''';
 
-    
-
     // record product
     return await BaseRepository.graphQlRequest(
       query: query, 
@@ -109,15 +107,16 @@ class ProdutosRepository {
       cbData: (response) async {
         final productId = response.data['data']['createProduct']['id'];
         
-        // upload photos
-        final uploadedPhotos = await uploadImageByDevice(context, productId, model);
 
-        if(uploadedPhotos.status != 200) {
-          return ResponseDTO(status: 401);
-        } else {
+        // upload image photos
+        try {
+          await uploadImageByDevice(context, productId, model);
+
+        } catch(err) {
           return ResponseDTO(status: 401, message: 'Não foi possível fazer upload da imagem');
         }
 
+        return ResponseDTO(status: 200);
       }, 
       cbNull: (response) {
         return ResponseDTO(status: 401);

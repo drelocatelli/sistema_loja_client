@@ -341,7 +341,7 @@ class _ProductFormState extends State<ProductForm> {
                                 }
                               ),
                               GestureDetector(onTap: () {
-                                _productController.isPublished = !(_productController.isPublished ?? false);
+                                _productController.isPublished = !_productController.isPublished!;
                                 setState(() {});
                               }, child: Text("Público"))
                             ],

@@ -7,7 +7,7 @@ class Produto {
   Category? category;
   double? price;
   int? quantity;
-  bool? isPublished;
+  bool? isPublished = false;
   List<String>? photos = [];
 
   Produto({
@@ -17,7 +17,7 @@ class Produto {
     this.category,
     this.price,
     this.quantity,
-    this.isPublished,
+    this.isPublished = false,
     this.photos,
   });
 
