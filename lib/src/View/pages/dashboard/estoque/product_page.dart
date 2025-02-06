@@ -68,6 +68,10 @@ final NumberPaginatorController _controller = NumberPaginatorController();
       );
     }
 
+    setState(() {
+      _totalPages = productsList.data?.pagination?.totalPages ?? 1;
+    });
+
     model.setProdutos(newProducts);
     model.setIsLoading(false);
 

@@ -104,12 +104,16 @@ Widget _estoquesTable(double maxWidth) {
                         },
                         cells: [
                           DataCell(
-                            WidgetZoom(
-                              heroAnimationTag: 'tag',
-                              zoomWidget: Image.network(productThumbnail, width: 80, 
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Center(child: Icon(Icons.image));
-                                }
+                            Visibility(
+                              visible: product.photos!.length != 0,
+                              replacement: Center(child: Icon(Icons.image)),
+                              child: WidgetZoom(
+                                heroAnimationTag: 'tag',
+                                zoomWidget: Image.network(productThumbnail, width: 80, 
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Center(child: Icon(Icons.image));
+                                  }
+                                ),
                               ),
                             )
                           ),
@@ -215,7 +219,7 @@ _readMore(BuildContext context, Produto product) {
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: SelectableText(product.name!),
+        title: Text(product.name!),
         content: StatefulBuilder(
           builder: (context, StateSetter setState) {
             return Column(
@@ -227,12 +231,23 @@ _readMore(BuildContext context, Produto product) {
                   TextSpan(
                     style: DefaultTextStyle.of(context).style,
                     children: [
-                      const TextSpan(text: 'Descricao: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: product.description!.toLowerCase() + '\n'),
+                      const TextSpan(text: 'Titulo: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: product.name!.toLowerCase() + '\n'),
+
                       const TextSpan(text: 'Categoria: ', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextSpan(text: product.category!.name!.toLowerCase() + '\n'),
-                      const TextSpan(text: 'Preço: ', style: TextStyle(fontWeight: FontWeight.bold)),
+
+                      const TextSpan(text: 'Preço unitário: ', style: TextStyle(fontWeight: FontWeight.bold)),
                       TextSpan(text: "R\$ ${(product.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}\n"),
+
+                      const TextSpan(text: 'Quantidade: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: "${product.quantity}\n"),
+                      
+                      const TextSpan(text: 'Visualização: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: "${product.isPublished! ? 'Publicado' : 'Anotação'}\n"),
+
+                      const TextSpan(text: '\nDescricao: \n', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: product.description!.toLowerCase()),
                     ]
                   )
                 ),
@@ -240,7 +255,12 @@ _readMore(BuildContext context, Produto product) {
                 product.photos!.length == 0 ? const Text('Sem imagens') : SizedBox(
                   width: 300,
                   child: Wrap(
-                    children: List.generate(product.photos!.length, (index) => MouseRegion(cursor: SystemMouseCursors.click, child: WidgetZoom(heroAnimationTag: 'tag', zoomWidget: Image.network('${BaseRepository.baseStaticUrl}/${product.photos![index]}', height: 100, width: 100))))
+                    children: List.generate(product.photos!.length, (index) => MouseRegion(cursor: SystemMouseCursors.click, child: WidgetZoom(
+                      heroAnimationTag: 'tag', 
+                      zoomWidget: Image.network('${BaseRepository.baseStaticUrl}/${product.photos![index]}', 
+                      height: 100, 
+                      width: 100)
+                    )))
                   ),
                 )
               ],
