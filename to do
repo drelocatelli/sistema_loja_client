@@ -4,6 +4,8 @@ fazer pesquisa em vendas
 
 verificar porque nao adiciona produto publico
 
+ao criar produto consertar a paginaçao que está voltando pra primeira pagina sem alterar o index 
+
 verificar porque quando clica em publico ao criar um produto ele reseta o formulario
 
 make search term to categorias

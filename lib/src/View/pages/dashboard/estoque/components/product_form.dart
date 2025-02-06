@@ -13,6 +13,7 @@ import 'package:racoon_tech_panel/src/Model/product_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
@@ -78,8 +79,12 @@ class _ProductFormState extends State<ProductForm> {
 
       await Future.delayed(const Duration(milliseconds: 1500));
 
+      await fetchProdutos(context);
+
       productModel.setIsLoading(false);
       productModel.setImages([]);
+      productModel.setIsReloading(false);
+
     }
 
     Future<void> _pickImages(newState) async {

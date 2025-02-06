@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/product_details.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
@@ -148,7 +149,7 @@ Widget _estoquesTable(double maxWidth) {
                                 return [
                                   PopupMenuItem(
                                     onTap: () {
-                                      _readMore(context, product);
+                                      productDetails(context, product);
                                     },
                                     child: Center(child: Icon(Icons.info_outline)),
                                   ),
@@ -214,61 +215,3 @@ _deleteModal(BuildContext context, List<String> ids) {
   );
 }
 
-_readMore(BuildContext context, Produto product) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text(product.name!),
-        content: StatefulBuilder(
-          builder: (context, StateSetter setState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 10,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SelectableText.rich(
-                  TextSpan(
-                    style: DefaultTextStyle.of(context).style,
-                    children: [
-                      const TextSpan(text: 'Titulo: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: product.name!.toLowerCase() + '\n'),
-
-                      const TextSpan(text: 'Categoria: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: product.category!.name!.toLowerCase() + '\n'),
-
-                      const TextSpan(text: 'Preço unitário: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: "R\$ ${(product.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}\n"),
-
-                      const TextSpan(text: 'Quantidade: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: "${product.quantity}\n"),
-                      
-                      const TextSpan(text: 'Visualização: ', style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: "${product.isPublished! ? 'Publicado' : 'Anotação'}\n"),
-
-                      const TextSpan(text: '\nDescricao: \n', style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: product.description!.toLowerCase()),
-                    ]
-                  )
-                ),
-               Divider(),
-                product.photos!.length == 0 ? const Text('Sem imagens') : SizedBox(
-                  width: 300,
-                  child: Wrap(
-                    children: List.generate(product.photos!.length, (index) => MouseRegion(cursor: SystemMouseCursors.click, child: WidgetZoom(
-                      heroAnimationTag: 'tag', 
-                      zoomWidget: Image.network('${BaseRepository.baseStaticUrl}/${product.photos![index]}', 
-                      height: 100, 
-                      width: 100)
-                    )))
-                  ),
-                )
-              ],
-            );
-          }
-        ),
-      );
-    }
-  );
-
-}

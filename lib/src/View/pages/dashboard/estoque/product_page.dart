@@ -7,6 +7,7 @@ import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/View/layout/main_layout.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/product_table.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/product_title.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
@@ -21,9 +22,6 @@ class ProductPage extends StatefulWidget {
 class _VenddasState extends State<ProductPage> {
 
 final NumberPaginatorController _controller = NumberPaginatorController();
-  int _totalPages = 1;
-  int currentIdx = 0;
-  int currentPage = 1;
 
    @override
   void initState() {
@@ -68,10 +66,7 @@ final NumberPaginatorController _controller = NumberPaginatorController();
       );
     }
 
-    setState(() {
-      _totalPages = productsList.data?.pagination?.totalPages ?? 1;
-    });
-
+    model.setTotalPages(productsList.data?.pagination?.totalPages ?? 1);
     model.setProdutos(newProducts);
     model.setIsLoading(false);
 
@@ -79,39 +74,41 @@ final NumberPaginatorController _controller = NumberPaginatorController();
   
   @override
   Widget build(BuildContext context) {
-    return MainLayout(
-      floatingActionButton: Container(
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
-        child: Visibility(
-          visible: _totalPages > 1,
-          child: NumberPaginator(
-            config: NumberPaginatorUIConfig(
-              buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
-            ),
-            numberPages: _totalPages,
-            initialPage: currentIdx,
-            controller: _controller,
-            onPageChange: (int index) async {
-              setState(() {
-                currentIdx = index;
-                currentPage = index + 1;
-              });
-              Logger().i('Current page: $currentPage');
-              await Future.delayed(const Duration(seconds: 1));
-              await fetchData(page: currentPage);
-            },
-          )
-        )
-      ),
-      child: SelectionArea(
-        child: Column(
-          children: [
-            ProductTitle(),
-            ProductTable(),
-          ],
-        )
-      ),
+    return Consumer<ProdutoProvider>(
+      builder: (context, model, child) {
+        return MainLayout(
+          floatingActionButton: Container(
+            color: Colors.white,
+            padding: EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
+            child: Visibility(
+              visible: model.totalPages > 1,
+              child: NumberPaginator(
+                config: NumberPaginatorUIConfig(
+                  buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+                ),
+                numberPages: model.totalPages,
+                initialPage: model.currentIdx,
+                controller: _controller,
+                onPageChange: (int index) async {
+                  model.setCurrentIdx(index);
+                  model.setCurrentPage(index + 1);
+        
+                  await Future.delayed(const Duration(seconds: 1));
+                  await fetchData(page: model.currentPage);
+                },
+              )
+            )
+          ),
+          child: SelectionArea(
+            child: Column(
+              children: [
+                ProductTitle(),
+                ProductTable(),
+              ],
+            )
+          ),
+        );
+      }
     );
   }
 }

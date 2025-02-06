@@ -39,6 +39,11 @@ class ProdutoProvider extends ChangeNotifier {
   List<Uint8List> _imagesBytes = [];
   List<Uint8List> get imagesBytes => _imagesBytes;
 
+  int totalPages = 1;
+  int currentPage = 1;
+  int currentIdx = 0;
+
+
   void setProdutos(List<Produto> produto) {
     _produtos = produto;
     if(_produtosBkp.isEmpty) {
@@ -116,6 +121,21 @@ class ProdutoProvider extends ChangeNotifier {
 
   void setImages(List<File> images) {
     _selectedImages = images;
+    notifyListeners();
+  }
+
+  void setTotalPages(int value) {
+    totalPages = value;
+    notifyListeners();
+  }
+
+  void setCurrentPage(int value) {
+    currentPage = value;
+    notifyListeners();
+  }
+
+  void setCurrentIdx(int value) {
+    currentIdx = value;
     notifyListeners();
   }
   

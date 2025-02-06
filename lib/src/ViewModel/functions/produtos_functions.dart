@@ -25,8 +25,6 @@ Future fetchProdutos(BuildContext context, {bool onlyOnce = false, String? searc
     model.setError(true);
   }
 
-  Logger().i('Produtos loaded ${model.produtos.length}');
-  
   model.setIsLoading(false);
 }
 
