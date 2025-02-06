@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
@@ -80,40 +81,59 @@ class _VenddasState extends State<VendasPage> {
     
     return MainLayout(
       isLoading: model.isLoading,
-      floatingActionButton: Container(
-        color: Colors.white,
-        padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
-        child: Visibility(
-          visible: _totalPages > 1,
-          child: NumberPaginator(
-            config: NumberPaginatorUIConfig(
-              buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
-            ),
-            numberPages: _totalPages,
-            initialPage: currentIdx,
-            controller: _controller,
-            onPageChange: (int index) async {
-              setState(() {
-                currentIdx = index;
-                currentPage = index + 1;
-              });
-              await Future.delayed(const Duration(seconds: 1));
-              await _fetchData(page: currentPage);
-            },
-          ),
-        ),
-      ),
+      // floatingActionButton: Container(
+      //   color: Colors.white,
+      //   padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
+      //   child: Visibility(
+      //     visible: _totalPages > 1,
+      //     child: NumberPaginator(
+      //       config: NumberPaginatorUIConfig(
+      //         buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+      //       ),
+      //       numberPages: _totalPages,
+      //       initialPage: currentIdx,
+      //       controller: _controller,
+      //       onPageChange: (int index) async {
+      //         setState(() {
+      //           currentIdx = index;
+      //           currentPage = index + 1;
+      //         });
+      //         await Future.delayed(const Duration(seconds: 1));
+      //         await _fetchData(page: currentPage);
+      //       },
+      //     ),
+      //   ),
+      // ),
       child: SelectionArea(
         child: Column(
           children: [
             VendasTitle(),
+            const Gap(10),
             VendasSearch(),
-            Helpers.rowOrWrap(
-              wrap: !SharedTheme.isLargeScreen(context),
-              children: [
-                VendasTable(),
-              ]
-            )
+            VendasTable(),
+            Container(
+              color: Colors.white,
+              padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
+              child: Visibility(
+                visible: _totalPages > 1,
+                child: NumberPaginator(
+                  config: NumberPaginatorUIConfig(
+                    buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+                  ),
+                  numberPages: _totalPages,
+                  initialPage: currentIdx,
+                  controller: _controller,
+                  onPageChange: (int index) async {
+                    setState(() {
+                      currentIdx = index;
+                      currentPage = index + 1;
+                    });
+                    await Future.delayed(const Duration(seconds: 1));
+                    await _fetchData(page: currentPage);
+                  },
+                ),
+              ),
+            ),
           ],
         )
       ),

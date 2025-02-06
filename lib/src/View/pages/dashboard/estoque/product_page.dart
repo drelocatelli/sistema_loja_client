@@ -77,33 +77,57 @@ final NumberPaginatorController _controller = NumberPaginatorController();
     return Consumer<ProdutoProvider>(
       builder: (context, model, child) {
         return MainLayout(
-          floatingActionButton: Container(
-            color: Colors.white,
-            padding: EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
-            child: Visibility(
-              visible: model.totalPages > 1,
-              child: NumberPaginator(
-                config: NumberPaginatorUIConfig(
-                  buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
-                ),
-                numberPages: model.totalPages,
-                initialPage: model.currentIdx,
-                controller: _controller,
-                onPageChange: (int index) async {
-                  model.setCurrentIdx(index);
-                  model.setCurrentPage(index + 1);
+          // floatingActionButton: Container(
+          //   color: Colors.white,
+          //   padding: EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
+          //   child: Visibility(
+          //     visible: model.totalPages > 1,
+          //     child: NumberPaginator(
+                
+          //       config: NumberPaginatorUIConfig(
+          //         buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+          //       ),
+          //       numberPages: model.totalPages,
+          //       initialPage: model.currentIdx,
+          //       controller: _controller,
+          //       onPageChange: (int index) async {
+          //         model.setCurrentIdx(index);
+          //         model.setCurrentPage(index + 1);
         
-                  await Future.delayed(const Duration(seconds: 1));
-                  await fetchData(page: model.currentPage);
-                },
-              )
-            )
-          ),
+          //         await Future.delayed(const Duration(seconds: 1));
+          //         await fetchData(page: model.currentPage);
+          //       },
+          //     )
+          //   )
+          // ),
           child: SelectionArea(
             child: Column(
               children: [
                 ProductTitle(),
                 ProductTable(),
+                Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
+                  child: Visibility(
+                    visible: model.totalPages > 1,
+                    child: NumberPaginator(
+                      
+                      config: NumberPaginatorUIConfig(
+                        buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+                      ),
+                      numberPages: model.totalPages,
+                      initialPage: model.currentIdx,
+                      controller: _controller,
+                      onPageChange: (int index) async {
+                        model.setCurrentIdx(index);
+                        model.setCurrentPage(index + 1);
+              
+                        await Future.delayed(const Duration(seconds: 1));
+                        await fetchData(page: model.currentPage);
+                      },
+                    )
+                  )
+                ),
               ],
             )
           ),

@@ -33,7 +33,9 @@ class Produto {
       price: (json['price'] as num?)?.toDouble(),
       quantity: json['quantity'] as int?,
       isPublished: json['is_published'] as bool?,
-    photos: List<String>.from(json['photos'].map((item) => item.toString())),
+    photos: json['photos'] != null
+          ? List<String>.from(json['photos'].map((item) => item.toString()))
+          : [], // Default to an empty list if photos is null
     );
   }
 

@@ -66,7 +66,6 @@ class _VendasTitleState extends State<VendasTitle> {
               ),
             ],
           ),
-          
       ]
     );
   }
