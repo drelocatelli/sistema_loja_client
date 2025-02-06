@@ -49,6 +49,7 @@ class _ProductFormState extends State<ProductForm> {
   Widget build(BuildContext context) {
     final productModel = Provider.of<ProdutoProvider>(context, listen: true);
     final categoryModel = Provider.of<CategoryProvider>(context, listen: true);
+    ScrollController _horizontalPhotoScrollController = ScrollController();
 
     ProductController? _formController = ProductController();
 
@@ -167,12 +168,14 @@ class _ProductFormState extends State<ProductForm> {
                                   Scrollbar(
                                     thumbVisibility: true,
                                     interactive: true,
+                                    controller: _horizontalPhotoScrollController,
                                     child: ScrollConfiguration(
                                       behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
                                         PointerDeviceKind.touch, // Enable touch gestures
                                         PointerDeviceKind.mouse, // Enable mouse gestures (optional)
                                       },),
                                       child: SingleChildScrollView(
+                                        controller: _horizontalPhotoScrollController,
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
