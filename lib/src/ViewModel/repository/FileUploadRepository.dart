@@ -8,6 +8,8 @@ import 'package:logger/web.dart';
 class FileuploadRepository {
 
   static Future<FormData> getFormDataOfImages(BuildContext context, int index, String folderPath, String fileName, imagesModel) async {
+    debugPrint('chegou aqui');
+    
     // ✅ Initialize FormData
     FormData formData = FormData.fromMap({
       "path": "imgs/products/$folderPath",  // ✅ Correctly add the path field

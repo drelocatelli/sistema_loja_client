@@ -107,6 +107,7 @@ class ProdutosRepository {
       cbData: (response) async {
         final productId = response.data['data']['createProduct']['id'];
         
+        
 
         // upload image photos
         try {
@@ -127,18 +128,26 @@ class ProdutosRepository {
 }
 
 Future uploadImageByDevice(BuildContext context, String filename, model) async {
+  print('Is this web? ${kIsWeb}');
 
   // not web
-   if ((Platform.isAndroid || Platform.isIOS || Platform.isWindows || Platform.isMacOS || Platform.isLinux) && model.selectedImages != null && model.selectedImages!.isNotEmpty) {
+   if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
+    Logger().w('mobile and others');
+
+    if(model.selectedImages != null && model.selectedImages!.isNotEmpty) {
       model.selectedImages.asMap().forEach((index, image) async {
           String name  = index == 0 ? filename : "${filename}_${index}";
           await uploadPhotos(context, index, filename, name, model);
       });
+    }
+
    } else if (kIsWeb) {
      model.imagesBytes.asMap().forEach((index, image) async {
           String name  = index == 0 ? filename : "${filename}_${index}";
           await uploadPhotos(context, index, filename, name, model);
      });
+   } else {
+    Logger().w('No implementation');
    }
 }
 
@@ -146,6 +155,7 @@ Future<ResponseDTO> uploadPhotos(BuildContext context, int index, String folderP
   try {
     String uploadUrl = "${BaseRepository.baseStaticUrl}/upload";
     FormData formData = await FileuploadRepository.getFormDataOfImages(context, index, folderPath, filename, model);
+
 
     Dio dio = Dio();
     final token = await LoginRepository.getToken();
@@ -157,6 +167,7 @@ Future<ResponseDTO> uploadPhotos(BuildContext context, int index, String folderP
         'Access-Control-Allow-Origin': '*',
       }
     ));
+
     return ResponseDTO(status: 200, message: response.data['message']);
     
   } catch(e) {
