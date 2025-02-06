@@ -22,5 +22,6 @@ colocar tabelinha de serviços
     nome e valor
 colocar um filtro nas vendas pra filtrar vendas pelo nome do colaborador
 
+
 backend:
 as tabelas no banco precisao ser com softDeletes

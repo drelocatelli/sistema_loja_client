@@ -68,12 +68,6 @@ final NumberPaginatorController _controller = NumberPaginatorController();
       );
     }
 
-    setState(() {
-      _totalPages = productsList.data?.pagination?.totalPages ?? 1;
-    });
-
-    Logger().i(_totalPages);
-
     model.setProdutos(newProducts);
     model.setIsLoading(false);
 
@@ -86,7 +80,7 @@ final NumberPaginatorController _controller = NumberPaginatorController();
         color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
         child: Visibility(
-          visible: _totalPages != 0,
+          visible: _totalPages > 1,
           child: NumberPaginator(
             config: NumberPaginatorUIConfig(
               buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
