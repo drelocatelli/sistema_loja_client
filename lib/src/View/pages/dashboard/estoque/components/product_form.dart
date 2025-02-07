@@ -4,12 +4,9 @@ import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/category_dto.dart' as category_dto;
 import 'package:racoon_tech_panel/src/Model/product_controller.dart';
-import 'package:racoon_tech_panel/src/Model/product_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
@@ -48,6 +45,7 @@ class _ProductFormState extends State<ProductForm> {
   Widget build(BuildContext context) {
     final productModel = Provider.of<ProdutoProvider>(context, listen: true);
     final categoryModel = Provider.of<CategoryProvider>(context, listen: true);
+
     ScrollController _horizontalPhotoScrollController = ScrollController();
 
     ProductController? _formController = ProductController();

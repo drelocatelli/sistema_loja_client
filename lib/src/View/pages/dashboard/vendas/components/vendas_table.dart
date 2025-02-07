@@ -65,8 +65,11 @@ class VendasTable extends StatelessWidget {
                       scrollDirection: Axis.vertical,
                       controller: _verticalScrollController,
                       physics: const BouncingScrollPhysics(),
-                      child: SizedBox(
-                        width: maxWidth >= 800 ? maxWidth : null,
+                      child: Visibility(
+                        visible: !model.isLoading,
+                        replacement: Center(
+                          child:Text("Obtendo dados, aguarde...", style: Theme.of(context).textTheme.bodyMedium),
+                        ),
                         child: Visibility(
                           visible: model.sales.isNotEmpty,
                           replacement: Center(
@@ -75,144 +78,149 @@ class VendasTable extends StatelessWidget {
                               child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
                             ),
                           ),
-                          child: FittedBox(
-                            fit: SharedTheme.isLargeScreen(context)
-                                    ? BoxFit.scaleDown
-                                    : BoxFit.fitWidth,
-                            child: MouseRegion(
-                              onHover: (event) {
-                                setState(() {
-                                  _isHorizontalThumbShowing = true;
-                                });
-                              },
-                              onExit: (event) {
-                                setState(() {
-                                  _isHorizontalThumbShowing = false;
-                                });
-                              },
-                              child: DataTable(
-                                sortColumnIndex: model.sortColumnIdx,
-                                sortAscending: model.isAscending,
-                                showCheckboxColumn: true,
-                                columns: [
-                                  DataColumn(
-                                    label: const Text('Serial'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    } 
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Produto'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    } 
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Cliente'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    },
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Responsável'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    }
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Data da venda'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    }
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Descrição'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    }
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Quantidade'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    }
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Preço unitário'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    }
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Total'),
-                                    onSort: (columnIndex, ascending) {
-                                      model.sortSales(columnIndex, ascending);
-                                    }
-                                  ),
-                                  const DataColumn(
-                                    label: Text('Ações'),
-                                  ),
-                                ],
-                                rows: model.sales.asMap().entries.map((entry) {
-                                  final key = entry.key;
-                                  final sale = entry.value;
-                                              
-                                  return DataRow(
-                                    selected: model.selectedIds.contains(sale.id),
-                                    onSelectChanged: (bool? selected) {
-                                      if(selected != null) {
-                                        model.toggleSelection(sale.id!);
+                          child: MouseRegion(
+                            onHover: (event) {
+                              setState(() {
+                                _isHorizontalThumbShowing = true;
+                              });
+                            },
+                            onExit: (event) {
+                              setState(() {
+                                _isHorizontalThumbShowing = false;
+                              });
+                            },
+                            child: FittedBox(
+                              fit: SharedTheme.isLargeScreen(context)
+                              ? BoxFit.scaleDown
+                              : BoxFit.fitWidth,
+                              child: SizedBox(
+                                width: SharedTheme.isLargeScreen(context)
+                                ? maxWidth
+                                : null,
+                                child: DataTable(
+                                  sortColumnIndex: model.sortColumnIdx,
+                                  sortAscending: model.isAscending,
+                                  showCheckboxColumn: true,
+                                  columns: [
+                                    DataColumn(
+                                      label: const Text('Serial'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      } 
+                                    ),
+                                    DataColumn(
+                                      label: const Text('Produto'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      } 
+                                    ),
+                                    DataColumn(
+                                      label: const Text('Cliente'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      },
+                                    ),
+                                    DataColumn(
+                                      label: const Text('Responsável'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
                                       }
-                                    },
-                                    cells: [
-                                      DataCell(Text(sale.serial ?? '-')),
-                                      DataCell(Text(sale.product?.name ?? '-')),
-                                      DataCell(Text(sale.client?.name ?? '-')),
-                                      DataCell(Text(sale.colaborator?.name ?? '-')),
-                                      DataCell(Text(sale.date ?? '-')),
-                                      DataCell(Text(Helpers.truncateText(text: sale.description ?? ''))),
-                                      DataCell(Text("${sale.total.toString() ?? 0}")),
-                                      DataCell(
-                                        Text(
-                                          (sale.product?.price != null && sale.product!.price!.isNaN) 
-                                            ? "Erro" 
-                                            : "R\$ ${(sale.product?.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}",
-                                        ),
-                                      ),
-                                      DataCell(
-                                        Text(
-                                          (sale.total != null && sale.product?.price != null &&
-                                (sale.total!.isNaN || sale.product!.price!.isNaN))
-                                              ? "Erro"
-                                              : "R\$ ${(sale.total! * sale.product!.price!).toStringAsFixed(2).replaceAll('.', ',')}",
-                                        ),
-                                      ),
-                                      DataCell(
-                                        PopupMenuButton(
-                                            icon: const Icon(Icons.more_vert),
-                                            itemBuilder: (context) {
-                                              return [
-                              PopupMenuItem(
-                                value: 'edit',
-                                onTap: () {
-                                  
-                                },
-                                child: Center(child: Icon(Icons.edit))
-                              ),
-                              PopupMenuItem(
-                                value: 'delete',
-                                onTap: () async {
-                                  _deleteModal(context, [sale.id!]);
-                                },
-                                child: Center(child: Icon(Icons.delete)),
-                              )
-                                              ];
-                                            },
+                                    ),
+                                    DataColumn(
+                                      label: const Text('Data da venda'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      }
+                                    ),
+                                    DataColumn(
+                                      label: const Text('Descrição'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      }
+                                    ),
+                                    DataColumn(
+                                      label: const Text('Quantidade'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      }
+                                    ),
+                                    DataColumn(
+                                      label: const Text('Preço unitário'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      }
+                                    ),
+                                    DataColumn(
+                                      label: const Text('Total'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      }
+                                    ),
+                                    const DataColumn(
+                                      label: Text('Ações'),
+                                    ),
+                                  ],
+                                  rows: model.sales.asMap().entries.map((entry) {
+                                    final key = entry.key;
+                                    final sale = entry.value;
+                                                
+                                    return DataRow(
+                                      selected: model.selectedIds.contains(sale.id),
+                                      onSelectChanged: (bool? selected) {
+                                        if(selected != null) {
+                                          model.toggleSelection(sale.id!);
+                                        }
+                                      },
+                                      cells: [
+                                        DataCell(Text(sale.serial ?? '-')),
+                                        DataCell(Text(sale.product?.name ?? '-')),
+                                        DataCell(Text(sale.client?.name ?? '-')),
+                                        DataCell(Text(sale.colaborator?.name ?? '-')),
+                                        DataCell(Text(sale.date ?? '-')),
+                                        DataCell(Text(Helpers.truncateText(text: sale.description ?? ''))),
+                                        DataCell(Text("${sale.total.toString() ?? 0}")),
+                                        DataCell(
+                                          Text(
+                                            (sale.product?.price != null && sale.product!.price!.isNaN) 
+                                              ? "Erro" 
+                                              : "R\$ ${(sale.product?.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}",
                                           ),
-                                      ),
-                                    ],
-                                  );
-                                }).toList(),
+                                        ),
+                                        DataCell(
+                                          Text(
+                                            (sale.total != null && sale.product?.price != null &&
+                                  (sale.total!.isNaN || sale.product!.price!.isNaN))
+                                                ? "Erro"
+                                                : "R\$ ${(sale.total! * sale.product!.price!).toStringAsFixed(2).replaceAll('.', ',')}",
+                                          ),
+                                        ),
+                                        DataCell(
+                                          PopupMenuButton(
+                                              icon: const Icon(Icons.more_vert),
+                                              itemBuilder: (context) {
+                                                return [
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  onTap: () {
+                                    
+                                  },
+                                  child: Center(child: Icon(Icons.edit))
+                                ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  onTap: () async {
+                                    _deleteModal(context, [sale.id!]);
+                                  },
+                                  child: Center(child: Icon(Icons.delete)),
+                                )
+                                                ];
+                                              },
+                                            ),
+                                        ),
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                             ),
                           ),
