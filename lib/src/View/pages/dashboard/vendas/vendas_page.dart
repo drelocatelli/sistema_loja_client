@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:logger/web.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
@@ -26,10 +27,6 @@ class VendasPage extends StatefulWidget {
 class _VenddasState extends State<VendasPage> {
 
   final NumberPaginatorController _controller = NumberPaginatorController();
-  int _totalPages = 1;
-  int currentIdx = 0;
-  int currentPage = 1;
-
   @override
   void initState() {
     super.initState();
@@ -42,7 +39,8 @@ class _VenddasState extends State<VendasPage> {
   Future _fetchData({int? page = 1, String? searchTerm}) async {
     final model = Provider.of<SalesProvider>(context, listen: false);
     model.setIsLoading(true);
-    ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(page: page, searchTerm: searchTerm);
+    ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: page, searchTerm: searchTerm);
+
     final newData = vendasList.data?.sales ?? [];
 
     if(vendasList.status != 200) {
@@ -64,7 +62,7 @@ class _VenddasState extends State<VendasPage> {
         }
       );
     }
-
+    model.setTotalPages(vendasList.data?.pagination?.totalPages ?? 1);
     model.setSales(newData);
     model.setIsLoading(false);
   }
@@ -79,64 +77,68 @@ class _VenddasState extends State<VendasPage> {
   Widget build(BuildContext context) {
     final model = Provider.of<SalesProvider>(context);
     
-    return MainLayout(
-      isLoading: model.isLoading,
-      // floatingActionButton: Container(
-      //   color: Colors.white,
-      //   padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
-      //   child: Visibility(
-      //     visible: _totalPages > 1,
-      //     child: NumberPaginator(
-      //       config: NumberPaginatorUIConfig(
-      //         buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
-      //       ),
-      //       numberPages: _totalPages,
-      //       initialPage: currentIdx,
-      //       controller: _controller,
-      //       onPageChange: (int index) async {
-      //         setState(() {
-      //           currentIdx = index;
-      //           currentPage = index + 1;
-      //         });
-      //         await Future.delayed(const Duration(seconds: 1));
-      //         await _fetchData(page: currentPage);
-      //       },
-      //     ),
-      //   ),
-      // ),
-      child: SelectionArea(
-        child: Column(
-          children: [
-            VendasTitle(),
-            const Gap(10),
-            VendasSearch(),
-            VendasTable(),
-            Container(
-              color: Colors.white,
-              padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
-              child: Visibility(
-                visible: _totalPages > 1,
-                child: NumberPaginator(
-                  config: NumberPaginatorUIConfig(
-                    buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+    return Consumer<SalesProvider>(
+      builder: (context, model, child) {
+        return MainLayout(
+          isLoading: model.isLoading,
+          // floatingActionButton: Container(
+          //   color: Colors.white,
+          //   padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
+          //   child: Visibility(
+          //     visible: _totalPages > 1,
+          //     child: NumberPaginator(
+          //       config: NumberPaginatorUIConfig(
+          //         buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+          //       ),
+          //       numberPages: _totalPages,
+          //       initialPage: currentIdx,
+          //       controller: _controller,
+          //       onPageChange: (int index) async {
+          //         setState(() {
+          //           currentIdx = index;
+          //           currentPage = index + 1;
+          //         });
+          //         await Future.delayed(const Duration(seconds: 1));
+          //         await _fetchData(page: currentPage);
+          //       },
+          //     ),
+          //   ),
+          // ),
+          child: SelectionArea(
+            child: Column(
+              children: [
+                VendasTitle(),
+                const Gap(10),
+                VendasSearch(),
+                VendasTable(),
+                Container(
+                  color: Colors.white,
+                  padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
+                  child: Visibility(
+                    visible: model.totalPages > 1,
+                    child: NumberPaginator(
+                      config: NumberPaginatorUIConfig(
+                        buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
+                      ),
+                      numberPages: model.totalPages,
+                      initialPage: model.currentIdx,
+                      controller: _controller,
+                      onPageChange: (int index) async {
+                        setState(() {
+                          model.setCurrentIdx(index);
+                          model.setCurrentPage(index + 1);
+                        });
+                        await Future.delayed(const Duration(seconds: 1));
+                        await _fetchData(page: model.currentPage);
+                      },
+                    ),
                   ),
-                  numberPages: _totalPages,
-                  initialPage: currentIdx,
-                  controller: _controller,
-                  onPageChange: (int index) async {
-                    setState(() {
-                      currentIdx = index;
-                      currentPage = index + 1;
-                    });
-                    await Future.delayed(const Duration(seconds: 1));
-                    await _fetchData(page: currentPage);
-                  },
                 ),
-              ),
-            ),
-          ],
-        )
-      ),
+              ],
+            )
+          ),
+        );
+      }
     );
   }
 }

@@ -21,6 +21,10 @@ class SalesProvider extends ChangeNotifier {
   bool _hasError = false;
   bool get hasError => _hasError;
 
+  int totalPages = 1;
+  int currentPage = 1;
+  int currentIdx = 0;
+
 
   void setIsLoading(bool isLoading) {
     _isLoading = isLoading;
@@ -79,6 +83,21 @@ class SalesProvider extends ChangeNotifier {
 
   void setError(bool hasError) {
     _hasError = hasError;
+    notifyListeners();
+  }
+
+  void setTotalPages(int value) {
+    totalPages = value;
+    notifyListeners();
+  }
+
+  void setCurrentPage(int value) {
+    currentPage = value;
+    notifyListeners();
+  }
+
+  void setCurrentIdx(int value) {
+    currentIdx = value;
     notifyListeners();
   }
 

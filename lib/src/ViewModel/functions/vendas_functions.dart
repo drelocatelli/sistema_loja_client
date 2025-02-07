@@ -12,7 +12,7 @@ import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 Future reloadVendas(BuildContext context) async {
   final model = Provider.of<SalesProvider>(context, listen: false);
   model.setIsReloading(true);
-  ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(page: 1);
+  ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: 1);
   final newData = vendasList.data?.sales ?? []; 
   model.setSales(newData);
   await Future.delayed(Duration(milliseconds: 1500));
@@ -26,7 +26,7 @@ Future saveVendas(BuildContext context) async {
 
 Future loadVendas(BuildContext context) async {
   final model = Provider.of<SalesProvider>(context, listen: false);
-  ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(page: 1);
+  ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: 1);
   final newData = vendasList.data?.sales ?? []; 
   model.setSales(newData);
 }

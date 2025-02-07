@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
+import 'package:widget_zoom/widget_zoom.dart';
 
 class VendasTable extends StatelessWidget {
   VendasTable({super.key});
@@ -173,7 +175,25 @@ class VendasTable extends StatelessWidget {
                                       },
                                       cells: [
                                         DataCell(Text(sale.serial ?? '-')),
-                                        DataCell(Text(sale.product?.name ?? '-')),
+                                        DataCell(Row(
+                                          spacing: 10,
+                                          children: [
+                                            Visibility(
+                                              visible: sale.product?.photos != null && sale.product?.photos?.length != 0,
+                                              replacement:
+                                                  Center(child: Icon(Icons.image)),
+                                              child: WidgetZoom(
+                                                heroAnimationTag: 'tag',
+                                                zoomWidget: Image.network(
+                                                (sale.product?.photos != null && sale.product!.photos!.isNotEmpty)
+                                                    ? "${BaseRepository.baseStaticUrl}/${sale.product?.photos![0]}"
+                                                    : '', // Imagem padrão se a lista estiver vazia
+                                              ),
+                                              ),
+                                            ),
+                                            Text(sale.product?.name ?? '-'),
+                                          ],
+                                        )),
                                         DataCell(Text(sale.client?.name ?? '-')),
                                         DataCell(Text(sale.colaborator?.name ?? '-')),
                                         DataCell(Text(sale.date ?? '-')),

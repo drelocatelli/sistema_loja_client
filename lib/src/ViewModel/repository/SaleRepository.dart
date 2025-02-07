@@ -13,7 +13,7 @@ import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 
 class SaleRepository {
 
-  static Future<ResponseDTO<SalesResponseDTO>> get({int ? pageNum = 1, String? searchTerm, int? page}) async {
+  static Future<ResponseDTO<SalesResponseDTO>> get({int ? pageNum = 1, String? searchTerm}) async {
     Map<String, dynamic> payload = {
       'page': pageNum
     };
@@ -45,6 +45,7 @@ class SaleRepository {
                   product {
                       name
                       price
+                      photos
                   }
                   description
                   total
