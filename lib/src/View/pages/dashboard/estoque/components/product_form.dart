@@ -32,7 +32,6 @@ class ProductForm extends StatefulWidget {
 class _ProductFormState extends State<ProductForm> {
 
   final _formKey = GlobalKey<FormState>();
-  final _productController = Produto();
   bool _isUploadingImages = false;
   int formStep = 1;
   bool _isSubmitting = false;
@@ -336,26 +335,23 @@ class _ProductFormState extends State<ProductForm> {
                               
                             }
                           ),
-                          Row(
-                            children: [
-                              StatefulBuilder(
-                                builder: (context, setState) {
-                                  return Checkbox(
-                                    value: (_productController.isPublished ?? false),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: _formController.isPublished,
+                            builder: (context, isPublished, _) {
+                              return Row(
+                                children: [
+                                  Checkbox(
+                                    value: isPublished,
                                     onChanged: (value) {
-                                      _productController.isPublished = value;
-                                      setState((){});
+                                      _formController.isPublished.value = !isPublished;
                                     },
-                                  );
-                                }
-                              ),
-                              GestureDetector(onTap: () {
-                                _productController.isPublished = !_productController.isPublished!;
-                                _formController.isPublished = _productController.isPublished!;
-                                setState(() {});
-
-                              }, child: Text("Público"))
-                            ],
+                                  ),
+                                  GestureDetector(onTap: () {
+                                    _formController.isPublished.value = !isPublished;
+                                  }, child: Text("Público"))
+                                ],
+                              );
+                            }
                           ),
                           TextFormField(
                             maxLines: null,

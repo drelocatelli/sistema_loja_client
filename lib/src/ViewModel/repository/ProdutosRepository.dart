@@ -77,7 +77,7 @@ class ProdutosRepository {
         'category_id': controller.category?.id,
         'price': double.parse(controller.price.text),
         'quantity': int.parse(controller.quantity.text),
-        'is_published': controller.isPublished,
+        'is_published': controller.isPublished.value,
         'description': controller.description.text,
       }
     };
@@ -128,7 +128,7 @@ class ProdutosRepository {
 }
 
 Future uploadImageByDevice(BuildContext context, String filename, model) async {
-  print('Is this web? ${kIsWeb}');
+  debugPrint('Is this web? ${kIsWeb}');
 
   // not web
    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
