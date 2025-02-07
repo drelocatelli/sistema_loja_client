@@ -188,6 +188,7 @@ class VendasTable extends StatelessWidget {
                                                 (sale.product?.photos != null && sale.product!.photos!.isNotEmpty)
                                                     ? "${BaseRepository.baseStaticUrl}/${sale.product?.photos![0]}"
                                                     : '', // Imagem padrão se a lista estiver vazia
+                                                    width: 80,
                                               ),
                                               ),
                                             ),
