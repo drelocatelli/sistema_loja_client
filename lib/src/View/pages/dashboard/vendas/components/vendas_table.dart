@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_details.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 import 'package:widget_zoom/widget_zoom.dart';
+
+import '../../../../../Model/vendas_dto.dart';
 
 class VendasTable extends StatelessWidget {
   VendasTable({super.key});
@@ -69,9 +72,6 @@ class VendasTable extends StatelessWidget {
                       physics: const BouncingScrollPhysics(),
                       child: Visibility(
                         visible: !model.isLoading,
-                        replacement: Center(
-                          child:Text("Obtendo dados, aguarde...", style: Theme.of(context).textTheme.bodyMedium),
-                        ),
                         child: Visibility(
                           visible: model.sales.isNotEmpty,
                           replacement: Center(
@@ -110,6 +110,12 @@ class VendasTable extends StatelessWidget {
                                         model.sortSales(columnIndex, ascending);
                                       } 
                                     ),
+                                     DataColumn(
+                                      label: const Text('Capa'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      } 
+                                    ),
                                     DataColumn(
                                       label: const Text('Produto'),
                                       onSort: (columnIndex, ascending) {
@@ -135,23 +141,18 @@ class VendasTable extends StatelessWidget {
                                       }
                                     ),
                                     DataColumn(
-                                      label: const Text('Descrição'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      }
-                                    ),
-                                    DataColumn(
-                                      label: const Text('Quantidade'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      }
-                                    ),
-                                    DataColumn(
                                       label: const Text('Preço unitário'),
                                       onSort: (columnIndex, ascending) {
                                         model.sortSales(columnIndex, ascending);
                                       }
                                     ),
+                                    DataColumn(
+                                      label: const Text('Qtd. vendida'),
+                                      onSort: (columnIndex, ascending) {
+                                        model.sortSales(columnIndex, ascending);
+                                      }
+                                    ),
+                                    
                                     DataColumn(
                                       label: const Text('Total'),
                                       onSort: (columnIndex, ascending) {
@@ -175,31 +176,28 @@ class VendasTable extends StatelessWidget {
                                       },
                                       cells: [
                                         DataCell(Text(sale.serial ?? '-')),
-                                        DataCell(Row(
-                                          spacing: 10,
-                                          children: [
-                                            Visibility(
-                                              visible: sale.product?.photos != null && sale.product?.photos?.length != 0,
-                                              replacement:
-                                                  Center(child: Icon(Icons.image)),
-                                              child: WidgetZoom(
-                                                heroAnimationTag: 'tag',
-                                                zoomWidget: Image.network(
-                                                (sale.product?.photos != null && sale.product!.photos!.isNotEmpty)
-                                                    ? "${BaseRepository.baseStaticUrl}/${sale.product?.photos![0]}"
-                                                    : '', // Imagem padrão se a lista estiver vazia
-                                                    width: 80,
-                                              ),
-                                              ),
-                                            ),
-                                            Text(sale.product?.name ?? '-'),
-                                          ],
+                                        DataCell(Visibility(
+                                          visible: sale.product?.photos != null && sale.product?.photos?.length != 0,
+                                          replacement:
+                                              Center(child: Icon(Icons.image)),
+                                          child: WidgetZoom(
+                                            heroAnimationTag: 'tag',
+                                            zoomWidget: Image.network(
+                                            (sale.product?.photos != null && sale.product!.photos!.isNotEmpty)
+                                                ? "${BaseRepository.baseStaticUrl}/${sale.product?.photos![0]}"
+                                                : '', // Imagem padrão se a lista estiver vazia
+                                                width: 80,
+                                          ),
+                                          ),
                                         )),
+                                        DataCell(
+                                            Text(sale.product?.name ?? '-'),
+                                        ),
                                         DataCell(Text(sale.client?.name ?? '-')),
                                         DataCell(Text(sale.colaborator?.name ?? '-')),
                                         DataCell(Text(sale.date ?? '-')),
-                                        DataCell(Text(Helpers.truncateText(text: sale.description ?? ''))),
-                                        DataCell(Text("${sale.total.toString() ?? 0}")),
+                                        // DataCell(Text(Helpers.truncateText(text: sale.description ?? ''))),
+                                        // valor de estoque
                                         DataCell(
                                           Text(
                                             (sale.product?.price != null && sale.product!.price!.isNaN) 
@@ -207,6 +205,7 @@ class VendasTable extends StatelessWidget {
                                               : "R\$ ${(sale.product?.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}",
                                           ),
                                         ),
+                                        DataCell(Text("${sale.total.toString() ?? 0}")),
                                         DataCell(
                                           Text(
                                             (sale.total != null && sale.product?.price != null &&
@@ -220,6 +219,13 @@ class VendasTable extends StatelessWidget {
                                               icon: const Icon(Icons.more_vert),
                                               itemBuilder: (context) {
                                                 return [
+                                                  PopupMenuItem(
+                                  value: 'edit',
+                                  onTap: () {
+                                    vendaDetails(context, sale);
+                                  },
+                                  child: Center(child: Icon(Icons.info_outline))
+                                ),
                                 PopupMenuItem(
                                   value: 'edit',
                                   onTap: () {
@@ -294,3 +300,4 @@ _deleteModal(BuildContext context, List<String> ids) {
     }
   );
 }
+

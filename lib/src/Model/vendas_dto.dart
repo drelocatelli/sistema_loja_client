@@ -1,3 +1,4 @@
+import 'package:racoon_tech_panel/src/Model/category_dto.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
 import 'package:racoon_tech_panel/src/Model/product_dto.dart';
@@ -11,6 +12,7 @@ class Venda {
   final String? description;
   final int? total;
   final String? date;
+  final Category? category;
 
   Venda({
     this.id,
@@ -21,6 +23,7 @@ class Venda {
     this.description,
     this.total,
     this.date,
+    this.category
   });
 
   factory Venda.fromJson(Map<String, dynamic> json) {
@@ -35,6 +38,7 @@ class Venda {
       description: json['description'] as String?,
       total: (json['total'] as num?)?.toInt(),
       date: json['date'] as String?,
+      category: json['category'] != null ? Category.fromJson(json['category']) : null
     );
   }
 
@@ -48,6 +52,7 @@ class Venda {
       'description': description,
       'total': total,
       'date': date,
+      'category': category
     };
   }
 }

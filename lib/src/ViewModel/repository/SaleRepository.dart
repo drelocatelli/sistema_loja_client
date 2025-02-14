@@ -46,6 +46,10 @@ class SaleRepository {
                       name
                       price
                       photos
+                      category {
+                          id
+                          name
+                      }
                   }
                   description
                   total

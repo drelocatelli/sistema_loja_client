@@ -110,6 +110,10 @@ class _VenddasState extends State<VendasPage> {
                 VendasTitle(),
                 const Gap(10),
                 VendasSearch(),
+                Visibility(
+                  visible: model.isLoading,
+                  child: Text("Obtendo dados, aguarde...", style: Theme.of(context).textTheme.bodyMedium)
+                ),
                 VendasTable(),
                 Container(
                   color: Colors.white,
