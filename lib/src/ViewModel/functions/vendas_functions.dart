@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
@@ -6,6 +7,7 @@ import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/ven
 import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 
@@ -81,43 +83,60 @@ enum ShowingCategoryMenu {
   delete,
 }
 
-novaCategoriaDialog(BuildContext context) {
+novaCategoriaDialog(BuildContext context, CategoryProvider model) {
+
   final maxWidth = MediaQuery.of(context).size.width;
+  final maxHeight = MediaQuery.of(context).size.height;
 
   ShowingCategoryMenu showingCategoryMenu = ShowingCategoryMenu.read;
+
+  final _scrollController = ScrollController();
 
   showDialog(
     context: context, 
     builder: (context) {
       return AlertDialog(
-        title: const Text('Gerenciar categorias'),
-        content: StatefulBuilder(
+        title: StatefulBuilder(
           builder: (context, setState) {
-            return SizedBox(
-              width: maxWidth / 3,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  OutlinedButton(
-                    onPressed: () {
-                      setState((){
-                        showingCategoryMenu = showingCategoryMenu == ShowingCategoryMenu.create ? ShowingCategoryMenu.read : ShowingCategoryMenu.create;
-                      });
-                    },
-                    child: Row(
-                      spacing: 7,
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          showingCategoryMenu == ShowingCategoryMenu.create ? Icons.close : Icons.add_circle_outline,
-                          size: 18,
-                        ),
-                        const Text('Nova categoria'),
-                      ],
-                    ),
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Gerenciar categorias'),
+                OutlinedButton(
+                  onPressed: () {
+                    setState((){
+                      showingCategoryMenu = showingCategoryMenu == ShowingCategoryMenu.create ? ShowingCategoryMenu.read : ShowingCategoryMenu.create;
+                    });
+                  },
+                  child: Row(
+                    spacing: 7,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        showingCategoryMenu == ShowingCategoryMenu.create ? Icons.close : Icons.add_circle_outline,
+                        size: 18,
+                      ),
+                      const Text('Nova categoria'),
+                    ],
                   ),
+                ),
+              ],
+            );
+          }
+        ),
+        content: SizedBox(
+          width: maxWidth / 3,
+          height: maxHeight / 3,
+          child: Scrollbar(
+            controller: _scrollController,
+            interactive: true,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 200),
                     switchInCurve: Curves.easeIn,
@@ -128,13 +147,55 @@ novaCategoriaDialog(BuildContext context) {
                     child: showingCategoryMenu == ShowingCategoryMenu.create
                         ? CategoryForm(key: ValueKey<int>(1))
                         : Container(key: ValueKey<int>(2)),
-                  )
+                  ),
+                  SizedBox(
+                    width: maxWidth,
+                    child: showCategoriesTable(model)
+                  ),
                 ],
               ),
-            );
-          }
+            ),
+          ),
         ),
       );
     }
+  );
+}
+
+
+Widget showCategoriesTable(CategoryProvider model) {
+  return Visibility(
+    visible: model.categories.length != 0,
+    replacement: const Text("Nenhuma categoria cadastrada"),
+    child: DataTable(
+        columns: const [
+          DataColumn(label: Text('Título')),
+          DataColumn(label: Text('Ações')),
+        ], 
+        rows: model.categories.map((category) {
+          return DataRow(
+            cells: [
+              DataCell(Text(category.name!)),
+              DataCell(
+                PopupMenuButton(
+                  icon: const Icon(Icons.more_vert),
+                  itemBuilder: (context)  {
+                   return [
+                    const PopupMenuItem(
+                      child:Center(
+                        child: Icon(Icons.edit))
+                    ),
+                    const PopupMenuItem(
+                      child: Center(
+                        child: Icon(Icons.delete)),
+                    ),
+                   ];
+                },
+              ),
+              ),
+            ],
+          );
+        }).toList()
+    ),
   );
 }

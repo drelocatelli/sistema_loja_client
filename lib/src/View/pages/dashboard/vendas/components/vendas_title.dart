@@ -28,6 +28,7 @@ class VendasTitle extends StatefulWidget {
 
 class _VendasTitleState extends State<VendasTitle> {
 
+  
   @override
   void initState() {
     super.initState();
@@ -38,6 +39,9 @@ class _VendasTitleState extends State<VendasTitle> {
 
   @override
   Widget build(BuildContext context) {
+    final categoryModel = Provider.of<CategoryProvider>(context);
+
+
     return 
         Row(
         spacing: 10,
@@ -60,7 +64,7 @@ class _VendasTitleState extends State<VendasTitle> {
               ),
               OutlinedButton(
                 onPressed: () async {
-                  novaCategoriaDialog(context);
+                  novaCategoriaDialog(context, categoryModel);
                 }, 
                 child: const Text('Gerenciar categorias')
               ),
