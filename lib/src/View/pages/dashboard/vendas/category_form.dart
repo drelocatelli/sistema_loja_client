@@ -30,16 +30,24 @@ class _CategoryFormState extends State<CategoryForm> {
                 decoration: const InputDecoration(
                   label: Text("Título")
                 ),
+                validator: (value) {
+                  if(value == null || value.isEmpty) {
+                    return "Campo obrigatório";
+                  }
+                  return null;
+                },
               ),
               ElevatedButton(
                 onPressed: () async {
+                  if(!_formKey.currentState!.validate()) return;
+                  
                   final response = await CategoryRepository.create(categoryName.text);
                   if(response.status != 200) {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Não foi possível criar categoria")));
                   }
                   context.pop();
                 }, 
-                child: const Text("Salvar categoria")
+                child: const Text("Adicionar categoria")
               )
             ],
           )

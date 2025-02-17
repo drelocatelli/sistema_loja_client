@@ -62,16 +62,7 @@ class _VendasTitleState extends State<VendasTitle> {
                 onPressed: () async {
                   novaCategoriaDialog(context);
                 }, 
-                child: Row(
-                  spacing: 7,
-                  children: [
-                    Icon(
-                      Icons.add_circle_outline,
-                      size: 18,
-                    ),
-                    const Text('Nova categoria'),
-                  ],
-                )
+                child: const Text('Gerenciar categorias')
               ),
               ElevatedButton(
                 onPressed: () async {

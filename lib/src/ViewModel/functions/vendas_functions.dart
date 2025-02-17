@@ -74,22 +74,65 @@ novaVendaDialog(BuildContext context) {
   );
 }
 
+enum ShowingCategoryMenu {
+  create,
+  read,
+  update,
+  delete,
+}
+
 novaCategoriaDialog(BuildContext context) {
   final maxWidth = MediaQuery.of(context).size.width;
-  
+
+  ShowingCategoryMenu showingCategoryMenu = ShowingCategoryMenu.read;
+
   showDialog(
     context: context, 
     builder: (context) {
       return AlertDialog(
-        title: const Text('Nova categoria'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
+        title: const Text('Gerenciar categorias'),
+        content: StatefulBuilder(
+          builder: (context, setState) {
+            return SizedBox(
               width: maxWidth / 3,
-              child: CategoryForm(),
-            ),
-          ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    onPressed: () {
+                      setState((){
+                        showingCategoryMenu = showingCategoryMenu == ShowingCategoryMenu.create ? ShowingCategoryMenu.read : ShowingCategoryMenu.create;
+                      });
+                    },
+                    child: Row(
+                      spacing: 7,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          showingCategoryMenu == ShowingCategoryMenu.create ? Icons.close : Icons.add_circle_outline,
+                          size: 18,
+                        ),
+                        const Text('Nova categoria'),
+                      ],
+                    ),
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    switchInCurve: Curves.easeIn,
+                    switchOutCurve: Curves.easeOut,
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return FadeTransition(opacity: animation, child: child);
+                    },
+                    child: showingCategoryMenu == ShowingCategoryMenu.create
+                        ? CategoryForm(key: ValueKey<int>(1))
+                        : Container(key: ValueKey<int>(2)),
+                  )
+                ],
+              ),
+            );
+          }
         ),
       );
     }
