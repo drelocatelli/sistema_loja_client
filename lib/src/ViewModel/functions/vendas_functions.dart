@@ -9,6 +9,8 @@ import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dar
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 
+import '../../View/pages/dashboard/vendas/category_form.dart';
+
 Future reloadVendas(BuildContext context) async {
   final model = Provider.of<SalesProvider>(context, listen: false);
   model.setIsReloading(true);
@@ -72,3 +74,24 @@ novaVendaDialog(BuildContext context) {
   );
 }
 
+novaCategoriaDialog(BuildContext context) {
+  final maxWidth = MediaQuery.of(context).size.width;
+  
+  showDialog(
+    context: context, 
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Nova categoria'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: maxWidth / 3,
+              child: CategoryForm(),
+            ),
+          ],
+        ),
+      );
+    }
+  );
+}

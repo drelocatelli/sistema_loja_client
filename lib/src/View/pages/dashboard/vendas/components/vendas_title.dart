@@ -58,6 +58,21 @@ class _VendasTitleState extends State<VendasTitle> {
                   );
                 }
               ),
+              OutlinedButton(
+                onPressed: () async {
+                  novaCategoriaDialog(context);
+                }, 
+                child: Row(
+                  spacing: 7,
+                  children: [
+                    Icon(
+                      Icons.add_circle_outline,
+                      size: 18,
+                    ),
+                    const Text('Nova categoria'),
+                  ],
+                )
+              ),
               ElevatedButton(
                 onPressed: () async {
                   novaVendaDialog(context);
