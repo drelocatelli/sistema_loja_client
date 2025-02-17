@@ -95,10 +95,10 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
   showDialog(
     context: context, 
     builder: (context) {
-      return AlertDialog(
-        title: StatefulBuilder(
-          builder: (context, setState) {
-            return Row(
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Gerenciar categorias'),
@@ -122,41 +122,41 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
                   ),
                 ),
               ],
-            );
-          }
-        ),
-        content: SizedBox(
-          width: maxWidth / 3,
-          height: maxHeight / 3,
-          child: Scrollbar(
-            controller: _scrollController,
-            interactive: true,
-            thumbVisibility: true,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
-                    switchInCurve: Curves.easeIn,
-                    switchOutCurve: Curves.easeOut,
-                    transitionBuilder: (Widget child, Animation<double> animation) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
-                    child: showingCategoryMenu == ShowingCategoryMenu.create
-                        ? CategoryForm(key: ValueKey<int>(1))
-                        : Container(key: ValueKey<int>(2)),
+            ),
+            content: SizedBox(
+              width: maxWidth / 3,
+              height: maxHeight / 3,
+              child: Scrollbar(
+                controller: _scrollController,
+                interactive: true,
+                thumbVisibility: true,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        switchInCurve: Curves.easeIn,
+                        switchOutCurve: Curves.easeOut,
+                        transitionBuilder: (Widget child, Animation<double> animation) {
+                          return FadeTransition(opacity: animation, child: child);
+                        },
+                        child: showingCategoryMenu == ShowingCategoryMenu.create
+                            ? CategoryForm(key: ValueKey<int>(1))
+                            : Container(key: ValueKey<int>(2)),
+                      ),
+                      SizedBox(
+                        width: maxWidth,
+                        child: showCategoriesTable(model)
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    width: maxWidth,
-                    child: showCategoriesTable(model)
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        }
       );
     }
   );

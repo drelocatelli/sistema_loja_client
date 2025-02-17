@@ -28,7 +28,7 @@ class _CategoryFormState extends State<CategoryForm> {
               TextFormField(
                 controller: categoryName,
                 decoration: const InputDecoration(
-                  label: Text("Título")
+                  label: Text("Título da categoria")
                 ),
                 validator: (value) {
                   if(value == null || value.isEmpty) {
