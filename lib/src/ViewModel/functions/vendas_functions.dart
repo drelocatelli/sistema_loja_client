@@ -102,8 +102,9 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
           return AlertDialog(
             title: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  spacing: 10,
                   children: [
                     const Text('Gerenciar categorias'),
                     OutlinedButton(
