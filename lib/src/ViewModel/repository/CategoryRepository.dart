@@ -45,7 +45,7 @@ class CategoryRepository {
       query: query,
       authentication: true,
       cbData: (response) {
-        return ResponseDTO(status: 200);
+        return ResponseDTO<CategoryResponseDTO>(status: 200);
       },
       cbNull: (response) {
         return ResponseDTO(status: 401);

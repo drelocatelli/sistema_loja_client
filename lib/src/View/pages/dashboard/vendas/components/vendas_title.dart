@@ -65,6 +65,7 @@ class _VendasTitleState extends State<VendasTitle> {
               OutlinedButton(
                 onPressed: () async {
                   novaCategoriaDialog(context, categoryModel);
+                  await fetchCategories(context);
                 }, 
                 child: const Text('Gerenciar categorias')
               ),

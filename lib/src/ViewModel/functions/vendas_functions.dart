@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_form.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
@@ -98,29 +100,44 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
       return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            title: Column(
               children: [
-                const Text('Gerenciar categorias'),
-                OutlinedButton(
-                  onPressed: () {
-                    setState((){
-                      showingCategoryMenu = showingCategoryMenu == ShowingCategoryMenu.create ? ShowingCategoryMenu.read : ShowingCategoryMenu.create;
-                    });
-                  },
-                  child: Row(
-                    spacing: 7,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        showingCategoryMenu == ShowingCategoryMenu.create ? Icons.close : Icons.add_circle_outline,
-                        size: 18,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Gerenciar categorias'),
+                    OutlinedButton(
+                      onPressed: () {
+                        setState((){
+                          showingCategoryMenu = showingCategoryMenu == ShowingCategoryMenu.create ? ShowingCategoryMenu.read : ShowingCategoryMenu.create;
+                        });
+                      },
+                      child: Row(
+                        spacing: 7,
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(
+                            showingCategoryMenu == ShowingCategoryMenu.create ? Icons.close : Icons.add_circle_outline,
+                            size: 18,
+                          ),
+                          const Text('Nova categoria'),
+                        ],
                       ),
-                      const Text('Nova categoria'),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+                const Gap(10),
+                Visibility(
+                  visible: showingCategoryMenu == ShowingCategoryMenu.read,
+                  child: TextField(
+                    autofocus: false,
+                    decoration: const InputDecoration(
+                      labelText: 'Pesquisar categoria',
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                  ),
+                )
               ],
             ),
             content: SizedBox(
@@ -146,9 +163,12 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
                             ? CategoryForm(key: ValueKey<int>(1))
                             : Container(key: ValueKey<int>(2)),
                       ),
-                      SizedBox(
-                        width: maxWidth,
-                        child: showCategoriesTable(model)
+                      Visibility(
+                        visible: showingCategoryMenu == ShowingCategoryMenu.read,
+                        child: SizedBox(
+                          width: maxWidth,
+                          child: showCategoriesTable(context)
+                        ),
                       ),
                     ],
                   ),
@@ -163,39 +183,47 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
 }
 
 
-Widget showCategoriesTable(CategoryProvider model) {
-  return Visibility(
-    visible: model.categories.length != 0,
-    replacement: const Text("Nenhuma categoria cadastrada"),
-    child: DataTable(
-        columns: const [
-          DataColumn(label: Text('Título')),
-          DataColumn(label: Text('Ações')),
-        ], 
-        rows: model.categories.map((category) {
-          return DataRow(
-            cells: [
-              DataCell(Text(category.name!)),
-              DataCell(
-                PopupMenuButton(
-                  icon: const Icon(Icons.more_vert),
-                  itemBuilder: (context)  {
-                   return [
-                    const PopupMenuItem(
-                      child:Center(
-                        child: Icon(Icons.edit))
+Widget showCategoriesTable(BuildContext context) {
+  return Consumer<CategoryProvider>(
+    builder: (context, model, child) {
+      return Visibility(
+        visible: !model.isLoading,
+        replacement: const Center(child: Text("Obtendo dados, aguarde...")),
+        child: Visibility(
+          visible: model.categories.length != 0,
+          replacement: const Text("Nenhuma categoria cadastrada."),
+          child: DataTable(
+              columns: const [
+                DataColumn(label: Text('Título')),
+                DataColumn(label: Text('Ações')),
+              ], 
+              rows: model.categories.map((category) {
+                return DataRow(
+                  cells: [
+                    DataCell(Text(category.name!)),
+                    DataCell(
+                      PopupMenuButton(
+                        icon: const Icon(Icons.more_vert),
+                        itemBuilder: (context)  {
+                         return [
+                          const PopupMenuItem(
+                            child:Center(
+                              child: Icon(Icons.edit))
+                          ),
+                          const PopupMenuItem(
+                            child: Center(
+                              child: Icon(Icons.delete)),
+                          ),
+                         ];
+                      },
                     ),
-                    const PopupMenuItem(
-                      child: Center(
-                        child: Icon(Icons.delete)),
                     ),
-                   ];
-                },
-              ),
-              ),
-            ],
-          );
-        }).toList()
-    ),
+                  ],
+                );
+              }).toList()
+          ),
+        ),
+      );
+    }
   );
 }

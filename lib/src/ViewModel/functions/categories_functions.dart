@@ -10,12 +10,13 @@ Future fetchCategories(BuildContext context, {bool onlyOnce = false, String? sea
     return;
   }
 
+  model.setIsLoading(true);
   final response = await CategoryRepository.get();
   await Future.delayed(Duration(milliseconds: 1500));
-  model.setIsLoading(true);
 
   if(response.status == 200) {
     model.setCategories(response.data?.categories ?? []);
   }
   model.setIsLoading(false);
+
 }
