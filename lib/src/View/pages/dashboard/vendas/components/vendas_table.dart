@@ -74,12 +74,6 @@ class VendasTable extends StatelessWidget {
                         visible: !model.isLoading,
                         child: Visibility(
                           visible: model.sales.isNotEmpty,
-                          replacement: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 30),
-                              child: Text("Nenhuma venda encontrada.", style: Theme.of(context).textTheme.bodyMedium),
-                            ),
-                          ),
                           child: MouseRegion(
                             onHover: (event) {
                               setState(() {

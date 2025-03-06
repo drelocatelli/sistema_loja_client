@@ -8,6 +8,7 @@ import 'package:racoon_tech_panel/src/View/components/refresh_component.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/vendas_dto.dart';
+import 'package:racoon_tech_panel/src/View/components/rowOrWrap.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
@@ -62,19 +63,28 @@ class _VendasTitleState extends State<VendasTitle> {
                   );
                 }
               ),
-              OutlinedButton(
-                onPressed: () async {
-                  novaCategoriaDialog(context, categoryModel);
-                  await fetchCategories(context);
-                }, 
-                child: const Text('Gerenciar categorias')
+              rowOrWrap(
+                context,
+                wrap: !SharedTheme.isLargeScreen(context),
+                column: true,
+                spacing: !SharedTheme.isLargeScreen(context) ? 5 : 10,
+                children: [
+                  OutlinedButton(
+                    onPressed: () async {
+                      novaCategoriaDialog(context, categoryModel);
+                      await fetchCategories(context);
+                    }, 
+                    child: const Text('Gerenciar categorias')
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      novaVendaDialog(context);
+                    }, 
+                    child: const Text('Adicionar nova venda')
+                  ),
+                ],
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  novaVendaDialog(context);
-                }, 
-                child: const Text('Adicionar nova venda')
-              ),
+              
             ],
           ),
       ]

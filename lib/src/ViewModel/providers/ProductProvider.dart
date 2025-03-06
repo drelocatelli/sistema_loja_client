@@ -125,7 +125,7 @@ class ProdutoProvider extends ChangeNotifier {
   }
 
   void setTotalPages(int value) {
-    totalPages = value;
+    totalPages = (value == 0) ? 1 : value;
     notifyListeners();
   }
 
@@ -135,7 +135,7 @@ class ProdutoProvider extends ChangeNotifier {
   }
 
   void setCurrentIdx(int value) {
-    currentIdx = value;
+    currentIdx = currentIdx >= totalPages ? 0 : currentIdx;
     notifyListeners();
   }
 

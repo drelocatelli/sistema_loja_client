@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget rowOrWrap(BuildContext context, {required List<Widget> children, required bool wrap}) {
+Widget rowOrWrap(BuildContext context, {required List<Widget> children, required bool wrap, column = false, double spacing = 0}) {
   final double widget = MediaQuery.of(context).size.width;
 
   final wrapChildren = children.map((widget) {
@@ -10,8 +10,12 @@ Widget rowOrWrap(BuildContext context, {required List<Widget> children, required
     return widget; // Return the widget as-is if it's not `Expanded`
   }).toList();
 
+  if(wrap && column) {
+    return Column(children: wrapChildren, spacing: spacing);
+  }
+
   if(wrap) {
-    return Wrap(children: wrapChildren);
+    return Wrap(children: wrapChildren, spacing: spacing);
   }
   
   return widget >= 800
@@ -19,7 +23,9 @@ Widget rowOrWrap(BuildContext context, {required List<Widget> children, required
         child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: children),
+            children: children
+            , spacing: spacing
+            ),
       )
       : Wrap(children: wrapChildren);
 }

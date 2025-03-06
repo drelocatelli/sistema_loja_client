@@ -81,29 +81,6 @@ class _VenddasState extends State<VendasPage> {
       builder: (context, model, child) {
         return MainLayout(
           isLoading: model.isLoading,
-          // floatingActionButton: Container(
-          //   color: Colors.white,
-          //   padding:  EdgeInsets.symmetric(horizontal: SharedTheme.isLargeScreen(context) ? 50 : 20, vertical: 8.0),
-          //   child: Visibility(
-          //     visible: _totalPages > 1,
-          //     child: NumberPaginator(
-          //       config: NumberPaginatorUIConfig(
-          //         buttonSelectedBackgroundColor: SharedTheme.secondaryColor,
-          //       ),
-          //       numberPages: _totalPages,
-          //       initialPage: currentIdx,
-          //       controller: _controller,
-          //       onPageChange: (int index) async {
-          //         setState(() {
-          //           currentIdx = index;
-          //           currentPage = index + 1;
-          //         });
-          //         await Future.delayed(const Duration(seconds: 1));
-          //         await _fetchData(page: currentPage);
-          //       },
-          //     ),
-          //   ),
-          // ),
           child: SelectionArea(
             child: Column(
               children: [
@@ -113,6 +90,10 @@ class _VenddasState extends State<VendasPage> {
                 Visibility(
                   visible: model.isLoading,
                   child: Text("Obtendo dados, aguarde...", style: Theme.of(context).textTheme.bodyMedium)
+                ),
+                Visibility(
+                  visible: model.sales.isEmpty,
+                  child: Text("Nenhuma venda cadastrada.")
                 ),
                 VendasTable(),
                 Container(
