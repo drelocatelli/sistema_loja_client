@@ -25,8 +25,7 @@ class BaseRepository {
       };
       
       if(authentication) {
-        // headers['Authorization'] = 'Bearer $token';
-        headers['Authorization'] = 'Bearer aaa';
+        headers['Authorization'] = 'Bearer $token';
       }
 
       final response = await fetch.post(
