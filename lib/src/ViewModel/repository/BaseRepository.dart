@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/LoginRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/utils/request.dart';
@@ -24,7 +25,8 @@ class BaseRepository {
       };
       
       if(authentication) {
-        headers['Authorization'] = 'Bearer $token';
+        // headers['Authorization'] = 'Bearer $token';
+        headers['Authorization'] = 'Bearer aaa';
       }
 
       final response = await fetch.post(
@@ -36,6 +38,13 @@ class BaseRepository {
           headers: headers
         )
       );
+
+      if(response.data['errors'] != null) {
+        final errors = response.data['errors'];
+        final errorsStr = response.data['errors'].map((error) => error['message']).toList().join(', ');
+
+        return ResponseDTO(status: 401, message: errorsStr);
+      }
 
       if(response.data != null) {
         return cbData(response);
