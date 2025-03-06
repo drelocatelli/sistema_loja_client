@@ -40,7 +40,7 @@ class BaseRepository {
 
       if(response.data['errors'] != null) {
         final errors = response.data['errors'];
-        final errorsStr = response.data['errors'].map((error) => error['message']).toList().join(', ');
+        final errorsStr = errors.map((error) => error['message']).toList().join(', ');
 
         return ResponseDTO(status: 401, message: errorsStr);
       }
