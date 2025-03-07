@@ -132,6 +132,15 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
                 Visibility(
                   visible: showingCategoryMenu == ShowingCategoryMenu.read,
                   child: TextField(
+                    onChanged: (String val) async {
+                      model.setIsLoading(true);
+                      await Future.delayed(const Duration(seconds: 2));
+                      if(val.length == 0) {
+                        await fetchCategories(context, allCategories: true);
+                        return;
+                      }
+                      await fetchCategories(context, searchTerm: val);
+                    },
                     autofocus: false,
                     decoration: const InputDecoration(
                       labelText: 'Pesquisar categoria',
@@ -193,35 +202,42 @@ Widget showCategoriesTable(BuildContext context) {
         child: Visibility(
           visible: model.categories.length != 0,
           replacement: const Text("Nenhuma categoria cadastrada."),
-          child: DataTable(
-              columns: const [
-                DataColumn(label: Text('Título')),
-                DataColumn(label: Text('Ações')),
-              ], 
-              rows: model.categories.map((category) {
-                return DataRow(
-                  cells: [
-                    DataCell(Text(category.name!)),
-                    DataCell(
-                      PopupMenuButton(
-                        icon: const Icon(Icons.more_vert),
-                        itemBuilder: (context)  {
-                         return [
-                          const PopupMenuItem(
-                            child:Center(
-                              child: Icon(Icons.edit))
-                          ),
-                          const PopupMenuItem(
-                            child: Center(
-                              child: Icon(Icons.delete)),
-                          ),
-                         ];
-                      },
-                    ),
-                    ),
-                  ],
-                );
-              }).toList()
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(alignment: Alignment.topRight, child: Text("Listando ${model.categories.length} categorias no total. ")),
+              DataTable(
+                  columns: const [
+                    DataColumn(label: Text('Título')),
+                    DataColumn(label: Text('Ações')),
+                  ], 
+                  rows: model.categories.map((category) {
+                    return DataRow(
+                      cells: [
+                        DataCell(Text(category.name!)),
+                        DataCell(
+                          PopupMenuButton(
+                            icon: const Icon(Icons.more_vert),
+                            itemBuilder: (context)  {
+                             return [
+                              const PopupMenuItem(
+                                child:Center(
+                                  child: Icon(Icons.edit))
+                              ),
+                              const PopupMenuItem(
+                                child: Center(
+                                  child: Icon(Icons.delete)),
+                              ),
+                             ];
+                          },
+                        ),
+                        ),
+                      ],
+                    );
+                  }).toList()
+              ),
+            ],
           ),
         ),
       );

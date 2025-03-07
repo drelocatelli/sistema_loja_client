@@ -56,7 +56,7 @@ class _CategoryFormState extends State<CategoryForm> {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Não foi possível criar categoria")));
                   }
                   
-                  await fetchCategories(context);
+                  await fetchCategories(context, allCategories: true);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Categoria criada com sucesso")));
 
                   _formKey.currentState!.reset();

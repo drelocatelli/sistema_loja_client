@@ -1,15 +1,18 @@
 import 'package:racoon_tech_panel/src/Model/category_dto.dart';
+import 'package:racoon_tech_panel/src/Model/pagination_dto.dart';
 
 class CategoryResponseDTO {
   final List<Category> categories;
+  final PaginationDTO? pagination;
 
-  // Constructor
-  CategoryResponseDTO({required this.categories});
+  CategoryResponseDTO({required this.categories, required this.pagination});
 
-  // Factory method to parse a list of categories
-  factory CategoryResponseDTO.fromJson(List<dynamic> json) {
+  factory CategoryResponseDTO.fromJson(Map<String, dynamic> json) {
     return CategoryResponseDTO(
-      categories: json.map((item) => Category.fromJson(item)).toList(),
+      categories: (json['categories'] as List)
+          .map((item) => Category.fromJson(item))
+          .toList(),
+      pagination: PaginationDTO.fromJson(json['pagination']),
     );
   }
 }
