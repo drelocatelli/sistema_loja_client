@@ -5,4 +5,4 @@ deploy:
 build_all:
 	sh build.sh
 build_version:
-	./build.sh --version 3.1.3
+	./build.sh --version 3.1.4
