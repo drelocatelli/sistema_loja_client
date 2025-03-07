@@ -37,7 +37,7 @@ class _ProductFormState extends State<ProductForm> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await fetchCategories(context);
+      await fetchCategories(context, allCategories: true);
     });
   }
   
@@ -284,7 +284,7 @@ class _ProductFormState extends State<ProductForm> {
                                           setState(() {});
                                       }, 
                                       fetchCb: (String? searchTerm) async {
-                                        await fetchCategories(context, searchTerm: searchTerm);
+                                        await fetchCategories(context, searchTerm: searchTerm, allCategories: true);
                                       }, 
                                     );
                                   }
