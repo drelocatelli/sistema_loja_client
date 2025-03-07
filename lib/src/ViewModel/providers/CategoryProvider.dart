@@ -11,6 +11,7 @@ class CategoryProvider extends ChangeNotifier {
   bool get hasError => _hasError;
   
   void setCategories(List<Category> categories) {
+    categories.sort((a, b) => a.name!.compareTo(b.name!));
     _categories = categories;
     notifyListeners();
   }
