@@ -13,6 +13,9 @@ class Venda {
   final int? total;
   final String? date;
   final Category? category;
+  final String? createdAt;
+  final String? updatedAt;
+  final String? deletedAt;
 
   Venda({
     this.id,
@@ -23,7 +26,10 @@ class Venda {
     this.description,
     this.total,
     this.date,
-    this.category
+    this.category,
+    this.createdAt,
+    this.updatedAt,
+    this.deletedAt,
   });
 
   factory Venda.fromJson(Map<String, dynamic> json) {
@@ -38,7 +44,10 @@ class Venda {
       description: json['description'] as String?,
       total: (json['total'] as num?)?.toInt(),
       date: json['date'] as String?,
-      category: json['category'] != null ? Category.fromJson(json['category']) : null
+      category: json['category'] != null ? Category.fromJson(json['category']) : null,
+      createdAt: json['created_at'] as String?,
+      updatedAt: json['updated_at'] as String?,
+      deletedAt: json['deleted_at'] as String?,
     );
   }
 
@@ -48,11 +57,14 @@ class Venda {
       'serial': serial,
       'client': client?.toJson(),
       'colaborator': colaborator?.toJson(),
-      'product': product,
+      'product': product?.toJson(),
       'description': description,
       'total': total,
       'date': date,
-      'category': category
+      'category': category?.toJson(),
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+      'deleted_at': deletedAt,
     };
   }
 }

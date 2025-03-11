@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_details.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
@@ -8,7 +7,6 @@ import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 import 'package:widget_zoom/widget_zoom.dart';
 
-import '../../../../../Model/vendas_dto.dart';
 
 class VendasTable extends StatelessWidget {
   VendasTable({super.key});
