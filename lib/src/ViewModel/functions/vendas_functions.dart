@@ -14,26 +14,26 @@ import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 
 import '../../View/pages/dashboard/vendas/category_form.dart';
+import 'debouncer_function.dart';
 
 Future reloadVendas(BuildContext context) async {
   final model = Provider.of<SalesProvider>(context, listen: false);
   model.setIsReloading(true);
-  ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: 1);
-  final newData = vendasList.data?.sales ?? []; 
+  ResponseDTO<SalesResponseDTO> vendasList =
+      await SaleRepository.get(pageNum: 1);
+  final newData = vendasList.data?.sales ?? [];
   model.setSales(newData);
   await Future.delayed(Duration(milliseconds: 1500));
   model.setIsReloading(false);
 }
 
-Future saveVendas(BuildContext context) async {
-
-
-}
+Future saveVendas(BuildContext context) async {}
 
 Future loadVendas(BuildContext context) async {
   final model = Provider.of<SalesProvider>(context, listen: false);
-  ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: 1);
-  final newData = vendasList.data?.sales ?? []; 
+  ResponseDTO<SalesResponseDTO> vendasList =
+      await SaleRepository.get(pageNum: 1);
+  final newData = vendasList.data?.sales ?? [];
   model.setSales(newData);
 }
 
@@ -63,19 +63,15 @@ loadAllSalesProps(BuildContext context) async {
 
 novaVendaDialog(BuildContext context) {
   final maxWidth = MediaQuery.of(context).size.width;
-  
+
   showDialog(
-    context: context, 
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Nova venda'),
-        content: SizedBox(
-          width: maxWidth / 3,
-          child: VendasForm()
-        ),
-      );
-    }
-  );
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Nova venda'),
+          content: SizedBox(width: maxWidth / 3, child: VendasForm()),
+        );
+      });
 }
 
 enum ShowingCategoryMenu {
@@ -86,19 +82,18 @@ enum ShowingCategoryMenu {
 }
 
 novaCategoriaDialog(BuildContext context, CategoryProvider model) {
-
   final maxWidth = MediaQuery.of(context).size.width;
   final maxHeight = MediaQuery.of(context).size.height;
 
   ShowingCategoryMenu showingCategoryMenu = ShowingCategoryMenu.read;
+  Debouncer _debouncer = new Debouncer(milliseconds: 500);
 
   final _scrollController = ScrollController();
 
   showDialog(
-    context: context, 
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             title: Column(
               children: [
@@ -109,8 +104,11 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
                     const Text('Gerenciar categorias'),
                     OutlinedButton(
                       onPressed: () {
-                        setState((){
-                          showingCategoryMenu = showingCategoryMenu == ShowingCategoryMenu.create ? ShowingCategoryMenu.read : ShowingCategoryMenu.create;
+                        setState(() {
+                          showingCategoryMenu =
+                              showingCategoryMenu == ShowingCategoryMenu.create
+                                  ? ShowingCategoryMenu.read
+                                  : ShowingCategoryMenu.create;
                         });
                       },
                       child: Row(
@@ -119,7 +117,9 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Icon(
-                            showingCategoryMenu == ShowingCategoryMenu.create ? Icons.close : Icons.add_circle_outline,
+                            showingCategoryMenu == ShowingCategoryMenu.create
+                                ? Icons.close
+                                : Icons.add_circle_outline,
                             size: 18,
                           ),
                           const Text('Nova categoria'),
@@ -134,12 +134,13 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
                   child: TextField(
                     onChanged: (String val) async {
                       model.setIsLoading(true);
-                      await Future.delayed(const Duration(seconds: 2));
-                      if(val.length == 0) {
-                        await fetchCategories(context, allCategories: true);
-                        return;
-                      }
-                      await fetchCategories(context, searchTerm: val);
+                      _debouncer.run(() async {
+                        if (val.length == 0) {
+                          await fetchCategories(context, allCategories: true);
+                          return;
+                        }
+                        await fetchCategories(context, searchTerm: val);
+                      });
                     },
                     autofocus: false,
                     decoration: const InputDecoration(
@@ -166,19 +167,21 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
                         duration: const Duration(milliseconds: 200),
                         switchInCurve: Curves.easeIn,
                         switchOutCurve: Curves.easeOut,
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return FadeTransition(opacity: animation, child: child);
+                        transitionBuilder:
+                            (Widget child, Animation<double> animation) {
+                          return FadeTransition(
+                              opacity: animation, child: child);
                         },
                         child: showingCategoryMenu == ShowingCategoryMenu.create
                             ? CategoryForm(key: ValueKey<int>(1))
                             : Container(key: ValueKey<int>(2)),
                       ),
                       Visibility(
-                        visible: showingCategoryMenu == ShowingCategoryMenu.read,
+                        visible:
+                            showingCategoryMenu == ShowingCategoryMenu.read,
                         child: SizedBox(
-                          width: maxWidth,
-                          child: showCategoriesTable(context)
-                        ),
+                            width: maxWidth,
+                            child: showCategoriesTable(context)),
                       ),
                     ],
                   ),
@@ -186,61 +189,55 @@ novaCategoriaDialog(BuildContext context, CategoryProvider model) {
               ),
             ),
           );
-        }
-      );
-    }
-  );
+        });
+      });
 }
 
-
 Widget showCategoriesTable(BuildContext context) {
-  return Consumer<CategoryProvider>(
-    builder: (context, model, child) {
-      return Visibility(
-        visible: !model.isLoading,
-        replacement: const Center(child: Text("Obtendo dados, aguarde...")),
-        child: Visibility(
-          visible: model.categories.length != 0,
-          replacement: const Text("Nenhuma categoria cadastrada."),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Align(alignment: Alignment.topRight, child: Text("Listando ${model.categories.length} categorias no total. ")),
-              DataTable(
-                  columns: const [
-                    DataColumn(label: Text('Título')),
-                    DataColumn(label: Text('Ações')),
-                  ], 
-                  rows: model.categories.map((category) {
-                    return DataRow(
-                      cells: [
-                        DataCell(Text(category.name!)),
-                        DataCell(
-                          PopupMenuButton(
-                            icon: const Icon(Icons.more_vert),
-                            itemBuilder: (context)  {
-                             return [
+  return Consumer<CategoryProvider>(builder: (context, model, child) {
+    return Visibility(
+      visible: !model.isLoading,
+      replacement: const Center(child: Text("Obtendo dados, aguarde...")),
+      child: Visibility(
+        visible: model.categories.length != 0,
+        replacement: const Text("Nenhuma categoria cadastrada."),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Align(
+                alignment: Alignment.topRight,
+                child: Text(
+                    "Listando ${model.categories.length} categorias no total. ")),
+            DataTable(
+                columns: const [
+                  DataColumn(label: Text('Título')),
+                  DataColumn(label: Text('Ações')),
+                ],
+                rows: model.categories.map((category) {
+                  return DataRow(
+                    cells: [
+                      DataCell(Text(category.name!)),
+                      DataCell(
+                        PopupMenuButton(
+                          icon: const Icon(Icons.more_vert),
+                          itemBuilder: (context) {
+                            return [
                               const PopupMenuItem(
-                                child:Center(
-                                  child: Icon(Icons.edit))
-                              ),
+                                  child: Center(child: Icon(Icons.edit))),
                               const PopupMenuItem(
-                                child: Center(
-                                  child: Icon(Icons.delete)),
+                                child: Center(child: Icon(Icons.delete)),
                               ),
-                             ];
+                            ];
                           },
                         ),
-                        ),
-                      ],
-                    );
-                  }).toList()
-              ),
-            ],
-          ),
+                      ),
+                    ],
+                  );
+                }).toList()),
+          ],
         ),
-      );
-    }
-  );
+      ),
+    );
+  });
 }
