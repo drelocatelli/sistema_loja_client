@@ -133,6 +133,10 @@ class _ProductTableState extends State<ProductTable> {
                                       : '';
                               
                                   return DataRow(
+                                    color: WidgetStateProperty.resolveWith((states) {
+                                      return product.quantity! <= 0 ? const Color.fromARGB(255, 255, 205, 205) : Colors.transparent;
+                                    }),
+
                                       selected: model.selectedIds.contains(key),
                                       onSelectChanged: (bool? selected) {
                                         if (selected != null) {
