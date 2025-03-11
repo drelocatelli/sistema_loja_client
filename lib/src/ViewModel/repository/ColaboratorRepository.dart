@@ -19,8 +19,6 @@ class ColaboratorRepository {
 
     String payloadStr = PayloadDTO(payload);
 
-    debugPrint(payloadStr);
-
     final String query = '''
         query GetColaborators {
           getColaborators($payloadStr) {

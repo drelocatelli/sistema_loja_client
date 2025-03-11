@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/clientes_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/payload_dto.dart';
@@ -137,16 +138,17 @@ class ClientRepository {
   }
 
   static Future<ResponseDTO<List<Cliente>>> delete(List<String> ids) async {
-    try {
-      final endpoint = '${dotenv.env['SERVER_URL']!}:${dotenv.env['SERVER_PORT']!}';
-
       ids = ids.map((id) => id).toList();
+
+      Map<String, dynamic> payload = {
+        'ids': ids
+      };
+
+      String payloadStr = PayloadDTO(payload);
       
-      final token = await LoginRepository.getToken();
-      
-      final String deleteClientsQuery = '''
+      final String query = '''
           mutation DeleteClients {
-              deleteClients(ids: $ids) {
+              deleteClients($payloadStr) {
                   id
                   name
                   email
@@ -166,39 +168,18 @@ class ClientRepository {
 
       ''';
 
-      final dio = requestInterceptor();
-      final response = await dio.post(
-        endpoint,
-        data: {
-          'query': deleteClientsQuery
-        },
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Authorization': "Bearer $token",
-          }
-        )
+      return await BaseRepository.graphQlRequest(
+        query: query, 
+        authentication: true, 
+        cbData: (response) {
+          final data = response.data['data']['deleteClients'] as List;
+          List<Cliente> clients = data.map((client) => Cliente.fromJson(client)).toList();
+          return ResponseDTO<List<Cliente>>(status: response.statusCode, data: clients);
+        }, 
+        cbNull: (response) {
+          return ResponseDTO(status: 500, data: [], message: "Não foi possível excluir cliente");
+        }
       );
-
-      if(response.data != null) {
-        final clientsData = response.data['data']['deleteClients'] as List;
-        List<Cliente> clients = clientsData.map((client) => Cliente.fromJson(client)).toList();
-
-        return ResponseDTO<List<Cliente>>(status: response.statusCode, data: clients);
-      }
-
-      return ResponseDTO<List<Cliente>>(status: response.statusCode, data: []);
-
-    } on DioException catch(err) {
-      debugPrint(err.toString());
-
-      String? message;
-      if(err.type == DioExceptionType.connectionError) {
-        message = 'Não foi possível estabelecer comunicação com o servidor';
-      }
-      return ResponseDTO(status: 500, message: message);
-    }
   }
   
 }
