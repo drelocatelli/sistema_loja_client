@@ -5,6 +5,7 @@ import 'package:racoon_tech_panel/src/Model/nfe_dto.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/clients/clients_page.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/product_page.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/home/home_page.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/logs.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/notas_fiscais/nfe_generated.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/notas_fiscais/notas_fiscais_page.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/vendas_page.dart';
@@ -40,8 +41,12 @@ _noTransitionRoute(Widget page) {
 }
 
 final GoRouter routes = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/',
   routes: [
+    GoRoute(
+      path: '/', 
+      pageBuilder: (context, state) =>  _noTransitionRoute(LoginPage())
+    ),
     GoRoute(
       path: '/dashboard',
       pageBuilder: (context, state) => _noTransitionRoute(HomePage()),
@@ -71,11 +76,13 @@ final GoRouter routes = GoRouter(
             path: 'produtos',
             pageBuilder: (context, state) => _noTransitionRoute(const ProductPage()),
           ),
+          GoRoute(
+            path: 'logs',
+            builder: (context, state) => LogsPage(),
+            // pageBuilder: (context, state) => _noTransitionRoute(const VendasLogs()),
+          )
         ],
     ),
-    GoRoute(
-      path: '/login', 
-      pageBuilder: (context, state) =>  _noTransitionRoute(LoginPage())
-    ),
+    
   ]
 );

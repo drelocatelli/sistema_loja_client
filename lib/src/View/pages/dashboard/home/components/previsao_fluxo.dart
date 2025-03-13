@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/home/components/pagamentos.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/home/components/problems.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/home/components/recebimentos.dart';
@@ -141,17 +142,21 @@ Widget previsaoFluxo(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          spacing: 5,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Expanded(
                 child: Text("Previsão de fluxo de caixa",
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20))),
+            OutlinedButton(onPressed: () {
+              context.go('/dashboard/logs');
+            }, child: Text("Relatório de logs")),
             OutlinedButton(
                 onPressed: fnRelatorios,
                 child: Text(relatoriosShowing
                     ? 'Ocultar relatórios'
-                    : "Mostrar relatórios"))
+                    : "Mostrar relatórios")),
           ],
         ),
         const Gap(20),

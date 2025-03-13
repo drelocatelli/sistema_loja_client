@@ -34,7 +34,7 @@ class _VenddasState extends State<VendasPage> {
   Future _fetchData({int? page = 1, String? searchTerm}) async {
     final model = Provider.of<SalesProvider>(context, listen: false);
     model.setIsLoading(true);
-    ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: page, searchTerm: searchTerm);
+    ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: page, searchTerm: searchTerm, isDeleted: false);
 
     final newData = vendasList.data?.sales ?? [];
 
@@ -59,7 +59,7 @@ class _VenddasState extends State<VendasPage> {
     }
     model.setTotalPages(vendasList.data?.pagination?.totalPages ?? 1);
     model.setShowDeleted(false);
-    model.setSales(newData);
+    model.setSalesNotDeleted(newData);
     model.setIsLoading(false);
   }
 

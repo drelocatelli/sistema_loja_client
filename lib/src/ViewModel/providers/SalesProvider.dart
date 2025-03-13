@@ -10,12 +10,14 @@ class SalesProvider extends ChangeNotifier {
   bool _isReloading = false;
   List<Venda> _sales = [];
   List<Venda> _salesNotDeleted = [];
+  List<Venda> _salesDeleted = [];
   List<String> _selectedIds = [];
 
   bool get isLoading => _isLoading;
   bool get isReloading => _isReloading;
   List<Venda> get sales => _sales;
   List<Venda> get salesNotDeleted => _salesNotDeleted;
+  List<Venda> get salesDeleted => _salesDeleted;
   int get sortColumnIdx => _sortColumnIdx;
   bool get isAscending => _isAscending;
   List<String> get selectedIds => _selectedIds;
@@ -30,6 +32,11 @@ class SalesProvider extends ChangeNotifier {
   int currentPage = 1;
   int currentIdx = 0;
 
+  void setSalesDeleted(List<Venda> sales) {
+    _salesDeleted = sales;
+    notifyListeners();
+  }
+
   void setShowDeleted(bool value) {
     _showDeleted = value;
     notifyListeners();
@@ -42,7 +49,11 @@ class SalesProvider extends ChangeNotifier {
 
   void setSales(List<Venda> sales) {
     _sales = sales;
-    _salesNotDeleted = sales.where((sale) => sale.deletedAt == null).toList();
+    notifyListeners();
+  }
+
+  void setSalesNotDeleted(List<Venda> sales) {
+    _salesNotDeleted = sales;
     notifyListeners();
   }
 

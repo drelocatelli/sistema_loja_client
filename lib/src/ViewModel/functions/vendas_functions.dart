@@ -31,10 +31,12 @@ Future saveVendas(BuildContext context) async {}
 
 Future loadVendas(BuildContext context) async {
   final model = Provider.of<SalesProvider>(context, listen: false);
+  model.setIsLoading(true);
   ResponseDTO<SalesResponseDTO> vendasList =
       await SaleRepository.get(pageNum: 1);
   final newData = vendasList.data?.sales ?? [];
   model.setSales(newData);
+  model.setIsLoading(false);
 }
 
 deleteVendas(BuildContext context, List<String> ids) async {

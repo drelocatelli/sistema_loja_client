@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:racoon_tech_panel/src/Model/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_details.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
@@ -19,6 +20,8 @@ class VendasTable extends StatelessWidget {
   final maxWidth = MediaQuery.of(context).size.width;
 
   bool _isHorizontalThumbShowing = false;
+
+  
 
   
   return Consumer<SalesProvider>(
@@ -71,7 +74,7 @@ class VendasTable extends StatelessWidget {
                       child: Visibility(
                         visible: !model.isLoading,
                         child: Visibility(
-                          visible: model.sales.isNotEmpty,
+                          visible: model.salesNotDeleted.isNotEmpty,
                           child: MouseRegion(
                             onHover: (event) {
                               setState(() {
@@ -95,150 +98,8 @@ class VendasTable extends StatelessWidget {
                                   sortColumnIndex: model.sortColumnIdx,
                                   sortAscending: model.isAscending,
                                   showCheckboxColumn: true,
-                                  columns: [
-                                    DataColumn(
-                                      label: const Text('Serial'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      } 
-                                    ),
-                                     DataColumn(
-                                      label: const Text('Capa'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      } 
-                                    ),
-                                    DataColumn(
-                                      label: const Text('Produto'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      } 
-                                    ),
-                                    DataColumn(
-                                      label: const Text('Cliente'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      },
-                                    ),
-                                    DataColumn(
-                                      label: const Text('Responsável'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      }
-                                    ),
-                                    DataColumn(
-                                      label: const Text('Data da venda'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      }
-                                    ),
-                                    DataColumn(
-                                      label: const Text('Preço unitário'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      }
-                                    ),
-                                    DataColumn(
-                                      label: const Text('Qtd. vendida'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      }
-                                    ),
-                                    
-                                    DataColumn(
-                                      label: const Text('Total'),
-                                      onSort: (columnIndex, ascending) {
-                                        model.sortSales(columnIndex, ascending);
-                                      }
-                                    ),
-                                    const DataColumn(
-                                      label: Text('Ações'),
-                                    ),
-                                  ],
-                                  rows: model.sales.asMap().entries.map((entry) {
-                                    final key = entry.key;
-                                    final sale = entry.value;
-                                                
-                                    return DataRow(
-                                      selected: model.selectedIds.contains(sale.id),
-                                      onSelectChanged: (bool? selected) {
-                                        if(selected != null) {
-                                          model.toggleSelection(sale.id!);
-                                        }
-                                      },
-                                      cells: [
-                                        DataCell(Text(sale.serial ?? '-')),
-                                        DataCell(Visibility(
-                                          visible: sale.product?.photos != null && sale.product?.photos?.length != 0,
-                                          replacement:
-                                              Center(child: Icon(Icons.image)),
-                                          child: WidgetZoom(
-                                            heroAnimationTag: 'tag',
-                                            zoomWidget: Image.network(
-                                            (sale.product?.photos != null && sale.product!.photos!.isNotEmpty)
-                                                ? "${BaseRepository.baseStaticUrl}/${sale.product?.photos![0]}"
-                                                : '', // Imagem padrão se a lista estiver vazia
-                                                width: 80,
-                                          ),
-                                          ),
-                                        )),
-                                        DataCell(
-                                            Text(sale.product?.name ?? '-'),
-                                        ),
-                                        DataCell(Text(sale.client?.name ?? '-')),
-                                        DataCell(Text(sale.colaborator?.name ?? '-')),
-                                        DataCell(Text(sale.date ?? '-')),
-                                        // DataCell(Text(Helpers.truncateText(text: sale.description ?? ''))),
-                                        // valor de estoque
-                                        DataCell(
-                                          Text(
-                                            (sale.product?.price != null && sale.product!.price!.isNaN) 
-                                              ? "Erro" 
-                                              : "R\$ ${(sale.product?.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}",
-                                          ),
-                                        ),
-                                        DataCell(Text("${sale.total.toString() ?? 0}")),
-                                        DataCell(
-                                          Text(
-                                            (sale.total != null && sale.product?.price != null &&
-                                  (sale.total!.isNaN || sale.product!.price!.isNaN))
-                                                ? "Erro"
-                                                : "R\$ ${(sale.total! * sale.product!.price!).toStringAsFixed(2).replaceAll('.', ',')}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          PopupMenuButton(
-                                              icon: const Icon(Icons.more_vert),
-                                              itemBuilder: (context) {
-                                                return [
-                                                  PopupMenuItem(
-                                  value: 'edit',
-                                  onTap: () {
-                                    vendaDetails(context, sale);
-                                  },
-                                  child: Center(child: Icon(Icons.info_outline))
-                                ),
-                                PopupMenuItem(
-                                  value: 'edit',
-                                  onTap: () {
-                                    
-                                  },
-                                  child: Center(child: Icon(Icons.edit))
-                                ),
-                                PopupMenuItem(
-                                  value: 'delete',
-                                  onTap: () async {
-                                    _deleteModal(context, [sale.id!]);
-                                  },
-                                  child: Center(child: Icon(Icons.delete)),
-                                )
-                                                ];
-                                              },
-                                            ),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList(),
+                                  columns: salesColumns(model),
+                                  rows: salesRows(model, model.salesNotDeleted)
                                 ),
                               ),
                             ),
@@ -293,3 +154,151 @@ _deleteModal(BuildContext context, List<String> ids) {
   );
 }
 
+List<DataColumn> salesColumns(SalesProvider model) {
+    return [
+      DataColumn(
+        label: const Text('Serial'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        } 
+      ),
+        DataColumn(
+        label: const Text('Capa'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        } 
+      ),
+      DataColumn(
+        label: const Text('Produto'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        } 
+      ),
+      DataColumn(
+        label: const Text('Cliente'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        },
+      ),
+      DataColumn(
+        label: const Text('Responsável'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      DataColumn(
+        label: const Text('Data da venda'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      DataColumn(
+        label: const Text('Preço unitário'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      DataColumn(
+        label: const Text('Qtd. vendida'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      
+      DataColumn(
+        label: const Text('Total'),
+        onSort: (columnIndex, ascending) {
+          model.sortSales(columnIndex, ascending);
+        }
+      ),
+      const DataColumn(
+        label: Text('Ações'),
+      ),
+    ];
+  }
+List<DataRow> salesRows(SalesProvider model, List<Venda> sales) {
+  return sales.asMap().entries.map((entry) {
+      final key = entry.key;
+      final sale = entry.value;
+                  
+      return DataRow(
+        selected: model.selectedIds.contains(sale.id),
+        onSelectChanged: (bool? selected) {
+          if(selected != null) {
+            model.toggleSelection(sale.id!);
+          }
+        },
+        cells: [
+          DataCell(Text(sale.serial ?? '-')),
+          DataCell(Visibility(
+            visible: sale.product?.photos != null && sale.product?.photos?.length != 0,
+            replacement:
+                Center(child: Icon(Icons.image)),
+            child: WidgetZoom(
+              heroAnimationTag: 'tag',
+              zoomWidget: Image.network(
+              (sale.product?.photos != null && sale.product!.photos!.isNotEmpty)
+                  ? "${BaseRepository.baseStaticUrl}/${sale.product?.photos![0]}"
+                  : '', // Imagem padrão se a lista estiver vazia
+                  width: 80,
+            ),
+            ),
+          )),
+          DataCell(
+              Text(sale.product?.name ?? '-'),
+          ),
+          DataCell(Text(sale.client?.name ?? '-')),
+          DataCell(Text(sale.colaborator?.name ?? '-')),
+          DataCell(Text(sale.date ?? '-')),
+          // DataCell(Text(Helpers.truncateText(text: sale.description ?? ''))),
+          // valor de estoque
+          DataCell(
+            Text(
+              (sale.product?.price != null && sale.product!.price!.isNaN) 
+                ? "Erro" 
+                : "R\$ ${(sale.product?.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}",
+            ),
+          ),
+          DataCell(Text("${sale.total.toString() ?? 0}")),
+          DataCell(
+            Text(
+              (sale.total != null && sale.product?.price != null &&
+    (sale.total!.isNaN || sale.product!.price!.isNaN))
+                  ? "Erro"
+                  : "R\$ ${(sale.total! * sale.product!.price!).toStringAsFixed(2).replaceAll('.', ',')}",
+            ),
+          ),
+          DataCell(
+            PopupMenuButton(
+                icon: const Icon(Icons.more_vert),
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      value: 'edit',
+                      onTap: () {
+                        vendaDetails(context, sale);
+                      },
+                      child: Center(child: Icon(Icons.info_outline))
+                    ),
+                    PopupMenuItem(
+                      value: 'edit',
+                      onTap: () {
+                        
+                      },
+                      child: Center(child: Icon(Icons.edit))
+                    ),
+                    PopupMenuItem(
+                      value: 'delete',
+                      onTap: () async {
+                        _deleteModal(context, [sale.id!]);
+                      },
+                      child: Center(child: Icon(Icons.delete)),
+                    )
+                  ];
+                },
+              ),
+          ),
+        ],
+      );
+    }).toList();
+}
