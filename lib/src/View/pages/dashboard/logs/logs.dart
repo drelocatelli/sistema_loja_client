@@ -9,6 +9,7 @@ import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/ven
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
+import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 
 import '../../../../Model/response_dto.dart';
 
@@ -38,7 +39,7 @@ class _LogsPageState extends State<LogsPage> {
 
     model.setSalesDeleted(newData);
     await Future.delayed(Duration(milliseconds: 500));
-    
+
     model.setIsLoading(false);
   }
   
@@ -53,6 +54,47 @@ class _LogsPageState extends State<LogsPage> {
           _sales(),
         ],
       ),
+    );
+  }
+
+  Widget scrollPrepare({required Widget child}) {
+    final _horizontalController = ScrollController();
+    final _verticalScrollController = ScrollController();
+    bool _isHorizontalThumbShowing = false;
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Scrollbar(
+          interactive: true,
+          controller: _horizontalController,
+          trackVisibility: false,
+          thumbVisibility: _isHorizontalThumbShowing,
+          child: SingleChildScrollView(
+            controller: _horizontalController,
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            child: Scrollbar(
+              interactive: true,
+              controller: _verticalScrollController,
+              trackVisibility: true,
+              thumbVisibility: true,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                controller: _verticalScrollController,
+                physics: const BouncingScrollPhysics(),
+                child: MouseRegion(
+                  onHover: (event) => setState(() => _isHorizontalThumbShowing = true),
+                  onExit: (event) => setState(() => _isHorizontalThumbShowing = false),
+                  child: FittedBox(
+                    fit: SharedTheme.isLargeScreen(context) ? BoxFit.scaleDown : BoxFit.fitWidth,
+                    child: child,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
     );
   }
 
@@ -71,12 +113,14 @@ class _LogsPageState extends State<LogsPage> {
           child: Visibility(
             visible: salesDeleted.isNotEmpty,
             replacement: Text("Nenhuma venda foi deletada."),
-            child: DataTable(
-              columns: salesColumns(model),
-              rows: salesRows(model, salesDeleted)
+            child: scrollPrepare(
+              child: DataTable(
+                    columns: salesColumns(model),
+                    rows: salesRows(model, salesDeleted)
+                  ),
             ),
           ),
-        ),
+        )
       ],
     );
   }
