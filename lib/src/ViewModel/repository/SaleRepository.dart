@@ -13,7 +13,7 @@ import 'package:racoon_tech_panel/src/ViewModel/repository/BaseRepository.dart';
 
 class SaleRepository {
 
-  static Future<ResponseDTO<SalesResponseDTO>> get({int ? pageNum = 1, String? searchTerm, bool isDeleted = true}) async {
+  static Future<ResponseDTO<SalesResponseDTO>> get({int ? pageNum = 1, int? pageSize, String? searchTerm, bool isDeleted = true}) async {
     Map<String, dynamic> payload = {
       'page': pageNum,
       'deleted': isDeleted
@@ -21,6 +21,10 @@ class SaleRepository {
 
     if(searchTerm != null) {
       payload['searchTerm'] = searchTerm;
+    }
+
+    if(pageSize != null) {
+      payload['pageSize'] = pageSize;
     }
 
     String payloadStr = PayloadDTO(payload);
