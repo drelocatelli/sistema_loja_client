@@ -18,6 +18,9 @@ class ProdutoProvider extends ChangeNotifier {
   List<Produto> _produtos = [];
   List<Produto> get produtos => _produtos;
 
+  List<Produto> _produtosDeleted = [];
+  List<Produto> get produtosDeleted => _produtosDeleted;
+
   bool _hasError = false;
   bool get hasError => _hasError;
 
@@ -44,6 +47,11 @@ class ProdutoProvider extends ChangeNotifier {
   int currentIdx = 0;
 
 
+  void setProdutosDeleted(List<Produto> produto) {
+    _produtosDeleted = produto;
+    notifyListeners();
+  }
+  
   void setProdutos(List<Produto> produto) {
     _produtos = produto;
     if(_produtosBkp.isEmpty) {

@@ -82,19 +82,22 @@ class _SalesLogsState extends State<SalesLogs> {
   Widget salesPagination() {
     return Consumer<SalesProvider>(
       builder: (context, model, child) {
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(model.totalPages, (idx) {
-              final page =  idx + 1;
-              return TextButton(
-                onPressed: () async {
-                  if(model.currentPage == page) return;
-                  await _fetchSales(pageNum: page);
-                },
-                child: Text(page.toString(), style: TextStyle(color: (model.currentPage == page) ? SharedTheme.primaryColor : null)),
-              );
-            })
+        return Visibility(
+          visible: model.salesDeleted.isNotEmpty,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(model.totalPages, (idx) {
+                final page =  idx + 1;
+                return TextButton(
+                  onPressed: () async {
+                    if(model.currentPage == page) return;
+                    await _fetchSales(pageNum: page);
+                  },
+                  child: Text(page.toString(), style: TextStyle(color: (model.currentPage == page) ? SharedTheme.primaryColor : null)),
+                );
+              })
+            ),
           ),
         );
       }

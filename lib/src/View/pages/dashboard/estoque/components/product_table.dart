@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:racoon_tech_panel/src/Model/product_dto.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/product_details.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
@@ -84,144 +85,8 @@ class _ProductTableState extends State<ProductTable> {
                                 sortAscending: model.isAscending,
                                 dataRowHeight: 55,
                                 showCheckboxColumn: true,
-                                columns: [
-                                  const DataColumn(
-                                    label: Text('Foto'),
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Nome'),
-                                    onSort: (columnIndex, ascending) =>
-                                        model.sort(columnIndex, ascending),
-                                  ),
-                                  DataColumn(
-                                    label: const Text('Descrição'),
-                                    onSort: (columnIndex, ascending) =>
-                                        model.sort(columnIndex, ascending),
-                                  ),
-                                  DataColumn(
-                                      label: const Text('Categoria'),
-                                      onSort: (columnIndex, ascending) =>
-                                          model.sort(columnIndex, ascending)),
-                                  DataColumn(
-                                      label: const Text('Quantidade'),
-                                      onSort: (columnIndex, ascending) =>
-                                          model.sort(columnIndex, ascending)),
-                                  DataColumn(
-                                      label: const Text('Preço'),
-                                      onSort: (columnIndex, ascending) =>
-                                          model.sort(columnIndex, ascending)),
-                                  DataColumn(
-                                      label: const Text('Total'),
-                                      onSort: (columnIndex, ascending) =>
-                                          model.sort(columnIndex, ascending)),
-                                  DataColumn(
-                                      label: const Text('Visibilidade'),
-                                      onSort: (columnIndex, ascending) =>
-                                          model.sort(columnIndex, ascending)),
-                                  const DataColumn(
-                                    label: Text('Ações'),
-                                  ),
-                                ],
-                                rows: model.produtos.asMap().entries.map((entry) {
-                                  final key = entry.key;
-                                  final product = entry.value;
-                              
-                                  String productThumbnail = (product.photos !=
-                                              null &&
-                                          product.photos!.length != 0)
-                                      ? "${BaseRepository.baseStaticUrl}/${product.photos![0]}"
-                                      : '';
-                              
-                                  return DataRow(
-                                    color: WidgetStateProperty.resolveWith((states) {
-                                      return product.quantity! <= 0 ? const Color.fromARGB(255, 255, 205, 205) : Colors.transparent;
-                                    }),
-
-                                      selected: model.selectedIds.contains(key),
-                                      onSelectChanged: (bool? selected) {
-                                        if (selected != null) {
-                                          model.toggleSelection(
-                                              product.id.toString());
-                                        }
-                                      },
-                                      cells: [
-                                        DataCell(Visibility(
-                                          visible: product.photos!.length != 0,
-                                          replacement:
-                                              Center(child: Icon(Icons.image)),
-                                          child: WidgetZoom(
-                                            heroAnimationTag: 'tag',
-                                            zoomWidget: Image.network(
-                                                productThumbnail,
-                                                width: 80, errorBuilder:
-                                                    (context, error, stackTrace) {
-                                              return Center(
-                                                  child: Icon(Icons.image));
-                                            }),
-                                          ),
-                                        )),
-                                        DataCell(Text(product.name ?? '-')),
-                                        DataCell(Text(Helpers.truncateText(
-                                            text: product.description ?? '-'))),
-                                        DataCell(
-                                            Text(product.category?.name ?? '-')),
-                                        DataCell(Text(product.quantity.toString())),
-                                        DataCell(
-                                          Text(
-                                            (product.price != null &&
-                                                    product.price!.isNaN)
-                                                ? "Erro"
-                                                : "R\$ ${(product.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}",
-                                          ),
-                                        ),
-                                        DataCell(
-                                          Text(
-                                            (product.quantity != null &&
-                                                    product.price != null &&
-                                                    (product.quantity!.isNaN ||
-                                                        product.price!.isNaN))
-                                                ? "Erro"
-                                                : "R\$ ${(product.quantity! * product.price!).toStringAsFixed(2).replaceAll('.', ',')}",
-                                          ),
-                                        ),
-                                        DataCell(Text((product.isPublished ?? false)
-                                            ? 'Público'
-                                            : 'Anotação')),
-                                        DataCell(
-                                          PopupMenuButton(
-                                            icon: const Icon(Icons.more_vert),
-                                            itemBuilder: (context) {
-                                              return [
-                                                PopupMenuItem(
-                                                  onTap: () {
-                                                    productDetails(
-                                                        context, product);
-                                                  },
-                                                  child: Center(
-                                                      child:
-                                                          Icon(Icons.info_outline)),
-                                                ),
-                                                PopupMenuItem(
-                                                    value: 'edit',
-                                                    onTap: () {},
-                                                    child: Center(
-                                                        child: Icon(Icons.edit))),
-                                                PopupMenuItem(
-                                                  value: 'delete',
-                                                  onTap: () async {
-                                                    _deleteModal(
-                                                        context, [product.id!]);
-                                                  },
-                                                  child: Center(
-                                                      child: Icon(Icons.delete)),
-                                                ),
-                                              ];
-                                            },
-                                          ),
-                                        ),
-                                      ]);
-                                }).toList(),
-                              ),
+                                columns: produtosColumns(model),
+                                rows: productsRows(model, model.produtos),
                             ),
                           ),
                         ),
@@ -230,6 +95,7 @@ class _ProductTableState extends State<ProductTable> {
                   ),
                 ),
               ),
+            ),
             ),
           );
         });
@@ -240,6 +106,149 @@ class _ProductTableState extends State<ProductTable> {
 
     return _estoquesTable(maxWidth);
   }
+}
+
+List<DataRow> productsRows(ProdutoProvider model, List<Produto> produtos) {
+  return produtos.asMap().entries.map((entry) {
+      final key = entry.key;
+      final product = entry.value;
+  
+      String productThumbnail = (product.photos !=
+                  null &&
+              product.photos!.length != 0)
+          ? "${BaseRepository.baseStaticUrl}/${product.photos![0]}"
+          : '';
+  
+      return DataRow(
+        color: WidgetStateProperty.resolveWith((states) {
+          return product.quantity! <= 0 ? const Color.fromARGB(255, 255, 205, 205) : Colors.transparent;
+        }),
+
+          selected: model.selectedIds.contains(key),
+          onSelectChanged: (bool? selected) {
+            if (selected != null) {
+              model.toggleSelection(
+                  product.id.toString());
+            }
+          },
+          cells: [
+            DataCell(Visibility(
+              visible: product.photos!.length != 0,
+              replacement:
+                  Center(child: Icon(Icons.image)),
+              child: WidgetZoom(
+                heroAnimationTag: 'tag',
+                zoomWidget: Image.network(
+                    productThumbnail,
+                    width: 80, errorBuilder:
+                        (context, error, stackTrace) {
+                  return Center(
+                      child: Icon(Icons.image));
+                }),
+              ),
+            )),
+            DataCell(Text(product.name ?? '-')),
+            DataCell(Text(Helpers.truncateText(
+                text: product.description ?? '-'))),
+            DataCell(
+                Text(product.category?.name ?? '-')),
+            DataCell(Text(product.quantity.toString())),
+            DataCell(
+              Text(
+                (product.price != null &&
+                        product.price!.isNaN)
+                    ? "Erro"
+                    : "R\$ ${(product.price ?? 0).toStringAsFixed(2).replaceAll('.', ',')}",
+              ),
+            ),
+            DataCell(
+              Text(
+                (product.quantity != null &&
+                        product.price != null &&
+                        (product.quantity!.isNaN ||
+                            product.price!.isNaN))
+                    ? "Erro"
+                    : "R\$ ${(product.quantity! * product.price!).toStringAsFixed(2).replaceAll('.', ',')}",
+              ),
+            ),
+            DataCell(Text((product.isPublished ?? false)
+                ? 'Público'
+                : 'Anotação')),
+            DataCell(
+              PopupMenuButton(
+                icon: const Icon(Icons.more_vert),
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      onTap: () {
+                        productDetails(
+                            context, product);
+                      },
+                      child: Center(
+                          child:
+                              Icon(Icons.info_outline)),
+                    ),
+                    PopupMenuItem(
+                        value: 'edit',
+                        onTap: () {},
+                        child: Center(
+                            child: Icon(Icons.edit))),
+                    PopupMenuItem(
+                      value: 'delete',
+                      onTap: () async {
+                        _deleteModal(
+                            context, [product.id!]);
+                      },
+                      child: Center(
+                          child: Icon(Icons.delete)),
+                    ),
+                  ];
+                },
+              ),
+            ),
+          ]);
+    }).toList();
+}
+
+List<DataColumn> produtosColumns(ProdutoProvider model) {
+  return [
+      const DataColumn(
+        label: Text('Foto'),
+      ),
+      DataColumn(
+        label: const Text('Nome'),
+        onSort: (columnIndex, ascending) =>
+            model.sort(columnIndex, ascending),
+      ),
+      DataColumn(
+        label: const Text('Descrição'),
+        onSort: (columnIndex, ascending) =>
+            model.sort(columnIndex, ascending),
+      ),
+      DataColumn(
+          label: const Text('Categoria'),
+          onSort: (columnIndex, ascending) =>
+              model.sort(columnIndex, ascending)),
+      DataColumn(
+          label: const Text('Quantidade'),
+          onSort: (columnIndex, ascending) =>
+              model.sort(columnIndex, ascending)),
+      DataColumn(
+          label: const Text('Preço'),
+          onSort: (columnIndex, ascending) =>
+              model.sort(columnIndex, ascending)),
+      DataColumn(
+          label: const Text('Total'),
+          onSort: (columnIndex, ascending) =>
+              model.sort(columnIndex, ascending)),
+      DataColumn(
+          label: const Text('Visibilidade'),
+          onSort: (columnIndex, ascending) =>
+              model.sort(columnIndex, ascending)),
+      const DataColumn(
+        label: Text('Ações'),
+      ),
+    ];
 }
 
 _deleteModal(BuildContext context, List<String> ids) {

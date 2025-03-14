@@ -17,13 +17,17 @@ import 'package:racoon_tech_panel/src/ViewModel/repository/FileUploadRepository.
 import 'package:racoon_tech_panel/src/ViewModel/repository/LoginRepository.dart';
 
 class ProdutosRepository {
-   static Future<ResponseDTO<ProdutosResponseDTO>> get({int? pageNum = 1, String? searchTerm}) async {
+   static Future<ResponseDTO<ProdutosResponseDTO>> get({int? pageNum = 1, int? pageSize, String? searchTerm, bool isDeleted = true}) async {
     Map<String, dynamic> payload = {
       'page': pageNum
     };
 
     if(searchTerm != null) {
       payload['searchTerm'] = searchTerm;
+    }
+
+    if(pageSize != null) {
+      payload['pageSize'] = pageSize;
     }
 
     String payloadStr = PayloadDTO(payload);
