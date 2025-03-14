@@ -13,33 +13,20 @@ import '../../../components/shimmer_cell.dart';
 import '../estoque/components/product_table.dart';
 
 class ProductsLogsTable extends StatefulWidget {
-  const ProductsLogsTable({super.key});
+  ProductsLogsTable({super.key, int this.pageSize = 1, required this.products});
+
+  int? pageSize = 4;
+  List<Produto> products;
 
   @override
   State<ProductsLogsTable> createState() => _ProductsLogsTableState();
 }
 
 class _ProductsLogsTableState extends State<ProductsLogsTable> {
-  final pageSize = 4;
-
-  Future _fetch({int? pageNum = 1}) async {
-    final model = Provider.of<ProdutoProvider>(context, listen: false);
-    model.setIsLoading(true);
-
-
-    await Future.delayed(Duration(milliseconds: 1000));
-    ResponseDTO<ProdutosResponseDTO> vendasList = await ProdutosRepository.get(pageNum: pageNum, pageSize: pageSize, isDeleted: true);
-    final newData = vendasList.data?.produtos ?? [];
-
-    model.setTotalPages(vendasList.data?.pagination?.totalPages ?? 1);
-    model.setCurrentPage(vendasList.data?.pagination?.currentPage ?? 1);
-    model.setProdutosDeleted(newData);
-    model.setIsLoading(false);
-  }
 
   Widget table() {
     final model = Provider.of<ProdutoProvider>(context, listen: true);
-    List<Produto> productsDeleted = model.produtosDeleted;
+    List<Produto> products = widget.products;
 
     final columns = produtosColumns(model);
 
@@ -58,13 +45,13 @@ class _ProductsLogsTableState extends State<ProductsLogsTable> {
             visible: model.isLoading,
             child: DataTable(
               columns: columns,
-              rows: List.generate(pageSize, (index) => DataRow(cells: fakeCells))
+              rows: List.generate(widget.pageSize!, (index) => DataRow(cells: fakeCells))
             ),
             replacement: Visibility(
-              visible: productsDeleted.isEmpty,
+              visible: products.isEmpty,
               child: const Text("Nenhum produto deletado."),
               replacement: DataTable(columns: columns, 
-              rows: productsRows(model, productsDeleted),
+              rows: productsRows(model, products),
             ),
             
             )
@@ -72,14 +59,6 @@ class _ProductsLogsTableState extends State<ProductsLogsTable> {
         )
       ]
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _fetch();
-    });
   }
 
   @override

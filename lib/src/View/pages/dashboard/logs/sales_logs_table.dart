@@ -8,6 +8,7 @@ import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/shimmer_cell.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/components/scroll_prepare.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/fetch/fetch_logs.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_table.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
@@ -16,7 +17,10 @@ import 'package:shimmer/shimmer.dart';
 
 
 class SalesLogs extends StatefulWidget {
-  const SalesLogs({super.key});
+  SalesLogs({super.key, this.sales, this.pageSize});
+
+  int? pageSize = 4;
+  List<Venda>? sales;
 
   @override
   State<SalesLogs> createState() => _SalesLogsState();
@@ -26,20 +30,7 @@ class _SalesLogsState extends State<SalesLogs> {
 
   final pageSize = 4;
   
-  Future _fetchSales({int? pageNum = 1}) async {
-    final model = Provider.of<SalesProvider>(context, listen: false);
-    model.setIsLoading(true);
-
-
-    await Future.delayed(Duration(milliseconds: 1000));
-    ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: pageNum, pageSize: pageSize, isDeleted: true);
-    final newData = vendasList.data?.sales ?? [];
-
-    model.setTotalPages(vendasList.data?.pagination?.totalPages ?? 1);
-    model.setCurrentPage(vendasList.data?.pagination?.currentPage ?? 1);
-    model.setSalesDeleted(newData);
-    model.setIsLoading(false);
-  }
+  
   Widget salesTable() {
       final model = Provider.of<SalesProvider>(context, listen: true);
       List<Venda> salesDeleted = model.salesDeleted;
@@ -92,7 +83,7 @@ class _SalesLogsState extends State<SalesLogs> {
                 return TextButton(
                   onPressed: () async {
                     if(model.currentPage == page) return;
-                    await _fetchSales(pageNum: page);
+                    await fetchSales(context, pageNum: page);
                   },
                   child: Text(page.toString(), style: TextStyle(color: (model.currentPage == page) ? SharedTheme.primaryColor : null)),
                 );
@@ -102,14 +93,6 @@ class _SalesLogsState extends State<SalesLogs> {
         );
       }
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _fetchSales();
-    });
   }
 
   @override
