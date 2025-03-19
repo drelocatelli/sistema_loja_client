@@ -90,6 +90,9 @@ class _SalesLogsState extends State<SalesLogs> {
             return TextButton(
               onPressed: () async {
                 if(model.currentPage == page) return;
+                model.currentPage = page;
+                _future = fetchSales(context, pageNum: page);
+                setState(() {});
               },
               child: Text(page.toString(), style: TextStyle(color: (model.currentPage == page) ? SharedTheme.primaryColor : null)),
             );
