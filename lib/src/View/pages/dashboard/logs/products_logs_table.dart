@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/produtos_response_dto%20copy.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/components/fake_cells%20.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/components/logs_pagination.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/components/scroll_prepare.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/fetch/fetch_logs.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
@@ -40,10 +41,9 @@ class _ProductsLogsTableState extends State<ProductsLogsTable> {
   Widget build(BuildContext context) {
     final columns = produtosColumns(model!);
 
-    return Column(
-      children: [
-        scrollPrepare(
-          child: FutureBuilder<ProdutosResponseDTO?>(
+    return Consumer<ProdutoProvider>(
+      builder: (context, model, child) {
+          return FutureBuilder<ProdutosResponseDTO?>(
             future: _future,
             builder: (context, snapshot) {
               if(snapshot.hasError) return Text("Ocorreu um erro ao obter dados");
@@ -57,16 +57,20 @@ class _ProductsLogsTableState extends State<ProductsLogsTable> {
                   );
           
                 case ConnectionState.done:
-                  return productTable(produtos: snapshot.data?.produtos ?? []);
-          
+                  return Column(
+                    children: [
+                      scrollPrepare(child: productTable(produtos: snapshot.data?.produtos ?? [])),
+                      LogsPagination(model: model, isNotEmpty: model.produtos.isNotEmpty,  fetchCb: () {
+                        _future = fetchProducts(context, pageNum: model.currentPage);
+                      })
+                    ],
+                  );
                 case ConnectionState.active:
                   throw UnimplementedError();
               }
-              
-            }
-          )
-        )
-      ]
+          }
+        );
+      }
     );
   }
 }
