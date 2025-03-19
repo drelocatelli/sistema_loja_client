@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/product_dto.dart';
 import 'package:racoon_tech_panel/src/View/helpers.dart';
@@ -80,14 +81,7 @@ class _ProductTableState extends State<ProductTable> {
                                 _isHorizontalThumbShowing = false;
                                 setState(() {});
                               },
-                              child: DataTable(
-                                sortColumnIndex: model.sortColumnIdx,
-                                sortAscending: model.isAscending,
-                                dataRowHeight: 55,
-                                showCheckboxColumn: true,
-                                columns: produtosColumns(model),
-                                rows: productsRows(model, model.produtos),
-                            ),
+                              child: productTable(produtos: model.produtos),
                           ),
                         ),
                       ),
@@ -108,6 +102,25 @@ class _ProductTableState extends State<ProductTable> {
   }
 }
 
+Widget productTable({required List<Produto> produtos}) {
+   return Consumer<ProdutoProvider>(
+     builder: (context, model, child) {
+       return Visibility(
+        visible: produtos.isEmpty,
+        child: const Text("Nenhum produto encontrado."),
+        replacement: DataTable(
+            sortColumnIndex: model.sortColumnIdx,
+            sortAscending: model.isAscending,
+            dataRowHeight: 55,
+            showCheckboxColumn: true,
+            columns: produtosColumns(model), 
+            rows: productsRows(model, produtos),
+          ),
+       );
+     }
+   );
+}
+
 List<DataRow> productsRows(ProdutoProvider model, List<Produto> produtos) {
   return produtos.asMap().entries.map((entry) {
       final key = entry.key;
@@ -124,7 +137,7 @@ List<DataRow> productsRows(ProdutoProvider model, List<Produto> produtos) {
           return product.quantity! <= 0 ? const Color.fromARGB(255, 255, 205, 205) : Colors.transparent;
         }),
 
-          selected: model.selectedIds.contains(key),
+          selected: model.selectedIds.contains(product.id.toString()),
           onSelectChanged: (bool? selected) {
             if (selected != null) {
               model.toggleSelection(

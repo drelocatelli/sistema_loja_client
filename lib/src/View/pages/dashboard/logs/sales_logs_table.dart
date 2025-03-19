@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:gap/gap.dart';
-import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
-import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/shimmer_cell.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/components/fake_cells%20.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/components/scroll_prepare.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/fetch/fetch_logs.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_table.dart';
@@ -17,86 +15,88 @@ import 'package:shimmer/shimmer.dart';
 
 
 class SalesLogs extends StatefulWidget {
-  SalesLogs({super.key, this.sales, this.pageSize});
+  SalesLogs({super.key, this.pageSize});
 
   int? pageSize = 4;
-  List<Venda>? sales;
 
   @override
   State<SalesLogs> createState() => _SalesLogsState();
 }
 
 class _SalesLogsState extends State<SalesLogs> {
-
-  final pageSize = 4;
+  late Future<SalesResponseDTO?> _future;
+  late SalesProvider? model;
   
-  
-  Widget salesTable() {
-      final model = Provider.of<SalesProvider>(context, listen: true);
-      List<Venda> salesDeleted = model.salesDeleted;
-      
-      final columns = salesColumns(model);
+  int pageNum = 1;
 
-      final fakeCells = List.generate(columns.length, (index) => DataCell(
-        Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
-          child: ShimmerCell(width: 120)
-        )
-      ));
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      model = Provider.of<SalesProvider>(context, listen: false);
+      _future = fetchSales(context, pageNum: pageNum);
+      setState(() {});
+    });
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+      final columns = salesColumns(model!);
       
-      return  Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          scrollPrepare(
-            child: Visibility(
-              visible: model.isLoading,
-              child: DataTable(
-                columns: columns, 
-                rows: List.generate(pageSize, (index) => DataRow(cells: fakeCells))
+      return  Consumer<SalesProvider>(
+        builder: (context, model, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              scrollPrepare(
+                child: FutureBuilder(
+                  future: _future,
+                  builder: (context, snapshot) {
+                    if(snapshot.hasError) return Text("Ocorreu um erro ao obter dados");
+          
+                    switch(snapshot.connectionState) {
+                      case ConnectionState.none:
+                      case ConnectionState.waiting:
+                        return DataTable(
+                          columns: columns,
+                          rows: List.generate(widget.pageSize!, (index) => DataRow(cells: fakeCells(columns.length))
+                        ));
+          
+                        case ConnectionState.done:
+                          return salesTable(vendas: snapshot.data?.sales ?? []);
+          
+                        case ConnectionState.active:
+                          throw UnimplementedError();
+                    }
+                  }
+                ),
               ),
-              replacement: Visibility(
-                visible: salesDeleted.isEmpty,
-                child: const Text("Nenhuma venda deletada."),
-                replacement: DataTable(
-                    columns: columns,
-                    rows: salesRows(model, salesDeleted)
-                  ),
-              ),
-            ),
-          ),
-          salesPagination(),
-        ],
+              salesPagination(model),
+            ],
+          );
+        }
       );
   }
 
-  Widget salesPagination() {
-    return Consumer<SalesProvider>(
-      builder: (context, model, child) {
-        return Visibility(
-          visible: model.salesDeleted.isNotEmpty,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: List.generate(model.totalPages, (idx) {
-                final page =  idx + 1;
-                return TextButton(
-                  onPressed: () async {
-                    if(model.currentPage == page) return;
-                    await fetchSales(context, pageNum: page);
-                  },
-                  child: Text(page.toString(), style: TextStyle(color: (model.currentPage == page) ? SharedTheme.primaryColor : null)),
-                );
-              })
-            ),
-          ),
-        );
-      }
+  Widget salesPagination(SalesProvider model) {
+    return Visibility(
+      visible: model.salesDeleted.isNotEmpty,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: List.generate(model.totalPages, (idx) {
+            final page =  idx + 1;
+            return TextButton(
+              onPressed: () async {
+                if(model.currentPage == page) return;
+              },
+              child: Text(page.toString(), style: TextStyle(color: (model.currentPage == page) ? SharedTheme.primaryColor : null)),
+            );
+          })
+        ),
+      ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return salesTable();
-  }
+ 
 }

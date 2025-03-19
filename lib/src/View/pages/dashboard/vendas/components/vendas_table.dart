@@ -22,8 +22,6 @@ class VendasTable extends StatelessWidget {
   bool _isHorizontalThumbShowing = false;
 
   
-
-  
   return Consumer<SalesProvider>(
     builder: (context, model, child) {
       return StatefulBuilder(
@@ -94,13 +92,7 @@ class VendasTable extends StatelessWidget {
                                 width: SharedTheme.isLargeScreen(context)
                                 ? maxWidth
                                 : null,
-                                child: DataTable(
-                                  sortColumnIndex: model.sortColumnIdx,
-                                  sortAscending: model.isAscending,
-                                  showCheckboxColumn: true,
-                                  columns: salesColumns(model),
-                                  rows: salesRows(model, model.salesNotDeleted)
-                                ),
+                                child: salesTable(vendas: model.sales),
                               ),
                             ),
                           ),
@@ -117,6 +109,20 @@ class VendasTable extends StatelessWidget {
     }
   );
   }
+}
+
+Widget salesTable({required List<Venda> vendas}) {
+  return Consumer<SalesProvider>(
+    builder: (context, model, child) {
+      return DataTable(
+        sortColumnIndex: model.sortColumnIdx,
+        sortAscending: model.isAscending,
+        showCheckboxColumn: true,
+        columns: salesColumns(model),
+        rows: salesRows(model, vendas)
+      );
+    }
+  );
 }
 
 _deleteModal(BuildContext context, List<String> ids) {
