@@ -49,7 +49,7 @@ class _LogsPageState extends State<LogsPage> {
                   Text('Histórico de produtos', style: Theme.of(context).textTheme.headlineMedium),
                   const Gap(10),
                   ExpansionTile(
-                    title: Text("Produtos deletados"),
+                    title: Text("Produtos cancelados"),
                     onExpansionChanged: (bool expanded) async {
                       if(!expanded) return;
                     },

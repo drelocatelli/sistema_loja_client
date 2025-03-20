@@ -63,7 +63,7 @@ class _SalesLogsState extends State<SalesLogs> {
                     case ConnectionState.done:
                       return Column(
                         children: [
-                          scrollPrepare(child: salesTable(vendas: snapshot.data?.sales ?? [])),
+                          scrollPrepare(child: salesTable(vendas: snapshot.data?.sales ?? [], showSelection: false, showActions: false)),
                           LogsPagination(model: model, isNotEmpty: model.salesDeleted.isNotEmpty, fetchCb: () async {
                             _future = fetchSales(context, pageNum: model.currentPage);
                           })

@@ -102,26 +102,25 @@ class _ProductTableState extends State<ProductTable> {
   }
 }
 
-Widget productTable({required List<Produto> produtos}) {
+Widget productTable({required List<Produto> produtos, bool showSelection = true, bool showActions = true}) {
    return Consumer<ProdutoProvider>(
      builder: (context, model, child) {
        return Visibility(
-        visible: produtos.isEmpty,
-        child: const Text("Nenhum produto encontrado."),
-        replacement: DataTable(
+        visible: produtos.isNotEmpty,
+        child: DataTable(
             sortColumnIndex: model.sortColumnIdx,
             sortAscending: model.isAscending,
             dataRowHeight: 55,
-            showCheckboxColumn: true,
-            columns: produtosColumns(model), 
-            rows: productsRows(model, produtos),
+            showCheckboxColumn: showSelection,
+            columns: produtosColumns(model, showActions: showActions), 
+            rows: productsRows(model, produtos, showActions: showActions),
           ),
        );
      }
    );
 }
 
-List<DataRow> productsRows(ProdutoProvider model, List<Produto> produtos) {
+List<DataRow> productsRows(ProdutoProvider model, List<Produto> produtos, {bool showActions = true}) {
   return produtos.asMap().entries.map((entry) {
       final key = entry.key;
       final product = entry.value;
@@ -187,7 +186,7 @@ List<DataRow> productsRows(ProdutoProvider model, List<Produto> produtos) {
             DataCell(Text((product.isPublished ?? false)
                 ? 'Público'
                 : 'Anotação')),
-            DataCell(
+            !showActions! ? DataCell(Container()) : DataCell(
               PopupMenuButton(
                 icon: const Icon(Icons.more_vert),
                 itemBuilder: (context) {
@@ -223,7 +222,7 @@ List<DataRow> productsRows(ProdutoProvider model, List<Produto> produtos) {
     }).toList();
 }
 
-List<DataColumn> produtosColumns(ProdutoProvider model) {
+List<DataColumn> produtosColumns(ProdutoProvider model, {bool showActions = true}) {
   return [
       const DataColumn(
         label: Text('Foto'),
@@ -258,7 +257,7 @@ List<DataColumn> produtosColumns(ProdutoProvider model) {
           label: const Text('Visibilidade'),
           onSort: (columnIndex, ascending) =>
               model.sort(columnIndex, ascending)),
-      const DataColumn(
+      !showActions ? DataColumn(label: Container()) : DataColumn(
         label: Text('Ações'),
       ),
     ];

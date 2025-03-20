@@ -59,7 +59,7 @@ class _ProductsLogsTableState extends State<ProductsLogsTable> {
                 case ConnectionState.done:
                   return Column(
                     children: [
-                      scrollPrepare(child: productTable(produtos: snapshot.data?.produtos ?? [])),
+                      scrollPrepare(child: productTable(produtos: snapshot.data?.produtos ?? [], showSelection: false, showActions: false)),
                       LogsPagination(model: model, isNotEmpty: model.produtos.isNotEmpty,  fetchCb: () {
                         _future = fetchProducts(context, pageNum: model.currentPage);
                       })

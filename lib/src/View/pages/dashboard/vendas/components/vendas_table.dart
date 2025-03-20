@@ -111,15 +111,18 @@ class VendasTable extends StatelessWidget {
   }
 }
 
-Widget salesTable({required List<Venda> vendas}) {
+Widget salesTable({required List<Venda> vendas, bool showSelection = true, bool showActions = true}) {
   return Consumer<SalesProvider>(
     builder: (context, model, child) {
-      return DataTable(
-        sortColumnIndex: model.sortColumnIdx,
-        sortAscending: model.isAscending,
-        showCheckboxColumn: true,
-        columns: salesColumns(model),
-        rows: salesRows(model, vendas)
+      return Visibility(
+        visible: vendas.isNotEmpty,
+        child: DataTable(
+          sortColumnIndex: model.sortColumnIdx,
+          sortAscending: model.isAscending,
+          showCheckboxColumn: showSelection,
+          columns: salesColumns(model, showActions: showActions),
+          rows: salesRows(model, vendas, showActions: showActions),
+        ),
       );
     }
   );
@@ -160,7 +163,7 @@ _deleteModal(BuildContext context, List<String> ids) {
   );
 }
 
-List<DataColumn> salesColumns(SalesProvider model) {
+List<DataColumn> salesColumns(SalesProvider model, {bool showActions = true}) {
     return [
       DataColumn(
         label: const Text('Serial'),
@@ -217,12 +220,12 @@ List<DataColumn> salesColumns(SalesProvider model) {
           model.sortSales(columnIndex, ascending);
         }
       ),
-      const DataColumn(
+      !showActions ? DataColumn(label: Container()) : DataColumn(
         label: Text('Ações'),
       ),
     ];
   }
-List<DataRow> salesRows(SalesProvider model, List<Venda> sales) {
+List<DataRow> salesRows(SalesProvider model, List<Venda> sales, {bool showActions = true}) {
   return sales.asMap().entries.map((entry) {
       final key = entry.key;
       final sale = entry.value;
@@ -274,7 +277,7 @@ List<DataRow> salesRows(SalesProvider model, List<Venda> sales) {
                   : "R\$ ${(sale.total! * sale.product!.price!).toStringAsFixed(2).replaceAll('.', ',')}",
             ),
           ),
-          DataCell(
+          !showActions? DataCell(Container()) : DataCell(
             PopupMenuButton(
                 icon: const Icon(Icons.more_vert),
                 itemBuilder: (context) {
