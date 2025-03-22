@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
-import 'package:number_paginator/number_paginator.dart';
 import 'package:racoon_tech_panel/src/View/components/loading_screen.dart';
 import 'package:racoon_tech_panel/src/View/components/main_menu.dart';
-import 'package:racoon_tech_panel/src/Model/main_menu_dto.dart';
-import 'package:racoon_tech_panel/src/View/helpers.dart';
+import 'package:racoon_tech_panel/src/View/layout/functions/assign_colaborator.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 
 class MainLayout extends StatefulWidget {
@@ -25,10 +23,12 @@ class _MainLayoutState extends State<MainLayout> {
   
   final _formKey = GlobalKey<FormState>();  
 
-  void _submitForm() {
-     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Nada encontrado... Por enquanto'),
-      ));
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await assignUserToColaboratorDialog(context);
+    });
   }
 
   @override
@@ -37,42 +37,46 @@ class _MainLayoutState extends State<MainLayout> {
 
     return LoadingScreen(
       isLoading: widget.isLoading,
-      child: Scaffold(
-          key: _scaffoldKey,
-          floatingActionButton: widget.floatingActionButton,
-        appBar: AppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Image.asset(
-                      'assets/img/logo.png',
-                      height: 40,
-                    ),
-                    const Gap(10),
-                    SelectableText(dotenv.env['TITLE'] ?? 'Sistema da loja'),
-                  ],
-                ),
-                isLargeScreen ? mainMenu(context) : Container(),
-              ],
-            ),
-            leading: isLargeScreen ? null : IconButton(
-              icon: const Icon(Icons.menu),
-                onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-            ),
-        ),
-        drawer: isLargeScreen ? null : Drawer(
-          child: mainMenu(context, isLargeScreen: isLargeScreen),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                widget.child,
-              ],
+      child: Visibility(
+        visible: hasColaboratorAssigned.value,
+        replacement: Center(child: Container()),
+        child: Scaffold(
+            key: _scaffoldKey,
+            floatingActionButton: widget.floatingActionButton,
+          appBar: AppBar(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/img/logo.png',
+                        height: 40,
+                      ),
+                      const Gap(10),
+                      SelectableText(dotenv.env['TITLE'] ?? 'Sistema da loja'),
+                    ],
+                  ),
+                  isLargeScreen ? mainMenu(context) : Container(),
+                ],
+              ),
+              leading: isLargeScreen ? null : IconButton(
+                icon: const Icon(Icons.menu),
+                  onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+              ),
+          ),
+          drawer: isLargeScreen ? null : Drawer(
+            child: mainMenu(context, isLargeScreen: isLargeScreen),
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 15.0, vertical: 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  widget.child,
+                ],
+              ),
             ),
           ),
         ),
