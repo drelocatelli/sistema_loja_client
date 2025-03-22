@@ -22,7 +22,7 @@ Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
     MainMenuDTO(label: "Sair", fn: () async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('token');
-      context.go('/login');
+      context.go('/');
     })
   ];
   

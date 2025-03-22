@@ -6,10 +6,6 @@ import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/components/logs_
 import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/components/scroll_prepare.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/fetch/fetch_logs.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
-import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
-import 'package:shimmer/shimmer.dart';
-
-import '../../../components/shimmer_cell.dart';
 import '../estoque/components/product_table.dart';
 
 class ProductsLogsTable extends StatefulWidget {

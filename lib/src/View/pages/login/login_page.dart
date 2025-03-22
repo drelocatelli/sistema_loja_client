@@ -19,10 +19,12 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoginLoading = false;
 
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _userController = TextEditingController();
 
   @override
   void dispose() {
     _passwordController.dispose();
+    _userController.dispose();
     super.dispose();
   }
 
@@ -63,11 +65,39 @@ class _LoginPageState extends State<LoginPage> {
                         const Gap(18),
                         TextFormField(
                           autofocus: true,
+                          controller: _userController,
+                          decoration: InputDecoration(
+                            labelText: 'Digite o usuário',
+                            hintText: "Nome de usuário",
+                            labelStyle: TextStyle(color: SharedTheme.secondaryColor),
+                            enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: SharedTheme.secondaryColor.withOpacity(0.6), width: 1.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: SharedTheme.secondaryColor.withOpacity(0.6), width: 2.0),
+                          ),
+                          errorBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red, width: 2.0),
+                          ),
+                          focusedErrorBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.redAccent, width: 2.5),
+                          ),
+                          ),
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Preencha o campo';
+                            }
+                            return null;
+                          },
+                        ),
+                        const Gap(12),
+                        TextFormField(
+                          autofocus: true,
                           obscureText: true,
                           controller: _passwordController,
                           onFieldSubmitted: (value) async {
                             if (_formKey.currentState?.validate() ?? false) {
-                              await _loginRequest(context, _passwordController.text);
+                              await _loginRequest(context, _userController.text, _passwordController.text);
                             }
                           },
                           decoration: InputDecoration(
@@ -106,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                               // Validate will return true if the form is valid, or false if
                               // the form is invalid.
                               if (_formKey.currentState?.validate() ?? false) {
-                                await _loginRequest(context, _passwordController.text);
+                                await _loginRequest(context, _userController.text, _passwordController.text);
                               }
                               _isLoginLoading = false;
                               setState(() {});
@@ -135,8 +165,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-_loginRequest(BuildContext context, password) async {
-  final response = await LoginRepository.login(password);
+_loginRequest(BuildContext context, String user, String password) async {
+  final response = await LoginRepository.login(user, password);
 
   if(response.status != 200) {
     ScaffoldMessenger.of(context).showSnackBar(

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:racoon_tech_panel/src/Model/clientes_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
 
 import '../../../../../Model/produtos_response_dto copy.dart';
 import '../../../../../Model/sales_response_dto.dart';
+import '../../../../../ViewModel/providers/ClientProvider.dart';
 import '../../../../../ViewModel/providers/SalesProvider.dart';
+import '../../../../../ViewModel/repository/ClientRepository.dart';
 import '../../../../../ViewModel/repository/SaleRepository.dart';
 
 Future<SalesResponseDTO?> fetchSales(BuildContext context, {int? pageNum = 1, int pageSize = 4}) async {
@@ -40,3 +43,16 @@ Future<ProdutosResponseDTO?> fetchProducts(BuildContext context, {int? pageNum =
 
     return productsList.data;
   }
+
+Future<ClientesResponseDTO?> fetchClients(BuildContext context, {int? pageNum = 1}) async {
+  final model = Provider.of<ClientProvider>(context, listen: false);
+
+  await Future.delayed(Duration(milliseconds: 1000));
+  ResponseDTO<ClientesResponseDTO> clientsList = await ClientRepository.get(page: pageNum);
+
+  final newData = clientsList.data?.clientes ?? [];
+  model.setClientes(newData);
+
+  return clientsList.data;
+  
+}

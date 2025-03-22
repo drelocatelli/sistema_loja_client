@@ -18,10 +18,10 @@ class LoginRepository {
     return token;
   }
 
-  static Future<ResponseDTO<String>> login(String password) async {
+  static Future<ResponseDTO<String>> login(String user, String password) async {
     String query = '''
       mutation Login {
-        login(password: "$password") {
+        login(user: "$user", password: "$password") {
             error
             message
             token
