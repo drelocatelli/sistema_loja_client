@@ -61,13 +61,26 @@ class _SalesLogsState extends State<SalesLogs> {
                     ));
                     
                     case ConnectionState.done:
-                      return Column(
-                        children: [
-                          scrollPrepare(child: salesTable(vendas: snapshot.data?.sales ?? [], showSelection: false, showActions: false)),
-                          LogsPagination(model: model, isNotEmpty: model.salesDeleted.isNotEmpty, fetchCb: () async {
-                            _future = fetchSales(context, pageNum: model.currentPage);
-                          })
-                        ],
+                      return Visibility(
+                        visible: snapshot.data?.sales.isNotEmpty ?? false,
+                        replacement: Padding(
+                          padding: const EdgeInsets.only(top: 20, bottom: 20),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Text("Nenhum dado encontrado"),
+                              ],
+                            ),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            scrollPrepare(child: salesTable(vendas: snapshot.data?.sales ?? [], showSelection: false, showActions: false)),
+                            LogsPagination(model: model, isNotEmpty: model.salesDeleted.isNotEmpty, fetchCb: () async {
+                              _future = fetchSales(context, pageNum: model.currentPage);
+                            })
+                          ],
+                        ),
                       );
                     
                     case ConnectionState.active:

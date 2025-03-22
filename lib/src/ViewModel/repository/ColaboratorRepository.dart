@@ -26,7 +26,6 @@ class ColaboratorRepository {
                   id
                   name
                   email
-                  role
                   rg
                   date_of_birth
                   marital_status

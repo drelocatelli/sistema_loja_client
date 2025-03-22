@@ -2,7 +2,6 @@ class Colaborator {
   String? id;
   String? name;
   String? email;
-  String? role;
   String? rg;
   String? dateOfBirth;
   String? maritalStatus;
@@ -16,7 +15,6 @@ class Colaborator {
     this.id,
     this.name,
     this.email,
-    this.role,
     this.rg,
     this.dateOfBirth,
     this.maritalStatus,
@@ -33,7 +31,6 @@ class Colaborator {
       id: json['id']?.toString(),
       name: json['name'],
       email: json['email'],
-      role: json['role'],
       rg: json['rg'],
       dateOfBirth: json['date_of_birth'],
       maritalStatus: json['marital_status'],
@@ -51,7 +48,6 @@ class Colaborator {
       'id': id,
       'name': name,
       'email': email,
-      'role': role,
       'rg': rg,
       'date_of_birth': dateOfBirth,
       'marital_status': maritalStatus,

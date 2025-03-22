@@ -55,10 +55,27 @@ class _ProductsLogsTableState extends State<ProductsLogsTable> {
                 case ConnectionState.done:
                   return Column(
                     children: [
-                      scrollPrepare(child: productTable(produtos: snapshot.data?.produtos ?? [], showSelection: false, showActions: false)),
-                      LogsPagination(model: model, isNotEmpty: model.produtos.isNotEmpty,  fetchCb: () {
-                        _future = fetchProducts(context, pageNum: model.currentPage);
-                      })
+                       Visibility(
+                        visible: snapshot.data?.produtos.isNotEmpty ?? false,
+                        replacement: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20, bottom: 20),
+                            child: Column(
+                              children: [
+                                Text("Nenhum dado encontrado"),
+                              ],
+                            ),
+                          )
+                        ),
+                      child: Column(
+                        children: [
+                          scrollPrepare(child: productTable(produtos: snapshot.data?.produtos ?? [], showSelection: false, showActions: false)),
+                          LogsPagination(model: model, isNotEmpty: model.produtos.isNotEmpty,  fetchCb: () {
+                          _future = fetchProducts(context, pageNum: model.currentPage);
+                          })
+                        ],
+                      ),
+                      )
                     ],
                   );
                 case ConnectionState.active:
