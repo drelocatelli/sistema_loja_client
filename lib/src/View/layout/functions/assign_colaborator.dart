@@ -40,7 +40,7 @@ Future<void> assignUserToColaboratorDialog(BuildContext context) async {
             spacing: 10,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SelectableText('O seu usuário não está atribuido a nenhum colaborador, por favor assine um colaborador para continuar.'),
+              const SelectableText('O usuário não está atribuido a nenhum colaborador, por favor assine um colaborador para continuar.'),
               Row(
                 spacing: 10,
                 mainAxisAlignment: MainAxisAlignment.center,

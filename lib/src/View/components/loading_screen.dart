@@ -33,7 +33,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
       await _checkNewVersion();
     })();
     Future.delayed(const Duration(milliseconds: 800), () async {
-      await assignUserToColaboratorDialog(context);
 
       if(!kIsWeb) {
         await _checkVersion();

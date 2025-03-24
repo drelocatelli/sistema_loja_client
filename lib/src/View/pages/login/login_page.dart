@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
+import 'package:racoon_tech_panel/src/View/layout/functions/assign_colaborator.dart';
 import 'package:racoon_tech_panel/src/View/layout/login_layout.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/LoginRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
@@ -191,6 +192,7 @@ _loginRequest(BuildContext context, String user, String password) async {
   colaboratorModel.setCurrentLogin(response.data!);
   
   debugPrint('Login successful!');
+  await assignUserToColaboratorDialog(context);
 
   context.pushReplacement('/dashboard');
 }
