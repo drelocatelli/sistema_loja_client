@@ -43,7 +43,7 @@ final NumberPaginatorController _controller = NumberPaginatorController();
     
     model.setIsLoading(true);
 
-    ResponseDTO<ProdutosResponseDTO> productsList = await ProdutosRepository.get(pageNum: page, searchTerm: searchTerm);
+    ResponseDTO<ProdutosResponseDTO> productsList = await ProdutosRepository.get(pageNum: page, searchTerm: searchTerm, isDeleted: false);
     final newProducts = productsList.data?.produtos ?? [];
 
     if(productsList.status != 200) {

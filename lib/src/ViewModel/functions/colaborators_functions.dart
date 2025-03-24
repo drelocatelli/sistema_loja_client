@@ -22,7 +22,5 @@ Future fetchColaborators(BuildContext context, {bool onlyOnce = false, String? s
     model.setError(true);
   }
 
-  Logger().i('Colaborators loaded ${model.colaborators.length}');
-  
   model.setIsLoading(false);
 }

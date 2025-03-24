@@ -18,7 +18,14 @@ Widget mainMenu(BuildContext context, {bool isLargeScreen = true}) {
     // new MainMenuDTO(label: "Notas Fiscais", fn: () => Get.offNamed('/dashboard/nfe')),
     MainMenuDTO(label: "Produtos", fn: () => context.go('/dashboard/produtos')),
     MainMenuDTO(label: "Clientes", fn: () => context.go('/dashboard/clientes')),
-    MainMenuDTO(label: "Colaboradores", fn: () => debugPrint("Colaboradores")),
+    MainMenuDTO(
+      label: "Perfis", 
+      fn: () => debugPrint("Usuário"),
+      submenu: [
+        SubmenuDTO(label: "Gerenciar colaboradores", fn: () => debugPrint("Usuário")),
+        SubmenuDTO(label: "Gerenciar usuários", fn: () => debugPrint("Usuário")),
+      ]
+    ),
     MainMenuDTO(label: "Sair", fn: () async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.remove('login');

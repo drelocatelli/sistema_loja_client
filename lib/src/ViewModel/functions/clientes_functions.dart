@@ -24,7 +24,5 @@ Future fetchClientes(BuildContext context, {bool onlyOnce = false, String? searc
     model.setError(true);
   }
 
-  Logger().i('Clientes loaded ${model.clientes.length}');
-
   model.setIsLoading(false);
 }

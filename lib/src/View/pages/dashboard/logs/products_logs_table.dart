@@ -27,7 +27,7 @@ class _ProductsLogsTableState extends State<ProductsLogsTable> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _future = fetchProducts(context, pageNum: pageNum);
+      _future = fetchProducts(context, pageNum: pageNum, isDeleted: true);
       model = Provider.of<ProdutoProvider>(context, listen: false);
       setState(() {});
     });

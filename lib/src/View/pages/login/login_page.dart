@@ -184,14 +184,12 @@ _loginRequest(BuildContext context, String user, String password) async {
     );
     return;
   }
-  Logger().d(response.data.toString());
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('login', response.data.toString());
   await prefs.setString('token', response.data!.token.toString());
   colaboratorModel.setCurrentLogin(response.data!);
   
-  debugPrint('Login successful!');
   await assignUserToColaboratorDialog(context);
 
   context.pushReplacement('/dashboard');

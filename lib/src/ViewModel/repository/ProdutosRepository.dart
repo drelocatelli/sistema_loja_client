@@ -19,7 +19,8 @@ import 'package:racoon_tech_panel/src/ViewModel/repository/LoginRepository.dart'
 class ProdutosRepository {
    static Future<ResponseDTO<ProdutosResponseDTO>> get({int? pageNum = 1, int? pageSize, String? searchTerm, bool isDeleted = true}) async {
     Map<String, dynamic> payload = {
-      'page': pageNum
+      'page': pageNum,
+      'isDeleted': isDeleted,
     };
 
     if(searchTerm != null) {
@@ -136,7 +137,6 @@ Future uploadImageByDevice(BuildContext context, String filename, model) async {
 
   // not web
    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isWindows || Platform.isMacOS || Platform.isLinux)) {
-    Logger().w('mobile and others');
 
     if(model.selectedImages != null && model.selectedImages!.isNotEmpty) {
       model.selectedImages.asMap().forEach((index, image) async {
@@ -151,7 +151,6 @@ Future uploadImageByDevice(BuildContext context, String filename, model) async {
           await uploadPhotos(context, index, filename, name, model);
      });
    } else {
-    Logger().w('No implementation');
    }
 }
 

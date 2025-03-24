@@ -28,12 +28,12 @@ Future<SalesResponseDTO?> fetchSales(BuildContext context, {int? pageNum = 1, in
   return vendasList.data;
 }
 
-Future<ProdutosResponseDTO?> fetchProducts(BuildContext context, {int? pageNum = 1, int pageSize = 4}) async {
+Future<ProdutosResponseDTO?> fetchProducts(BuildContext context, {int? pageNum = 1, int pageSize = 4, bool isDeleted = false}) async {
     final model = Provider.of<ProdutoProvider>(context, listen: false);
     model.setIsLoading(true);
 
     await Future.delayed(Duration(milliseconds: 1000));
-    ResponseDTO<ProdutosResponseDTO> productsList = await ProdutosRepository.get(pageNum: pageNum, pageSize: pageSize, isDeleted: true);
+    ResponseDTO<ProdutosResponseDTO> productsList = await ProdutosRepository.get(pageNum: pageNum, pageSize: pageSize, isDeleted: isDeleted);
     final newData = productsList.data?.produtos ?? [];
 
     model.setTotalPages(productsList.data?.pagination?.totalPages ?? 1);

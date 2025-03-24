@@ -76,8 +76,6 @@ class _ClientsPageState extends State<ClientsPage> {
 
     debugPrint("Clientes fetched: ${newClientes.length}");
 
-    Logger().w(_totalPages);
-
     return newClientes;
   }
 
