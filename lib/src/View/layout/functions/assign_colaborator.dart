@@ -12,13 +12,13 @@ ValueNotifier<Colaborator?>colaboratorAssigned = ValueNotifier<Colaborator?>(nul
 
 Future<void> assignUserToColaboratorDialog(BuildContext context) async {
     final colaboratorModel = Provider.of<ColaboratorProvider>(context, listen: false);
-    await fetchColaborators(context);
     
     if(colaboratorModel.currentLogin.details!.role == 'admin') {
       colaboratorModel.setHasColaboratorAssigned(true);
-      context.go('/dashboard');
+      
       return;
     }
+    await fetchColaborators(context);
 
     if(colaboratorModel.currentLogin.details?.colaboratorId == null) {
         colaboratorAssigned.value = null;
@@ -138,9 +138,7 @@ Future<void> assignUserToColaboratorForm(BuildContext context) async {
                     context.pop();
                     await Future.delayed(Duration(milliseconds: 100));
 
-                    if(context.mounted) {
-                      context.pushReplacement('/dashboard');
-                    }
+                    context.go('/dashboard');
                   }
                 }, 
                 child: Text("Assinar")
