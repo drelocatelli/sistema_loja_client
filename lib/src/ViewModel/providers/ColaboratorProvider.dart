@@ -20,6 +20,11 @@ class ColaboratorProvider extends ChangeNotifier {
 
   bool hasColaboratorAssigned = false;
 
+  void setHasColaboratorAssigned(bool value) {
+    hasColaboratorAssigned = value;
+    notifyListeners();
+  }
+
 
   void setCurrentLogin(LoginResponseDTO colaborator) {
     _currentLogin = colaborator;

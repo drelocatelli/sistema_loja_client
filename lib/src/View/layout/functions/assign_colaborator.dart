@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/ColaboratorRepository.dart';
 
 
 ValueNotifier<Colaborator?>colaboratorAssigned = ValueNotifier<Colaborator?>(null);
-ValueNotifier<bool>hasColaboratorAssigned = ValueNotifier<bool>(false);
 
 Future<void> assignUserToColaboratorDialog(BuildContext context) async {
     final colaboratorModel = Provider.of<ColaboratorProvider>(context, listen: false);
+    await fetchColaborators(context);
     
     if(colaboratorModel.currentLogin.details!.role == 'admin') {
-      hasColaboratorAssigned.value = true;
+      colaboratorModel.setHasColaboratorAssigned(true);
       context.go('/dashboard');
       return;
     }
 
-    colaboratorAssigned.value = null;
-    hasColaboratorAssigned.value = false;
+    if(colaboratorModel.currentLogin.details?.colaboratorId == null) {
+        colaboratorAssigned.value = null;
+        colaboratorModel.setHasColaboratorAssigned(false);
+    } else {
+      colaboratorModel.setHasColaboratorAssigned(true);
+    }
 
-    await fetchColaborators(context);
-    if(hasColaboratorAssigned.value) return;
+
+    if(colaboratorModel.hasColaboratorAssigned) return;
         
     showDialog(
       context: context, 
@@ -119,10 +123,24 @@ Future<void> assignUserToColaboratorForm(BuildContext context) async {
                 },
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if(colaboratorAssigned.value != null) {
-                    hasColaboratorAssigned.value = true;
+                    final userId = colaboratorModel.currentLogin.details!.id!;
+                    final colaboratorId = colaboratorAssigned.value!.id!;
+                    
+                    final response = await ColaboratorRepository.assignColaboratorToUser(colaboratorId: colaboratorId, userId: userId);
+
+                    if(response.status != 200) {
+                      return;
+                    }
+
+                    colaboratorModel.setHasColaboratorAssigned(true);
                     context.pop();
+                    await Future.delayed(Duration(milliseconds: 100));
+
+                    if(context.mounted) {
+                      context.pushReplacement('/dashboard');
+                    }
                   }
                 }, 
                 child: Text("Assinar")

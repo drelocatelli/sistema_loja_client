@@ -187,6 +187,7 @@ _loginRequest(BuildContext context, String user, String password) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('login', response.data.toString());
+  await prefs.setString('token', response.data!.token.toString());
   colaboratorModel.setCurrentLogin(response.data!);
   
   debugPrint('Login successful!');

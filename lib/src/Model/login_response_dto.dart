@@ -34,7 +34,7 @@ class LoginDetails {
   final String? id;
   final String? password;
   final String? role;
-  final int? colaboratorId;
+  final String? colaboratorId;
   final String? user;
 
   LoginDetails({

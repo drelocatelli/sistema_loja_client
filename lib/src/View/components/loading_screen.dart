@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
 import 'package:logger/web.dart';
+import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/View/components/pulse_components.dart';
 import 'package:racoon_tech_panel/src/View/layout/functions/assign_colaborator.dart';
+import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/CheckVersionRepository.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
@@ -77,9 +79,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
         visible: _newVersion && !kIsWeb,
         replacement: Visibility(
           visible: widget.isLoading != null && widget.isLoading! && widget._isLoadingPassive,
-          replacement: Visibility(
-            visible: hasColaboratorAssigned.value,
-            child: widget.child
+          replacement: Consumer<ColaboratorProvider>(
+            builder: (context, colaboratorModel, child) {
+              return Visibility(
+                visible: colaboratorModel.hasColaboratorAssigned,
+                child: widget.child
+              );
+            }
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
