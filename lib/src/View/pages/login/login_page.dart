@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/web.dart';
+import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/View/layout/login_layout.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/LoginRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../ViewModel/providers/ColaboratorProvider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -64,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                         Text("Login", style: TextStyle(color: SharedTheme.secondaryColor, fontSize: 30, fontWeight: FontWeight.bold)),
                         const Gap(18),
                         TextFormField(
+                          textInputAction: TextInputAction.next,
                           autofocus: true,
                           controller: _userController,
                           decoration: InputDecoration(
@@ -166,6 +171,7 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 _loginRequest(BuildContext context, String user, String password) async {
+  final colaboratorModel = Provider.of<ColaboratorProvider>(context, listen: false);
   final response = await LoginRepository.login(user, password);
 
   if(response.status != 200) {
@@ -177,10 +183,11 @@ _loginRequest(BuildContext context, String user, String password) async {
     );
     return;
   }
-  debugPrint("Data: ${response.data}");
+  Logger().d(response.data.toString());
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('token', response.data.toString());
+  await prefs.setString('login', response.data.toString());
+  colaboratorModel.setCurrentLogin(response.data!);
   
   debugPrint('Login successful!');
 

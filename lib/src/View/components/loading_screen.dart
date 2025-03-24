@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gap/gap.dart';
+import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/View/components/pulse_components.dart';
+import 'package:racoon_tech_panel/src/View/layout/functions/assign_colaborator.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/CheckVersionRepository.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/foundation.dart';
@@ -29,12 +31,15 @@ class _LoadingScreenState extends State<LoadingScreen> {
       await _checkNewVersion();
     })();
     Future.delayed(const Duration(milliseconds: 800), () async {
+      await assignUserToColaboratorDialog(context);
+
       if(!kIsWeb) {
         await _checkVersion();
       }
       setState(() {
         widget._isLoadingPassive = false;
       });
+
     });
   }
 
@@ -72,7 +77,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
         visible: _newVersion && !kIsWeb,
         replacement: Visibility(
           visible: widget.isLoading != null && widget.isLoading! && widget._isLoadingPassive,
-          replacement: widget.child,
+          replacement: Visibility(
+            visible: hasColaboratorAssigned.value,
+            child: widget.child
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

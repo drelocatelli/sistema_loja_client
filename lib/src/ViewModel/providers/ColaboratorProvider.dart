@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
+import 'package:racoon_tech_panel/src/Model/login_response_dto.dart';
 
 class ColaboratorProvider extends ChangeNotifier {
   bool _isLoading = true;
@@ -14,7 +15,17 @@ class ColaboratorProvider extends ChangeNotifier {
   bool _hasError = false;
   bool get hasError => _hasError;
 
+  LoginResponseDTO _currentLogin = LoginResponseDTO();
+  LoginResponseDTO get currentLogin => _currentLogin;
 
+  bool hasColaboratorAssigned = false;
+
+
+  void setCurrentLogin(LoginResponseDTO colaborator) {
+    _currentLogin = colaborator;
+    notifyListeners();
+  }
+  
   void setColaborators(List<Colaborator> colaborators) {
     _colaborators = colaborators;
     if(_colaboratorsBkp.isEmpty) {

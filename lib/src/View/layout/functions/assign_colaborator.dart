@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/searchable_menu.dart';
@@ -11,9 +12,20 @@ ValueNotifier<Colaborator?>colaboratorAssigned = ValueNotifier<Colaborator?>(nul
 ValueNotifier<bool>hasColaboratorAssigned = ValueNotifier<bool>(false);
 
 Future<void> assignUserToColaboratorDialog(BuildContext context) async {
-    await fetchColaborators(context);
+    final colaboratorModel = Provider.of<ColaboratorProvider>(context, listen: false);
+    
+    if(colaboratorModel.currentLogin.details!.role == 'admin') {
+      hasColaboratorAssigned.value = true;
+      context.go('/dashboard');
+      return;
+    }
 
+    colaboratorAssigned.value = null;
+    hasColaboratorAssigned.value = false;
+
+    await fetchColaborators(context);
     if(hasColaboratorAssigned.value) return;
+        
     showDialog(
       context: context, 
       barrierDismissible: false,
