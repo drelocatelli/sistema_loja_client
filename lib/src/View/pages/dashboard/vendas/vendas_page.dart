@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
 import 'package:racoon_tech_panel/src/View/layout/main_layout.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/fetch/fetch_logs.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_search.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_table.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_title.dart';
@@ -27,40 +28,8 @@ class _VenddasState extends State<VendasPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _fetchData();
+      await fetchSales(context, isDeleted: false);
     });
-  }
-
-  Future _fetchData({int? page = 1, String? searchTerm}) async {
-    final model = Provider.of<SalesProvider>(context, listen: false);
-    model.setIsLoading(true);
-    ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: page, searchTerm: searchTerm, isDeleted: false);
-
-    final newData = vendasList.data?.sales ?? [];
-
-    if(vendasList.status != 200) {
-      showDialog(
-        context: context, 
-        builder: (context) {
-          return AlertDialog(
-            title: const Text("Ocorreu um erro"),
-            content: Text(vendasList.message ?? 'Ocorreu um erro inesperado!', style: Theme.of(context).textTheme.bodyMedium),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                }, 
-                child: const Text('Fechar')
-              ),
-            ],
-          );  
-        }
-      );
-    }
-    model.setTotalPages(vendasList.data?.pagination?.totalPages ?? 1);
-    model.setShowDeleted(false);
-    model.setSalesNotDeleted(newData);
-    model.setIsLoading(false);
   }
 
   @override
@@ -110,7 +79,7 @@ class _VenddasState extends State<VendasPage> {
                           model.setCurrentPage(index + 1);
                         });
                         await Future.delayed(const Duration(seconds: 1));
-                        await _fetchData(page: model.currentPage);
+                        await fetchSales(context, pageNum: model.currentPage, pageSize: 4);
                       },
                     ),
                   ),

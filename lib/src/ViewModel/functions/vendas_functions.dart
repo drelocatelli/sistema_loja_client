@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/login_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/fetch/fetch_logs.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_form.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/clientes_functions.dart';
@@ -54,6 +55,9 @@ deleteVendas(BuildContext context, List<String> ids) async {
 loadAllSalesProps(BuildContext context) async {
   // load categories
   // await fetchCategories(context);
+
+  // fetch sales
+  await fetchSales(context);
 
   // load colaborators
   await fetchColaborators(context);

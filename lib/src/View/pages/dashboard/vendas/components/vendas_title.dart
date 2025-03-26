@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/View/components/refresh_component.dart';
 import 'package:racoon_tech_panel/src/View/components/rowOrWrap.dart';
+import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/fetch/fetch_logs.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
@@ -16,15 +17,6 @@ class VendasTitle extends StatefulWidget {
 }
 
 class _VendasTitleState extends State<VendasTitle> {
-
-  
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await loadAllSalesProps(context);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_details.dart';

@@ -12,17 +12,21 @@ import '../../../../../ViewModel/providers/SalesProvider.dart';
 import '../../../../../ViewModel/repository/ClientRepository.dart';
 import '../../../../../ViewModel/repository/SaleRepository.dart';
 
-Future<SalesResponseDTO?> fetchSales(BuildContext context, {int? pageNum = 1, int pageSize = 4}) async {
+Future<SalesResponseDTO?> fetchSales(BuildContext context, {int? pageNum = 1, int pageSize = 4, bool isDeleted = true}) async {
   final model = Provider.of<SalesProvider>(context, listen: false);
   model.setIsLoading(true);
 
   await Future.delayed(Duration(milliseconds: 1000));
-  ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: pageNum, pageSize: pageSize, isDeleted: true);
+  ResponseDTO<SalesResponseDTO> vendasList = await SaleRepository.get(pageNum: pageNum, pageSize: pageSize, isDeleted: isDeleted);
   final newData = vendasList.data?.sales ?? [];
 
   model.setTotalPages(vendasList.data?.pagination?.totalPages ?? 1);
   model.setCurrentPage(vendasList.data?.pagination?.currentPage ?? 1);
-  model.setSalesDeleted(newData);
+  if(isDeleted) {
+    model.setSalesDeleted(newData);
+  } else {
+    model.setSales(newData);
+  }
   model.setIsLoading(false);
 
   return vendasList.data;
