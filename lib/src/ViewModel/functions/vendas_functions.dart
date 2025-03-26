@@ -62,7 +62,7 @@ loadAllSalesProps(BuildContext context) async {
   await fetchClientes(context);
 
   // produtos
-  await fetchProdutos(context);
+  await fetchProdutos(context, isDeleted: false);
 }
 
 novaVendaDialog(BuildContext context) {

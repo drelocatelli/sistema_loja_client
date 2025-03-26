@@ -1,24 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:racoon_tech_panel/src/Model/category_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/refresh_component.dart';
-import 'package:racoon_tech_panel/src/Model/response_dto.dart';
-import 'package:racoon_tech_panel/src/Model/sales_response_dto.dart';
-import 'package:racoon_tech_panel/src/Model/vendas_dto.dart';
 import 'package:racoon_tech_panel/src/View/components/rowOrWrap.dart';
-import 'package:racoon_tech_panel/src/View/helpers.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/categories_functions.dart';
-import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/functions/vendas_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/CategoryProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
-import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
-
-import '../../../../../ViewModel/functions/clientes_functions.dart';
 
 class VendasTitle extends StatefulWidget {
   const VendasTitle({super.key});

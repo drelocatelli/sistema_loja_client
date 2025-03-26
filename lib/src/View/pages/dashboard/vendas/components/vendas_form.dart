@@ -191,7 +191,7 @@ class _VendasFormState extends State<VendasForm> {
                                   updateTotal();
                               },
                               fetchCb: (String? searchTerm) async {
-                                await fetchProdutos(context, searchTerm: searchTerm);
+                                await fetchProdutos(context, searchTerm: searchTerm, isDeleted: false);
                               }
                             );
                           },

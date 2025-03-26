@@ -6,14 +6,14 @@ import 'package:racoon_tech_panel/src/View/pages/dashboard/estoque/components/pr
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/ProdutosRepository.dart';
 
-Future fetchProdutos(BuildContext context, {bool onlyOnce = false, String? searchTerm, int? page = 1}) async {
+Future fetchProdutos(BuildContext context, {bool onlyOnce = false, String? searchTerm, int? page = 1, bool isDeleted = true}) async {
   final model = Provider.of<ProdutoProvider>(context, listen: false);
 
   if(onlyOnce && model.produtos.isNotEmpty) {
     return;
   }
 
-  final response = await ProdutosRepository.get(searchTerm: searchTerm, pageNum: page);
+  final response = await ProdutosRepository.get(searchTerm: searchTerm, pageNum: page, isDeleted: isDeleted);
 
   await Future.delayed(Duration(milliseconds: 1500));
   model.setIsLoading(true);

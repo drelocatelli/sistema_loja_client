@@ -77,7 +77,7 @@ class _ProductFormState extends State<ProductForm> {
 
       await Future.delayed(const Duration(milliseconds: 1500));
 
-      await fetchProdutos(context);
+      await fetchProdutos(context, isDeleted: false);
 
       productModel.setIsLoading(false);
       productModel.setImages([]);
