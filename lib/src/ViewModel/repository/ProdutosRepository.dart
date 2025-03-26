@@ -20,7 +20,7 @@ class ProdutosRepository {
    static Future<ResponseDTO<ProdutosResponseDTO>> get({int? pageNum = 1, int? pageSize, String? searchTerm, bool isDeleted = true}) async {
     Map<String, dynamic> payload = {
       'page': pageNum,
-      'isDeleted': isDeleted,
+      'deleted': isDeleted,
     };
 
     if(searchTerm != null) {
