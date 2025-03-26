@@ -1,3 +1,5 @@
+import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
+
 class LoginResponseDTO {
   final bool? error;
   final String? message;
@@ -36,22 +38,25 @@ class LoginDetails {
   final String? role;
   final String? colaboratorId;
   final String? user;
+  final Colaborator? colaborator;
 
   LoginDetails({
     this.id,
     this.password,
-    this.role,
+    this.role = RoleEnum.colaborator,  // Atribuindo valor default
     this.colaboratorId,
     this.user,
+    this.colaborator,
   });
 
   factory LoginDetails.fromJson(Map<String, dynamic> json) {
     return LoginDetails(
       id: json['id'],
       password: json['password'],
-      role: json['role'],
+      role: json['role'] ?? RoleEnum.colaborator, // Garantindo valor default para role
       colaboratorId: json['colaborator_id'],
       user: json['user'],
+      colaborator: json['colaborator'] != null ? Colaborator.fromJson(json['colaborator']) : null,
     );
   }
 
@@ -62,6 +67,14 @@ class LoginDetails {
       'role': role,
       'colaborator_id': colaboratorId,
       'user': user,
+      'colaborator': colaborator?.toJson(),
     };
   }
+}
+
+class RoleEnum {
+  static const String admin = 'admin';
+  static const String colaborator = 'colaborator';
+  static const String client = 'client';
+  static const String guest = 'guest';
 }

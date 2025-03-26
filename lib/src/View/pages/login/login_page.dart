@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -186,10 +188,9 @@ _loginRequest(BuildContext context, String user, String password) async {
   }
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString('login', response.data.toString());
+  await prefs.setString('login', jsonEncode(response.data!.details));
   await prefs.setString('token', response.data!.token.toString());
-  colaboratorModel.setCurrentLogin(response.data!);
-  
+  colaboratorModel.setCurrentLogin(response.data!);  
   await assignUserToColaboratorDialog(context);
 
   context.pushReplacement('/dashboard');

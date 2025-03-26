@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -7,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/category_dto.dart';
 import 'package:racoon_tech_panel/src/Model/cliente_dto.dart';
 import 'package:racoon_tech_panel/src/Model/colaborator_dto.dart';
+import 'package:racoon_tech_panel/src/Model/login_response_dto.dart';
 import 'package:racoon_tech_panel/src/Model/product_dto.dart';
 import 'package:racoon_tech_panel/src/Model/sales_controller_dto.dart';
 import 'package:racoon_tech_panel/src/Model/save_sales_dto.dart';
@@ -20,6 +23,7 @@ import 'package:racoon_tech_panel/src/ViewModel/providers/ClientProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ProductProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/ColaboratorProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
+import 'package:racoon_tech_panel/src/ViewModel/repository/LoginRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 
 class VendasForm extends StatefulWidget {
@@ -34,14 +38,25 @@ class _VendasFormState extends State<VendasForm> {
   final _formKey = GlobalKey<FormState>();
   final SalesController _controller = SalesController();
   double _total = 0.0;
+  late LoginResponseDTO currentLogin;
 
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final login = Provider.of<ColaboratorProvider>(context, listen: false);
+      currentLogin = login.currentLogin;
+      if(currentLogin.details!.role != RoleEnum.admin) {
+        _controller.colaborator = currentLogin.details!.colaborator!;
+      }
+      setState(() {});
+    });
+
     _controller.quantityController.addListener(() {
       updateTotal();
     });
+    
   }
 
   @override
@@ -49,7 +64,6 @@ class _VendasFormState extends State<VendasForm> {
     _controller.dispose();
     super.dispose();
   }
-
 
   void updateTotal() {
     int quantity = int.tryParse(_controller.quantityController.text) ?? 0;
@@ -107,6 +121,51 @@ class _VendasFormState extends State<VendasForm> {
                       decoration: const InputDecoration(labelText: 'Descrição'),
                       // validator: _controller.validateDescricao,
                     ),
+                    Visibility(
+                      visible: currentLogin.details?.role == RoleEnum.admin,
+                      replacement: TextFormField(
+                        readOnly: true,
+                        style: const TextStyle(fontSize: 15),
+                        controller: TextEditingController(text: currentLogin.details?.colaborator?.name),
+                        decoration: const InputDecoration(labelText: 'Responsável'),
+                      ),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          suffixIcon: const Icon(Icons.expand_more),
+                          labelText: 'Responsável',
+                          border: OutlineInputBorder(),
+                        ),
+                        style: const TextStyle(fontSize: 13),
+                      
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo obrigatório';
+                          }
+                          return null;
+                        },
+                        readOnly: true,
+                        controller: TextEditingController(text: _controller.colaborator?.name),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SearchableMenu(
+                                model: Provider.of<ColaboratorProvider>(context, listen: true), 
+                                items: colaboratorModel.colaborators,
+                                selectCb: (Colaborator colaborator) {
+                                  setState(() {
+                                    _controller.colaborator = colaborator;
+                                  });
+                                },
+                                fetchCb: (String? searchTerm) async {
+                                  await fetchColaborators(context, searchTerm: searchTerm);
+                                }
+                              );
+                            },
+                          );
+                        }
+                      ),
+                    ),
                     TextFormField(
                       decoration: InputDecoration(
                         suffixIcon: const Icon(Icons.expand_more),
@@ -139,42 +198,7 @@ class _VendasFormState extends State<VendasForm> {
                         );
                       }
                     ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        suffixIcon: const Icon(Icons.expand_more),
-                        labelText: 'Responsável',
-                        border: OutlineInputBorder(),
-                      ),
-                      style: const TextStyle(fontSize: 13),
-
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Campo obrigatório';
-                        }
-                        return null;
-                      },
-                      readOnly: true,
-                      controller: TextEditingController(text: _controller.colaborator?.name),
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return SearchableMenu(
-                              model: Provider.of<ColaboratorProvider>(context, listen: true), 
-                              items: colaboratorModel.colaborators,
-                              selectCb: (Colaborator colaborator) {
-                                setState(() {
-                                  _controller.colaborator = colaborator;
-                                });
-                              },
-                              fetchCb: (String? searchTerm) async {
-                                await fetchColaborators(context, searchTerm: searchTerm);
-                              }
-                            );
-                          },
-                        );
-                      }
-                    ),
+                    
                 const Gap(20),
                 TextFormField(
                   decoration: InputDecoration(

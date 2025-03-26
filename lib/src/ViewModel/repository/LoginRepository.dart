@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/web.dart';
 import 'package:racoon_tech_panel/src/Model/login_response_dto.dart';
@@ -15,6 +17,14 @@ class LoginRepository {
     return token;
   }
 
+  static Future<LoginResponseDTO?> getCurrentLogin() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? login = prefs.getString('login');
+    final loginRes = LoginResponseDTO.fromJson(jsonDecode(login!));
+
+    return loginRes;
+  }
+
   static Future<ResponseDTO<LoginResponseDTO>> login(String user, String password) async {
     String query = '''
       mutation Login {
@@ -27,6 +37,19 @@ class LoginRepository {
               role
               colaborator_id
               user
+              colaborator {
+                id
+                name
+                email
+                rg
+                date_of_birth
+                marital_status
+                gender
+                full_address
+                created_at
+                updated_at
+                deleted_at
+              }
             }
         }
       }
