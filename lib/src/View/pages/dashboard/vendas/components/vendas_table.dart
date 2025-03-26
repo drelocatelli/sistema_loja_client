@@ -73,7 +73,7 @@ class VendasTable extends StatelessWidget {
                       child: Visibility(
                         visible: !model.isLoading,
                         child: Visibility(
-                          visible: model.salesNotDeleted.isNotEmpty,
+                          visible: model.sales.isNotEmpty,
                           child: MouseRegion(
                             onHover: (event) {
                               setState(() {

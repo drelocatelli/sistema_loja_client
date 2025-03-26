@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:logger/web.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 import 'package:racoon_tech_panel/src/Model/response_dto.dart';
@@ -9,6 +10,8 @@ import 'package:racoon_tech_panel/src/View/pages/dashboard/logs/fetch/fetch_logs
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_search.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_table.dart';
 import 'package:racoon_tech_panel/src/View/pages/dashboard/vendas/components/vendas_title.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/colaborators_functions.dart';
+import 'package:racoon_tech_panel/src/ViewModel/functions/produtos_functions.dart';
 import 'package:racoon_tech_panel/src/ViewModel/providers/SalesProvider.dart';
 import 'package:racoon_tech_panel/src/ViewModel/repository/SaleRepository.dart';
 import 'package:racoon_tech_panel/src/ViewModel/shared/SharedTheme.dart';
@@ -29,6 +32,9 @@ class _VenddasState extends State<VendasPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await fetchSales(context, isDeleted: false);
+      await fetchProdutos(context, isDeleted: false);
+      await fetchColaborators(context);
+      await fetchClients(context);
     });
   }
 
@@ -40,8 +46,6 @@ class _VenddasState extends State<VendasPage> {
   
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<SalesProvider>(context);
-    
     return Consumer<SalesProvider>(
       builder: (context, model, child) {
         return MainLayout(
