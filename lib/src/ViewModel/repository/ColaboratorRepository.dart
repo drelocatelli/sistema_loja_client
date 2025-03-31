@@ -38,7 +38,7 @@ class ColaboratorRepository {
     );
   }
 
-  static Future<ResponseDTO<ColaboratorResponseDTO>> get({int? page = 1, String? searchTerm}) async {
+  static Future<ResponseDTO<ColaboratorResponseDTO>> get({int? page = 1, String? searchTerm, bool? assigned}) async {
 
     Map<String, dynamic> payload = {
       'page': page
@@ -46,6 +46,10 @@ class ColaboratorRepository {
 
     if(searchTerm != null) {
       payload['searchTerm'] = searchTerm;
+    }
+
+    if(assigned != null) {
+      payload['isAssigned'] = assigned;
     }
 
     String payloadStr = PayloadDTO(payload);

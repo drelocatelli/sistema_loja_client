@@ -18,7 +18,7 @@ Future<void> assignUserToColaboratorDialog(BuildContext context) async {
       
       return;
     }
-    await fetchColaborators(context);
+    await fetchColaborators(context, assigned: false);
 
     if(colaboratorModel.currentLogin.details?.colaboratorId == null) {
         colaboratorAssigned.value = null;
